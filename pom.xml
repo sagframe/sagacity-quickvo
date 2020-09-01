@@ -7,7 +7,7 @@
 	<artifactId>sqltoy-quickvo</artifactId>
 	<version>4.13.8</version>
 	<description>sqltoy vo generate tools</description>
-	<url>https://github.com/chenrenfei/sagacity-sqltoy</url>
+	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<freemarker.version>2.3.30</freemarker.version>
@@ -21,9 +21,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:https://github.com/chenrenfei/sagacity-sqltoy.git
+		<connection>scm:git:https://github.com/sagframe/sagacity-sqltoy.git
 		</connection>
-		<url>https://github.com/chenrenfei/sagacity-sqltoy</url>
+		<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	</scm>
 	<developers>
 		<developer>
