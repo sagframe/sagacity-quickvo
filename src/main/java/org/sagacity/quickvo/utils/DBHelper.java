@@ -422,7 +422,7 @@ public class DBHelper {
 					});
 		}
 		final HashMap metaMap = filedsComments;
-		
+
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
@@ -431,7 +431,7 @@ public class DBHelper {
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
 		}
-		
+
 		return (List) DBUtil.preparedStatementProcess(metaMap, null, rs, new PreparedStatementResultHandler() {
 			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 				List result = new ArrayList();
@@ -504,16 +504,22 @@ public class DBHelper {
 		}
 		// 针对postgresql
 		if (defaultValue.indexOf("(") != -1 && defaultValue.indexOf(")") != -1 && defaultValue.indexOf("::") != -1) {
-			return defaultValue.substring(defaultValue.indexOf("(") + 1, defaultValue.indexOf("::"));
+			defaultValue = defaultValue.substring(defaultValue.indexOf("(") + 1, defaultValue.indexOf("::"));
+		}
+		if (defaultValue.indexOf("'") != -1 && defaultValue.indexOf("::") != -1) {
+			defaultValue = defaultValue.substring(0, defaultValue.indexOf("::")).trim();
 		}
 		if (defaultValue.startsWith("((") && defaultValue.endsWith("))")) {
-			return defaultValue.substring(2, defaultValue.length() - 2);
-		} else if (defaultValue.startsWith("(") && defaultValue.endsWith(")")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
-		} else if (defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
-		} else if (defaultValue.startsWith("\"") && defaultValue.endsWith("\"")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
+			defaultValue = defaultValue.substring(2, defaultValue.length() - 2);
+		}
+		if (defaultValue.startsWith("(") && defaultValue.endsWith(")")) {
+			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+		}
+		if (defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
+			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+		}
+		if (defaultValue.startsWith("\"") && defaultValue.endsWith("\"")) {
+			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
 		}
 		return defaultValue;
 	}
