@@ -173,6 +173,13 @@ public abstract class Abstract${quickVO.voName} implements Serializable,
 		return columnsBuffer.toString();
 	}
 	
+	/**
+	 * @TODO create entityQuery fields
+	 */
+	public static SelectFieldsImpl select() {
+		return new SelectFieldsImpl();
+	}
+	
 	public static class SelectFieldsImpl extends SelectFields {
 		private List<String> fields = new ArrayList<String>();
 
