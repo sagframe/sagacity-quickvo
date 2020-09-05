@@ -100,11 +100,18 @@ public class ${quickVO.voName} extends Abstract${quickVO.voName} {
 	/*---end-constructor-area---don't-update-this-area--*/
 </#if>
 	/**
-     *@todo vo columns to String
+     * @todo vo columns to String
      */
     @Override
 	public String toString() {
 		return super.toString();
+	}
+	
+	/**
+	 * @TODO create entityQuery fields
+	 */
+	public static SelectFieldsImpl select() {
+		return new SelectFieldsImpl();
 	}
 	
 	/*

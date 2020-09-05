@@ -5,13 +5,13 @@
 	<groupId>com.sagframe</groupId>
 	<name>sqltoy-quickvo</name>
 	<artifactId>sqltoy-quickvo</artifactId>
-	<version>4.15.0</version>
+	<version>4.15.3</version>
 	<description>sqltoy vo generate tools</description>
-	<url>https://github.com/chenrenfei/sagacity-sqltoy</url>
+	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<freemarker.version>2.3.30</freemarker.version>
-		<jackson-dataformat.version>2.11.1</jackson-dataformat.version>
+		<jackson-dataformat.version>2.11.2</jackson-dataformat.version>
 	</properties>
 	<licenses>
 		<license>
@@ -21,9 +21,9 @@
 		</license>
 	</licenses>
 	<scm>
-		<connection>scm:git:https://github.com/chenrenfei/sagacity-sqltoy.git
+		<connection>scm:git:https://github.com/sagframe/sagacity-sqltoy.git
 		</connection>
-		<url>https://github.com/chenrenfei/sagacity-sqltoy</url>
+		<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	</scm>
 	<developers>
 		<developer>

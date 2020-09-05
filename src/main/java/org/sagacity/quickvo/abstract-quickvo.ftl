@@ -4,7 +4,10 @@
 package ${quickVO.voPackage}.${quickVO.abstractPath};
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.ArrayList;
 import org.sagacity.sqltoy.config.annotation.Entity;
+import org.sagacity.sqltoy.callback.SelectFields;
 <#if (quickVO.type=="TABLE")>
 import org.sagacity.sqltoy.config.annotation.Id;
 </#if>
@@ -24,8 +27,6 @@ import ${import};
 
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
-import java.util.List;
-import java.util.ArrayList;
 <#list quickVO.exportTables as exportTable>
 import ${quickVO.voPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>
@@ -170,5 +171,36 @@ public abstract class Abstract${quickVO.voName} implements Serializable,
 		columnsBuffer.append("${column.colJavaName?uncap_first}=").append(get${column.colJavaName?cap_first}()).append("\n");
 		</#list>
 		return columnsBuffer.toString();
+	}
+	
+	public static class SelectFieldsImpl extends SelectFields {
+		private List<String> fields = new ArrayList<String>();
+
+		@Override
+		public String[] getSelectFields() {
+			String[] result = new String[fields.size()];
+			fields.toArray(result);
+			return result;
+		}
+		
+<#list quickVO.columns as column>
+	    public SelectFieldsImpl ${column.colJavaName?uncap_first}() {
+	    	if (!fields.contains("${column.colJavaName?uncap_first}")) {
+				fields.add("${column.colJavaName?uncap_first}");
+			}
+	    	return this;
+	    }
+    
+</#list>
+	}
+	
+	public static class Fields {
+<#list quickVO.columns as column>
+        /**
+         * ${column.colRemark!""}
+         */
+    	public static String ${column.colJavaName?uncap_first}="${column.colJavaName?uncap_first}";
+    
+</#list>
 	}
 }
