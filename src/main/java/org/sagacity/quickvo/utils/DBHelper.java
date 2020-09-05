@@ -523,7 +523,7 @@ public class DBHelper {
 		if (result.startsWith("\"") && result.endsWith("\"")) {
 			result = result.substring(1, result.length() - 1);
 		}
-		return result;
+		return result.trim();
 	}
 
 	/**
