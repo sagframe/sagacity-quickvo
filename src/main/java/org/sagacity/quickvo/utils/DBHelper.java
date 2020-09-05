@@ -502,26 +502,28 @@ public class DBHelper {
 		if (defaultValue == null) {
 			return null;
 		}
+		String result = defaultValue;
 		// 针对postgresql
-		if (defaultValue.indexOf("(") != -1 && defaultValue.indexOf(")") != -1 && defaultValue.indexOf("::") != -1) {
-			defaultValue = defaultValue.substring(defaultValue.indexOf("(") + 1, defaultValue.indexOf("::"));
+		if (result.indexOf("(") != -1 && result.indexOf(")") != -1 && result.indexOf("::") != -1) {
+			result = result.substring(result.indexOf("(") + 1, result.indexOf("::"));
 		}
-		if (defaultValue.indexOf("'") != -1 && defaultValue.indexOf("::") != -1) {
-			defaultValue = defaultValue.substring(0, defaultValue.indexOf("::")).trim();
+		//postgresql
+		if (result.indexOf("'") != -1 && result.indexOf("::") != -1) {
+			result = result.substring(0, result.indexOf("::"));
 		}
-		if (defaultValue.startsWith("((") && defaultValue.endsWith("))")) {
-			defaultValue = defaultValue.substring(2, defaultValue.length() - 2);
+		if (result.startsWith("((") && result.endsWith("))")) {
+			result = result.substring(2, result.length() - 2);
 		}
-		if (defaultValue.startsWith("(") && defaultValue.endsWith(")")) {
-			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+		if (result.startsWith("(") && result.endsWith(")")) {
+			result = result.substring(1, result.length() - 1);
 		}
-		if (defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
-			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+		if (result.startsWith("'") && result.endsWith("'")) {
+			result = result.substring(1, result.length() - 1);
 		}
-		if (defaultValue.startsWith("\"") && defaultValue.endsWith("\"")) {
-			defaultValue = defaultValue.substring(1, defaultValue.length() - 1);
+		if (result.startsWith("\"") && result.endsWith("\"")) {
+			result = result.substring(1, result.length() - 1);
 		}
-		return defaultValue;
+		return result.trim();
 	}
 
 	/**
