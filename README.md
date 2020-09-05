@@ -10,5 +10,5 @@
 
 ```
 # 使用方式:
-* 请参见https://gitee.com/sagacity/sqltoy-quickstart项目
+* 请参见 https://github.com/sagframe/sqltoy-quickstart 项目
 * 在tools/quickvo 目录下面，配置quickvo.xml 设置相关任务信息，点击quickvo.bat 生成POJO
