@@ -422,7 +422,7 @@ public class DBHelper {
 					});
 		}
 		final HashMap metaMap = filedsComments;
-		
+
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
@@ -431,7 +431,7 @@ public class DBHelper {
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
 		}
-		
+
 		return (List) DBUtil.preparedStatementProcess(metaMap, null, rs, new PreparedStatementResultHandler() {
 			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 				List result = new ArrayList();
@@ -502,18 +502,26 @@ public class DBHelper {
 		if (defaultValue == null) {
 			return null;
 		}
+		String result = defaultValue;
 		// 针对postgresql
-		if (defaultValue.indexOf("(") != -1 && defaultValue.indexOf(")") != -1 && defaultValue.indexOf("::") != -1) {
-			return defaultValue.substring(defaultValue.indexOf("(") + 1, defaultValue.indexOf("::"));
+		if (result.indexOf("(") != -1 && result.indexOf(")") != -1 && result.indexOf("::") != -1) {
+			result = result.substring(result.indexOf("(") + 1, result.indexOf("::"));
 		}
-		if (defaultValue.startsWith("((") && defaultValue.endsWith("))")) {
-			return defaultValue.substring(2, defaultValue.length() - 2);
-		} else if (defaultValue.startsWith("(") && defaultValue.endsWith(")")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
-		} else if (defaultValue.startsWith("'") && defaultValue.endsWith("'")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
-		} else if (defaultValue.startsWith("\"") && defaultValue.endsWith("\"")) {
-			return defaultValue.substring(1, defaultValue.length() - 1);
+		//postgresql
+		if (result.indexOf("'") != -1 && result.indexOf("::") != -1) {
+			result = result.substring(0, result.indexOf("::"));
+		}
+		if (result.startsWith("((") && result.endsWith("))")) {
+			result = result.substring(2, result.length() - 2);
+		}
+		if (result.startsWith("(") && result.endsWith(")")) {
+			result = result.substring(1, result.length() - 1);
+		}
+		if (result.startsWith("'") && result.endsWith("'")) {
+			result = result.substring(1, result.length() - 1);
+		}
+		if (result.startsWith("\"") && result.endsWith("\"")) {
+			result = result.substring(1, result.length() - 1);
 		}
 		return defaultValue;
 	}
