@@ -7,7 +7,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import org.sagacity.sqltoy.config.annotation.Entity;
+<#if (quickVO.selectFields==true)>
 import org.sagacity.sqltoy.callback.SelectFields;
+</#if>
 <#if (quickVO.type=="TABLE")>
 import org.sagacity.sqltoy.config.annotation.Id;
 </#if>
@@ -173,6 +175,7 @@ public abstract class Abstract${quickVO.voName} implements Serializable,
 		return columnsBuffer.toString();
 	}
 	
+<#if (quickVO.selectFields==true)>
 	/**
 	 * @TODO create entityQuery fields
 	 */
@@ -210,4 +213,5 @@ public abstract class Abstract${quickVO.voName} implements Serializable,
     
 </#list>
 	}
+</#if>
 }

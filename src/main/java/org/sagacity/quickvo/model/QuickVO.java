@@ -18,6 +18,12 @@ public class QuickVO implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = -4193572162508638354L;
+
+	/**
+	 * 
+	 */
+	private boolean selectFields = true;
+
 	/**
 	 * 表类型：table 和 view 视图
 	 */
@@ -545,4 +551,19 @@ public class QuickVO implements Serializable {
 		this.returnSelf = returnSelf;
 	}
 
+	/**
+	 * @return the selectFields
+	 */
+	public boolean isSelectFields() {
+		return selectFields;
+	}
+
+	/**
+	 * @param selectFields the selectFields to set
+	 */
+	public void setSelectFields(boolean selectFields) {
+		this.selectFields = selectFields;
+	}
+
+	
 }
