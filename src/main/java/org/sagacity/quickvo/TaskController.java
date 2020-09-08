@@ -107,9 +107,14 @@ public class TaskController {
 		// 循环执行任务
 		QuickModel quickModel;
 		String supportLinkedSet = Constants.getKeyValue("field.support.linked.set");
+		String selectFieldsClass = Constants.getKeyValue("generate.selectFields.class");
 		boolean isSupport = false;
 		if (StringUtil.isNotBlank(supportLinkedSet)) {
 			isSupport = Boolean.parseBoolean(supportLinkedSet);
+		}
+		boolean generateFieldsClass = true;
+		if (StringUtil.isNotBlank(selectFieldsClass)) {
+			generateFieldsClass = Boolean.parseBoolean(selectFieldsClass);
 		}
 		int i = 0;
 		for (Iterator iter = configModel.getTasks().iterator(); iter.hasNext();) {
@@ -120,7 +125,7 @@ public class TaskController {
 				logger.info("数据库:[" + quickModel.getDataSource() + "]连接异常,请确认你的数据库配置信息或者数据库环境!");
 			} else {
 				logger.info("开始执行第:{" + i + "} 个任务,includes=:" + quickModel.getIncludeTables());
-				createTask(quickModel, isSupport);
+				createTask(quickModel, isSupport, generateFieldsClass);
 				// 销毁数据库连接
 				DBHelper.close();
 			}
@@ -131,9 +136,11 @@ public class TaskController {
 	 * @todo 执行单个任务生成vo
 	 * @param quickModel
 	 * @param supportLinkSet
+	 * @param selectFields
 	 * @throws Exception
 	 */
-	public static void createTask(QuickModel quickModel, boolean supportLinkSet) throws Exception {
+	public static void createTask(QuickModel quickModel, boolean supportLinkSet, boolean selectFields)
+			throws Exception {
 		String[] includes = null;
 		boolean skipPkConstraint = Constants.getSkipPkConstraint();
 		if (quickModel.getIncludeTables() != null) {
@@ -178,6 +185,7 @@ public class TaskController {
 			}
 			businessIdConfig = configModel.getBusinessId(tableName);
 			quickVO = new QuickVO();
+			quickVO.setSelectFields(selectFields);
 			// 匹配表主键产生策略，主键策略通过配置文件进行附加定义
 			PrimaryKeyStrategy primaryKeyStrategy = getPrimaryKeyStrategy(configModel.getPkGeneratorStrategy(),
 					tableName);
