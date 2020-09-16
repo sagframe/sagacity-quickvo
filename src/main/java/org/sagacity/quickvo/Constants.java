@@ -149,6 +149,7 @@ public class Constants implements Serializable {
 			{ "TEXT", "String", "" }, { "LONGTEXT", "String", "" }, { "TINYTEXT", "String" },
 			{ "LONG VARGRAPHIC", "String", "" }, { "VARGRAPHIC", "String", "" }, { "GRAPHIC", "String", "" },
 			{ "LONG VARCHAR", "String", "" }, { "IMAGE", "byte[]", "" }, { "VARBINARY", "byte[]", "" },
+			{ "GEOMETRY", "Object", "" }, { "SDO_GEOMETRY", "Object", "" }, { "JSONB", "byte[]", "" },
 			{ "BINARY", "byte[]", "" }, { "BYTEA", "byte[]", "" }, { "LONGVARBINARY", "byte[]", "" } };
 
 	/**
@@ -167,14 +168,15 @@ public class Constants implements Serializable {
 			{ "LONG VARGRAPHIC", "CLOB" }, { "VARGRAPHIC", "VARCHAR" }, { "GRAPHIC", "VARCHAR" },
 			{ "LONG VARCHAR", "VARCHAR" }, { "DATE", "DATE" }, { "DATETIME", "DATE" }, { "TIMESTAMP", "TIMESTAMP" },
 			{ "TIMESTAMP(6)", "TIMESTAMP" }, { "TIME", "TIME" }, { "CHAR", "CHAR" }, { "CLOB", "CLOB" },
-			{ "DBCLOB", "CLOB" }, { "BLOB", "BLOB" }, { "BINARY", "BINARY" }, { "VARBINARY", "BINARY" },
-			{ "LONGVARBINARY", "BINARY" }, { "BYTEA", "BINARY" }, { "LONGBLOB", "BLOB" }, { "BOOLEAN", "BOOLEAN" },
-			{ "BOOL", "BOOLEAN" }, { "MEDIUMBLOB", "BLOB" }, { "LONGTEXT", "VARCHAR" }, { "MEDIUMTEXT", "VARCHAR" },
-			{ "TEXT", "VARCHAR" }, { "JSON", "VARCHAR" }, { "TINYTEXT", "VARCHAR" }, { "VARCHAR", "VARCHAR" },
-			{ "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" }, { "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" },
-			{ "INT", "INTEGER" }, { "INTEGER", "INTEGER" }, { "BIGINT", "BIGINT" }, { "BIT", "BIT" },
-			{ "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" }, { "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" },
-			{ "NUMERIC", "DECIMAL" }, { "IMAGE", "LONGVARBINARY" } };
+			{ "DBCLOB", "CLOB" }, { "JSONB", "BLOB" }, { "BLOB", "BLOB" }, { "BINARY", "BINARY" },
+			{ "VARBINARY", "BINARY" }, { "LONGVARBINARY", "BINARY" }, { "BYTEA", "BINARY" }, { "LONGBLOB", "BLOB" },
+			{ "BOOLEAN", "BOOLEAN" }, { "BOOL", "BOOLEAN" }, { "MEDIUMBLOB", "BLOB" }, { "LONGTEXT", "VARCHAR" },
+			{ "MEDIUMTEXT", "VARCHAR" }, { "TEXT", "VARCHAR" }, { "JSON", "VARCHAR" }, { "TINYTEXT", "VARCHAR" },
+			{ "VARCHAR", "VARCHAR" }, { "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" }, { "VARCHAR2", "VARCHAR" },
+			{ "TINYINT", "TINYINT" }, { "INT", "INTEGER" }, { "INTEGER", "INTEGER" }, { "BIGINT", "BIGINT" },
+			{ "BIT", "BIT" }, { "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" }, { "MONEY", "DECIMAL" },
+			{ "SMALLMONEY", "DECIMAL" }, { "NUMERIC", "DECIMAL" }, { "IMAGE", "LONGVARBINARY" },
+			{ "GEOMETRY", "VARCHAR" }, { "SDO_GEOMETRY", "VARCHAR" } };
 
 	/**
 	 * 全局常量map
