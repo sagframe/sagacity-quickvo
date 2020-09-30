@@ -132,7 +132,14 @@ public class QuickVO implements Serializable {
 	private String voName;
 
 	private String pkSizeEqualNotNullSize = "0";
+	/**
+	 * 实体bean名称
+	 */
 	private String entityName;
+
+	/**
+	 * 实体包名称
+	 */
 	private String entityPackage;
 
 	private String dateTime;
@@ -565,5 +572,4 @@ public class QuickVO implements Serializable {
 		this.selectFields = selectFields;
 	}
 
-	
 }
