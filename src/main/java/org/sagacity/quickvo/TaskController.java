@@ -49,6 +49,9 @@ public class TaskController {
 	 */
 	private static String voTemplate;
 
+	private static String dtoTemplate;
+
+	private static String entityTemplate;
 	/**
 	 * vo抽象类的模板
 	 */
@@ -82,9 +85,12 @@ public class TaskController {
 	 */
 	private static void init() {
 		voTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voTempate), configModel.getEncoding());
+		dtoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
+				configModel.getEncoding());
 		abstractVoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
 				configModel.getEncoding());
-
+				abstractVoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
+						configModel.getEncoding());
 		constructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.constructor),
 				configModel.getEncoding());
 	}

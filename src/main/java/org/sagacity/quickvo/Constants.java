@@ -46,9 +46,14 @@ public class Constants implements Serializable {
 	public static String voAbstractTempate = "org/sagacity/quickvo/abstract-quickvo.ftl";
 
 	/**
-	 * 
+	 * java vo 抽象类freemarker模板
 	 */
-	public static String daoTempate = "org/sagacity/quickvo/dao.ftl";
+	public static String dtoTempalte = "org/sagacity/quickvo/dto.ftl";
+
+	/**
+	 * java vo 抽象类freemarker模板
+	 */
+	public static String entityTemplate = "org/sagacity/quickvo/entity.ftl";
 
 	/**
 	 * vo中构造函数模板，用于当数据库表发生改变后修改vo中的构造函数
