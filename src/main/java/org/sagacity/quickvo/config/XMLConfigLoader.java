@@ -97,6 +97,7 @@ public class XMLConfigLoader {
 		List quickModels = new ArrayList();
 		Element quickvo;
 		Element vo;
+		Element entity;
 		boolean active = true;
 		NodeList nodeList;
 		for (int i = 0; i < quickVOs.getLength(); i++) {
@@ -129,40 +130,28 @@ public class XMLConfigLoader {
 				if (quickvo.hasAttribute("exclude")) {
 					quickModel.setExcludeTables(Constants.replaceConstants(quickvo.getAttribute("exclude")));
 				}
+
+				// vo
 				nodeList = quickvo.getElementsByTagName("vo");
 				if (nodeList.getLength() > 0) {
 					vo = (Element) nodeList.item(0);
-
-					// 实体对象包可以统一用参数定义
-					if (quickvo.hasAttribute("package")) {
-						quickModel.setEntityPackage(Constants.getPropertyValue("entity.package"));
-					} else {
-						quickModel.setEntityPackage(Constants.replaceConstants(quickvo.getAttribute("package")));
-					}
 					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
 					if (vo.hasAttribute("substr")) {
 						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
 					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-					quickModels.add(quickModel);
-				}
 
+				}
+				// 实体bean
 				nodeList = quickvo.getElementsByTagName("entity");
 				if (nodeList.getLength() > 0) {
-					vo = (Element) nodeList.item(0);
-					// 实体对象包可以统一用参数定义
-					if (quickvo.hasAttribute("package")) {
-						quickModel.setEntityPackage(Constants.getPropertyValue("entity.package"));
-					} else {
-						quickModel.setEntityPackage(Constants.replaceConstants(quickvo.getAttribute("package")));
+					entity = (Element) nodeList.item(0);
+					quickModel.setEntityPackage(Constants.replaceConstants(entity.getAttribute("package")));
+					if (entity.hasAttribute("substr")) {
+						quickModel.setVoSubstr(Constants.replaceConstants(entity.getAttribute("substr")));
 					}
-					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
-					if (vo.hasAttribute("substr")) {
-						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-					}
-					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-					quickModels.add(quickModel);
 				}
+				quickModels.add(quickModel);
 			}
 		}
 		if (quickModels.isEmpty()) {
