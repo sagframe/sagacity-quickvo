@@ -24,7 +24,22 @@ public class QuickModel implements Serializable {
 	private boolean voActive;
 	private String voTemplate;
 
+	/**
+	 * 是否支持google的 lombok
+	 */
+	private boolean lombok = false;
+
+	/**
+	 * 支持链式赋值
+	 */
+	private boolean lombokChain = false;
+
 	private String dataSource;
+
+	/**
+	 * entity模式
+	 */
+	private boolean hasEntity = false;
 
 	/**
 	 * 是否支持swagger 注解
@@ -176,6 +191,48 @@ public class QuickModel implements Serializable {
 	 */
 	public void setSwaggerApi(boolean swaggerApi) {
 		this.swaggerApi = swaggerApi;
+	}
+
+	/**
+	 * @return the hasEntity
+	 */
+	public boolean isHasEntity() {
+		return hasEntity;
+	}
+
+	/**
+	 * @param hasEntity the hasEntity to set
+	 */
+	public void setHasEntity(boolean hasEntity) {
+		this.hasEntity = hasEntity;
+	}
+
+	/**
+	 * @return the lombok
+	 */
+	public boolean isLombok() {
+		return lombok;
+	}
+
+	/**
+	 * @param lombok the lombok to set
+	 */
+	public void setLombok(boolean lombok) {
+		this.lombok = lombok;
+	}
+
+	/**
+	 * @return the lombokChain
+	 */
+	public boolean isLombokChain() {
+		return lombokChain;
+	}
+
+	/**
+	 * @param lombokChain the lombokChain to set
+	 */
+	public void setLombokChain(boolean lombokChain) {
+		this.lombokChain = lombokChain;
 	}
 
 }

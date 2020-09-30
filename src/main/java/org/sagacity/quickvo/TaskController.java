@@ -87,10 +87,10 @@ public class TaskController {
 		voTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voTempate), configModel.getEncoding());
 		dtoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
 				configModel.getEncoding());
+		entityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.entityTemplate),
+				configModel.getEncoding());
 		abstractVoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
 				configModel.getEncoding());
-				abstractVoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
-						configModel.getEncoding());
 		constructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.constructor),
 				configModel.getEncoding());
 	}

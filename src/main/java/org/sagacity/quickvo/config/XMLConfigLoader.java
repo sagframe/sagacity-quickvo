@@ -55,9 +55,7 @@ public class XMLConfigLoader {
 			}
 		}
 		ConfigModel configModel = new ConfigModel();
-		// SAXReader saxReader = new SAXReader();
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-
 		domFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
 		Document doc = domBuilder.parse(xmlFile);
@@ -139,6 +137,14 @@ public class XMLConfigLoader {
 					if (vo.hasAttribute("substr")) {
 						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
+
+					if (vo.hasAttribute("lombok")) {
+						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+					}
+
+					if (vo.hasAttribute("lombok-chain")) {
+						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+					}
 					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
 
 				}
@@ -150,6 +156,7 @@ public class XMLConfigLoader {
 					if (entity.hasAttribute("substr")) {
 						quickModel.setVoSubstr(Constants.replaceConstants(entity.getAttribute("substr")));
 					}
+					quickModel.setHasEntity(true);
 				}
 				quickModels.add(quickModel);
 			}

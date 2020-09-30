@@ -46,12 +46,12 @@ public class Constants implements Serializable {
 	public static String voAbstractTempate = "org/sagacity/quickvo/abstract-quickvo.ftl";
 
 	/**
-	 * java vo 抽象类freemarker模板
+	 * dto 类freemarker模板
 	 */
 	public static String dtoTempalte = "org/sagacity/quickvo/dto.ftl";
 
 	/**
-	 * java vo 抽象类freemarker模板
+	 * entity实体对象类freemarker模板
 	 */
 	public static String entityTemplate = "org/sagacity/quickvo/entity.ftl";
 
