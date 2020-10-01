@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
-
+<#if (quickVO.lombok)>
+import lombok.*;
+</#if>
 <#if (quickVO.imports?exists && quickVO.imports?size>0)>
 <#list quickVO.imports as import>
 import ${import};
@@ -24,6 +26,12 @@ import ${import};
  */
 <#if (quickVO.swaggerModel)>
 @ApiModel(value="${quickVO.voName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
+</#if>
+<#if (quickVO.lombok)>
+@Data
+<#if (quickVO.lombokChain)>
+@Accessors(fluent = true)
+</#if>
 </#if>
 public class ${quickVO.voName} implements Serializable {
 	
