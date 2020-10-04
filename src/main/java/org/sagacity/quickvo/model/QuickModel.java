@@ -21,8 +21,7 @@ public class QuickModel implements Serializable {
 	private String voPackage;
 	private String voSubstr;
 	private String voName;
-	private boolean voActive;
-	private String voTemplate;
+	private boolean hasVO = false;
 
 	/**
 	 * 是否支持google的 lombok
@@ -60,20 +59,6 @@ public class QuickModel implements Serializable {
 	 * 排除的表
 	 */
 	private String excludeTables;
-
-	/**
-	 * @return the voActive
-	 */
-	public boolean getVoActive() {
-		return voActive;
-	}
-
-	/**
-	 * @param voActive the voActive to set
-	 */
-	public void setVoActive(boolean voActive) {
-		this.voActive = voActive;
-	}
 
 	public String getEntityName() {
 		return entityName;
@@ -113,14 +98,6 @@ public class QuickModel implements Serializable {
 
 	public void setVoName(String voName) {
 		this.voName = voName;
-	}
-
-	public String getVoTemplate() {
-		return voTemplate;
-	}
-
-	public void setVoTemplate(String voTemplate) {
-		this.voTemplate = voTemplate;
 	}
 
 	/**
@@ -233,6 +210,14 @@ public class QuickModel implements Serializable {
 	 */
 	public void setLombokChain(boolean lombokChain) {
 		this.lombokChain = lombokChain;
+	}
+
+	public boolean isHasVO() {
+		return hasVO;
+	}
+
+	public void setHasVO(boolean hasVO) {
+		this.hasVO = hasVO;
 	}
 
 }

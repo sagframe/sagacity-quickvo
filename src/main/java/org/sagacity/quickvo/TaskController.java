@@ -168,23 +168,26 @@ public class TaskController {
 		logger.info("当前任务共取出:" + tables.size() + " 张表或视图!");
 		QuickVO quickVO;
 		String entityName;
-		String voPackageDir;
+		String voPackageDir = "";
 		String entityDir = "";
 		String tableName = null;
 		TableMeta tableMeta;
 		List pks = null;
-		voPackageDir = configModel.getTargetDir() + File.separator
-				+ StringUtil.replaceAllStr(quickModel.getVoPackage(), ".", File.separator);
+		if (quickModel.isHasVO()) {
+			voPackageDir = configModel.getTargetDir() + File.separator
+					+ StringUtil.replaceAllStr(quickModel.getVoPackage(), ".", File.separator);
+			// 创建vo包文件
+			FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
+		}
 		if (quickModel.isHasEntity()) {
 			entityDir = configModel.getTargetDir() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getEntityPackage(), ".", File.separator);
+			// 创建vo abstract包文件
+			FileUtil.createFolder(FileUtil.formatPath(entityDir));
+		} else {
+			// 创建vo abstract包文件
+			FileUtil.createFolder(FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
 		}
-
-		// 创建vo包文件
-		FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
-
-		// 创建vo abstract包文件
-		FileUtil.createFolder(FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
 
 		// 表或视图的标志
 		boolean isTable;
@@ -422,10 +425,11 @@ public class TaskController {
 				// 创建vo abstract文件
 				generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate, quickVO,
 						configModel.getEncoding());
-
 				// 创建DTO 文件
-				generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
-						configModel.getEncoding());
+				if (quickModel.isHasVO()) {
+					generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+							configModel.getEncoding());
+				}
 			} else {
 				// 创建vo abstract文件
 				generateAbstractVO(

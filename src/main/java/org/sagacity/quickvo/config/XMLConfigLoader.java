@@ -146,7 +146,7 @@ public class XMLConfigLoader {
 						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
 					}
 					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-
+					quickModel.setHasVO(true);
 				}
 				// 实体bean
 				nodeList = quickvo.getElementsByTagName("entity");
