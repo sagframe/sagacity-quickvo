@@ -18,6 +18,7 @@ public class QuickModel implements Serializable {
 	private static final long serialVersionUID = 2416884401329432969L;
 	private String entityName;
 	private String entityPackage;
+	private String entitySubstr;
 	private String voPackage;
 	private String voSubstr;
 	private String voName;
@@ -218,6 +219,14 @@ public class QuickModel implements Serializable {
 
 	public void setHasVO(boolean hasVO) {
 		this.hasVO = hasVO;
+	}
+
+	public String getEntitySubstr() {
+		return entitySubstr;
+	}
+
+	public void setEntitySubstr(String entitySubstr) {
+		this.entitySubstr = entitySubstr;
 	}
 
 }

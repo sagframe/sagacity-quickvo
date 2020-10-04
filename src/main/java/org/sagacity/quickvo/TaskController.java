@@ -229,8 +229,17 @@ public class TaskController {
 			} else {
 				quickVO.setTableRemark(tableMeta.getTableRemark());
 			}
-			quickVO.setEntityName(entityName);
 			quickVO.setEntityPackage(quickModel.getEntityPackage());
+			// 截取VO前面的模块标识名称(一般数据库表名前缀为特定的模块名称)
+			if (quickModel.getEntitySubstr() != null) {
+				quickVO.setEntityName(StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
+						"#{subName}", StringUtil.replaceStr(entityName, quickModel.getEntitySubstr(), ""))));
+			} else {
+				quickVO.setEntityName(StringUtil
+						.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(), "#{subName}", entityName)));
+			}
+			// quickVO.setEntityName(entityName);
+
 			quickVO.setVoPackage(quickModel.getVoPackage());
 			// 截取VO前面的模块标识名称(一般数据库表名前缀为特定的模块名称)
 			if (quickModel.getVoSubstr() != null) {

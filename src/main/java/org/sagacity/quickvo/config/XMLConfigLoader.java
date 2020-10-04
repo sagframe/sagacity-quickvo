@@ -145,7 +145,11 @@ public class XMLConfigLoader {
 					if (vo.hasAttribute("lombok-chain")) {
 						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
 					}
-					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+					if (vo.hasAttribute("name")) {
+						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+					} else {
+						quickModel.setVoName("#{subName}");
+					}
 					quickModel.setHasVO(true);
 				}
 				// 实体bean
@@ -154,7 +158,12 @@ public class XMLConfigLoader {
 					entity = (Element) nodeList.item(0);
 					quickModel.setEntityPackage(Constants.replaceConstants(entity.getAttribute("package")));
 					if (entity.hasAttribute("substr")) {
-						quickModel.setVoSubstr(Constants.replaceConstants(entity.getAttribute("substr")));
+						quickModel.setEntitySubstr(Constants.replaceConstants(entity.getAttribute("substr")));
+					}
+					if (entity.hasAttribute("name")) {
+						quickModel.setEntityName(Constants.replaceConstants(entity.getAttribute("name")));
+					} else {
+						quickModel.setEntityName("#{subName}");
 					}
 					quickModel.setHasEntity(true);
 				}
