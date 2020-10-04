@@ -31,7 +31,7 @@ import ${import};
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
 <#list quickVO.exportTables as exportTable>
-import ${quickVO.voPackage}.${exportTable.pkRefTableJavaName?cap_first};
+import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>
 </#if>
 

@@ -722,12 +722,17 @@ public class TaskController {
 							.concat(StringUtil.firstToUpperCase(pkRefColJavaName)).concat("())"));
 				} else {
 					subTablesMap.put(refTable, exportKey);
-					if (quickModel.getVoSubstr() != null) {
-						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
-								"#{subName}", StringUtil.replaceStr(refJavaTable, quickModel.getVoSubstr(), "")));
+					if (quickModel.isHasEntity()) {
+						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
+								"#{subName}", StringUtil.replaceStr(refJavaTable, quickModel.getEntitySubstr(), "")));
 					} else {
-						refJavaTable = StringUtil.firstToUpperCase(
-								StringUtil.replaceStr(quickModel.getVoName(), "#{subName}", refJavaTable));
+						if (quickModel.getVoSubstr() != null) {
+							refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
+									"#{subName}", StringUtil.replaceStr(refJavaTable, quickModel.getVoSubstr(), "")));
+						} else {
+							refJavaTable = StringUtil.firstToUpperCase(
+									StringUtil.replaceStr(quickModel.getVoName(), "#{subName}", refJavaTable));
+						}
 					}
 					exportKey.setPkRefTableJavaName(refJavaTable);
 
