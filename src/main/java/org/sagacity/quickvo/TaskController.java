@@ -209,7 +209,8 @@ public class TaskController {
 					tableName);
 
 			entityName = StringUtil.toHumpStr(tableName, true);
-
+			quickVO.setLombok(quickModel.isLombok());
+			quickVO.setLombokChain(quickModel.isLombokChain());
 			quickVO.setSwaggerModel(quickModel.isSwaggerApi());
 			quickVO.setReturnSelf(supportLinkSet);
 			quickVO.setAbstractPath(configModel.getAbstractPath());
