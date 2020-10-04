@@ -61,6 +61,11 @@ public class Constants implements Serializable {
 	public static String voConstructorTemplate = "org/sagacity/quickvo/quickvo-constructor.ftl";
 
 	/**
+	 * vo中构造函数模板，用于当数据库表发生改变后修改vo中的构造函数
+	 */
+	public static String dtoFieldsTemplate = "org/sagacity/quickvo/dto-fields.ftl";
+
+	/**
 	 * 
 	 */
 	public static String minStruct = "org/sagacity/quickvo/quickvo-minstruct.ftl";
@@ -103,7 +108,8 @@ public class Constants implements Serializable {
 	 * 基于redis产生id
 	 */
 	public static String PK_REDIS_ID_GENERATOR = "org.sagacity.sqltoy.plugins.id.RedisIdGenerator";
-
+	public static String fieldsBegin = "/*---begin-auto-generate-don't-update-this-area--*/";
+	public static String fieldsEnd = "/*---end-auto-generate-don't-update-this-area--*/";
 	public static String constructorBegin = "/*---begin-constructor-area---don't-update-this-area--*/";
 	public static String constructorEnd = "/*---end-constructor-area---don't-update-this-area--*/";
 	public static String pkStructRegs = "\\/[\\*]{1,2}\\s*pk\\s+constructor\\s*\\*\\/";
