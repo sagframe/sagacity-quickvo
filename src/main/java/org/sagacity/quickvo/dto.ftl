@@ -4,8 +4,6 @@
 package ${quickVO.voPackage};
 
 import java.io.Serializable;
-import java.util.List;
-import java.util.ArrayList;
 <#if (quickVO.swaggerModel)>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
