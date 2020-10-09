@@ -40,12 +40,12 @@ public class ${quickVO.voName} implements Serializable {
 	
 /*---begin-auto-generate-don't-update-this-area--*/	
 <#list quickVO.columns as column>
-	<#if (quickVO.swaggerModel)>
-	@ApiModelProperty(value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
-	</#if>
 	/**
 	 * ${column.colRemark!""}
 	 */
+	<#if (quickVO.swaggerModel)>
+	@ApiModelProperty(value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
+	</#if>
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
