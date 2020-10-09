@@ -54,7 +54,7 @@
 						<xsd:sequence maxOccurs="unbounded">
 							<xsd:element name="task" maxOccurs="unbounded">
 								<xsd:complexType>
-									<xsd:sequence maxOccurs="unbounded">
+									<xsd:choice maxOccurs="unbounded">
 										<xsd:element name="vo" minOccurs="0" maxOccurs="1">
 											<xsd:complexType>
 												<xsd:attribute name="package"
@@ -82,7 +82,7 @@
 												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
-									</xsd:sequence>
+									</xsd:choice>
 									<xsd:attribute name="datasource"
 										type="xsd:string" />
 									<xsd:attribute name="active" type="xsd:boolean"
