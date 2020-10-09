@@ -906,13 +906,13 @@ public class TaskController {
 				dtoFieldsTemplate);
 
 		String cleanConstructor = StringUtil.clearMistyChars(constructor, "").replaceAll("\\s+", "");
-		int constructorBeginIndex = fileStr.indexOf(Constants.constructorBegin);
-		int constructorEndIndex = fileStr.indexOf(Constants.constructorEnd);
+		int constructorBeginIndex = fileStr.indexOf(Constants.fieldsBegin);
+		int constructorEndIndex = fileStr.indexOf(Constants.fieldsEnd);
 		if (constructorBeginIndex != -1 && constructorEndIndex != -1) {
 			String before = fileStr.substring(0, constructorBeginIndex);
-			String after = fileStr.substring(constructorEndIndex + Constants.constructorEnd.length());
+			String after = fileStr.substring(constructorEndIndex + Constants.fieldsEnd.length());
 			String compareConstructor = fileStr.substring(constructorBeginIndex,
-					constructorEndIndex + Constants.constructorEnd.length());
+					constructorEndIndex + Constants.fieldsEnd.length());
 			compareConstructor = StringUtil.clearMistyChars(compareConstructor, "").replaceAll("\\s+", "");
 			// 表修改过
 			if (!cleanConstructor.equals(compareConstructor)) {
