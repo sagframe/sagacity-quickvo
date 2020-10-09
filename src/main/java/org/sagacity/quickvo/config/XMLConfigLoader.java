@@ -55,9 +55,7 @@ public class XMLConfigLoader {
 			}
 		}
 		ConfigModel configModel = new ConfigModel();
-		// SAXReader saxReader = new SAXReader();
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-
 		domFactory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
 		DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
 		Document doc = domBuilder.parse(xmlFile);
@@ -97,6 +95,7 @@ public class XMLConfigLoader {
 		List quickModels = new ArrayList();
 		Element quickvo;
 		Element vo;
+		Element entity;
 		boolean active = true;
 		NodeList nodeList;
 		for (int i = 0; i < quickVOs.getLength(); i++) {
@@ -119,32 +118,56 @@ public class XMLConfigLoader {
 				if (quickvo.hasAttribute("swagger-model")) {
 					quickModel.setSwaggerApi(Boolean.parseBoolean(quickvo.getAttribute("swagger-model")));
 				}
+				if (quickvo.hasAttribute("include")) {
+					// *表示全部,等同于没有include配置
+					if (!quickvo.getAttribute("include").equals("*")) {
+						quickModel.setIncludeTables(Constants.replaceConstants(quickvo.getAttribute("include")));
+					}
+				}
+				// 排除的表
+				if (quickvo.hasAttribute("exclude")) {
+					quickModel.setExcludeTables(Constants.replaceConstants(quickvo.getAttribute("exclude")));
+				}
+
+				// vo
 				nodeList = quickvo.getElementsByTagName("vo");
 				if (nodeList.getLength() > 0) {
 					vo = (Element) nodeList.item(0);
-					if (quickvo.hasAttribute("include")) {
-						// *表示全部,等同于没有include配置
-						if (!quickvo.getAttribute("include").equals("*")) {
-							quickModel.setIncludeTables(Constants.replaceConstants(quickvo.getAttribute("include")));
-						}
-					}
-					// 排除的表
-					if (quickvo.hasAttribute("exclude")) {
-						quickModel.setExcludeTables(Constants.replaceConstants(quickvo.getAttribute("exclude")));
-					}
-					// 实体对象包可以统一用参数定义
-					if (quickvo.hasAttribute("package")) {
-						quickModel.setEntityPackage(Constants.getPropertyValue("entity.package"));
-					} else {
-						quickModel.setEntityPackage(Constants.replaceConstants(quickvo.getAttribute("package")));
-					}
 					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
 					if (vo.hasAttribute("substr")) {
 						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
-					quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-					quickModels.add(quickModel);
+
+					if (vo.hasAttribute("lombok")) {
+						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+					}
+
+					if (vo.hasAttribute("lombok-chain")) {
+						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+					}
+					if (vo.hasAttribute("name")) {
+						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+					} else {
+						quickModel.setVoName("#{subName}");
+					}
+					quickModel.setHasVO(true);
 				}
+				// 实体bean
+				nodeList = quickvo.getElementsByTagName("entity");
+				if (nodeList.getLength() > 0) {
+					entity = (Element) nodeList.item(0);
+					quickModel.setEntityPackage(Constants.replaceConstants(entity.getAttribute("package")));
+					if (entity.hasAttribute("substr")) {
+						quickModel.setEntitySubstr(Constants.replaceConstants(entity.getAttribute("substr")));
+					}
+					if (entity.hasAttribute("name")) {
+						quickModel.setEntityName(Constants.replaceConstants(entity.getAttribute("name")));
+					} else {
+						quickModel.setEntityName("#{subName}");
+					}
+					quickModel.setHasEntity(true);
+				}
+				quickModels.add(quickModel);
 			}
 		}
 		if (quickModels.isEmpty()) {

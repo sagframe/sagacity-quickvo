@@ -55,7 +55,7 @@
 							<xsd:element name="task" maxOccurs="unbounded">
 								<xsd:complexType>
 									<xsd:sequence maxOccurs="unbounded">
-										<xsd:element name="vo" minOccurs="0">
+										<xsd:element name="vo" minOccurs="0" maxOccurs="1">
 											<xsd:complexType>
 												<xsd:attribute name="package"
 													type="xsd:string" use="required" />
@@ -67,6 +67,19 @@
 												</xsd:attribute>
 												<xsd:attribute name="name" type="xsd:string"
 													use="required" />
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="entity" minOccurs="0"
+											maxOccurs="1">
+											<xsd:complexType>
+												<xsd:attribute name="package"
+													type="xsd:string" use="required" />
+												<xsd:attribute name="substr" type="xsd:string"
+													use="required">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[表名转vo时剔除前缀部分,如T_STAFF_INFO 转为StaffInfoVO,剔除掉T_,默认为空白]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
 									</xsd:sequence>

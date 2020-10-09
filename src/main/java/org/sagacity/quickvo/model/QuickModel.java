@@ -18,13 +18,28 @@ public class QuickModel implements Serializable {
 	private static final long serialVersionUID = 2416884401329432969L;
 	private String entityName;
 	private String entityPackage;
+	private String entitySubstr;
 	private String voPackage;
 	private String voSubstr;
 	private String voName;
-	private boolean voActive;
-	private String voTemplate;
+	private boolean hasVO = false;
+
+	/**
+	 * 是否支持google的 lombok
+	 */
+	private boolean lombok = false;
+
+	/**
+	 * 支持链式赋值
+	 */
+	private boolean lombokChain = false;
 
 	private String dataSource;
+
+	/**
+	 * entity模式
+	 */
+	private boolean hasEntity = false;
 
 	/**
 	 * 是否支持swagger 注解
@@ -45,20 +60,6 @@ public class QuickModel implements Serializable {
 	 * 排除的表
 	 */
 	private String excludeTables;
-
-	/**
-	 * @return the voActive
-	 */
-	public boolean getVoActive() {
-		return voActive;
-	}
-
-	/**
-	 * @param voActive the voActive to set
-	 */
-	public void setVoActive(boolean voActive) {
-		this.voActive = voActive;
-	}
 
 	public String getEntityName() {
 		return entityName;
@@ -98,14 +99,6 @@ public class QuickModel implements Serializable {
 
 	public void setVoName(String voName) {
 		this.voName = voName;
-	}
-
-	public String getVoTemplate() {
-		return voTemplate;
-	}
-
-	public void setVoTemplate(String voTemplate) {
-		this.voTemplate = voTemplate;
 	}
 
 	/**
@@ -176,6 +169,64 @@ public class QuickModel implements Serializable {
 	 */
 	public void setSwaggerApi(boolean swaggerApi) {
 		this.swaggerApi = swaggerApi;
+	}
+
+	/**
+	 * @return the hasEntity
+	 */
+	public boolean isHasEntity() {
+		return hasEntity;
+	}
+
+	/**
+	 * @param hasEntity the hasEntity to set
+	 */
+	public void setHasEntity(boolean hasEntity) {
+		this.hasEntity = hasEntity;
+	}
+
+	/**
+	 * @return the lombok
+	 */
+	public boolean isLombok() {
+		return lombok;
+	}
+
+	/**
+	 * @param lombok the lombok to set
+	 */
+	public void setLombok(boolean lombok) {
+		this.lombok = lombok;
+	}
+
+	/**
+	 * @return the lombokChain
+	 */
+	public boolean isLombokChain() {
+		return lombokChain;
+	}
+
+	/**
+	 * @param lombokChain the lombokChain to set
+	 */
+	public void setLombokChain(boolean lombokChain) {
+		this.lombokChain = lombokChain;
+	}
+
+	public boolean isHasVO() {
+		return hasVO;
+	}
+
+	public void setHasVO(boolean hasVO) {
+		this.hasVO = hasVO;
+	}
+
+	public String getEntitySubstr() {
+		return entitySubstr;
+	}
+
+	public void setEntitySubstr(String entitySubstr) {
+		this.entitySubstr = entitySubstr;
 	}
 
 }

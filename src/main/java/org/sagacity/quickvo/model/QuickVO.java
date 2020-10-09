@@ -113,6 +113,16 @@ public class QuickVO implements Serializable {
 	 * set方法返回对象自身
 	 */
 	private boolean returnSelf = false;
+	
+	/**
+	 * 是否支持google的 lombok
+	 */
+	private boolean lombok = false;
+
+	/**
+	 * 支持链式赋值
+	 */
+	private boolean lombokChain = false;
 
 	/**
 	 * @return the singlePk
@@ -132,7 +142,14 @@ public class QuickVO implements Serializable {
 	private String voName;
 
 	private String pkSizeEqualNotNullSize = "0";
+	/**
+	 * 实体bean名称
+	 */
 	private String entityName;
+
+	/**
+	 * 实体包名称
+	 */
 	private String entityPackage;
 
 	private String dateTime;
@@ -565,5 +582,20 @@ public class QuickVO implements Serializable {
 		this.selectFields = selectFields;
 	}
 
-	
+	public boolean isLombok() {
+		return lombok;
+	}
+
+	public void setLombok(boolean lombok) {
+		this.lombok = lombok;
+	}
+
+	public boolean isLombokChain() {
+		return lombokChain;
+	}
+
+	public void setLombokChain(boolean lombokChain) {
+		this.lombokChain = lombokChain;
+	}
+
 }
