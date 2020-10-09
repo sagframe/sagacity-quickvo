@@ -28,7 +28,7 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("=========     welcome use sagacity-quickvo-4.16.0     ==========");
+			out.println("=========     welcome use sagacity-quickvo-4.16.1     ==========");
 			// 解析配置文件
 			ConfigModel configModel = XMLConfigLoader.parse();
 			TaskController.setConfigModel(configModel);
