@@ -67,6 +67,18 @@
 												</xsd:attribute>
 												<xsd:attribute name="name" type="xsd:string"
 													use="required" />
+												<xsd:attribute name="lombok"
+													type="xsd:boolean">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[使用google的lombok无需体现get/set]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="lombok-chain"
+													type="xsd:boolean">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[针对set是否返回对象自身]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
 										<xsd:element name="entity" minOccurs="0"
