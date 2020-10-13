@@ -68,21 +68,12 @@ public class Constants implements Serializable {
 	/**
 	 * 
 	 */
-	public static String minStruct = "org/sagacity/quickvo/quickvo-minstruct.ftl";
-	/**
-	 * 
-	 */
-	public static String pkStruct = "org/sagacity/quickvo/quickvo-pkstruct.ftl";
-
-	/**
-	 * 
-	 */
-	public static String maxStruct = "org/sagacity/quickvo/quickvo-maxstruct.ftl";
-
-	/**
-	 * 
-	 */
 	public static String constructor = "org/sagacity/quickvo/quickvo-constructor.ftl";
+	
+	public static String abstractEntity = "org/sagacity/quickvo/abstract-entity.ftl";
+	public static String parentEntity = "org/sagacity/quickvo/parent-entity.ftl";
+	public static String entityConstructor = "org/sagacity/quickvo/entity-constructor.ftl";
+	
 
 	/**
 	 * 主键默认生成策略

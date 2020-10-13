@@ -48,7 +48,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = ${quickVO.abstractVOSerialUID}L;
+	private static final long serialVersionUID = ${quickVO.abstractEntitySerialUID}L;
 	
 <#list quickVO.columns as column>
 	/**

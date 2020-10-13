@@ -64,6 +64,12 @@ public class TaskController {
 
 	private static String dtoFieldsTemplate;
 
+	private static String abstractEntityTemplate;
+
+	private static String entityConstructorTemplate;
+
+	private static String parentEntityTemplate;
+
 	/**
 	 * 任务配置
 	 */
@@ -96,6 +102,12 @@ public class TaskController {
 		constructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.constructor),
 				configModel.getEncoding());
 		dtoFieldsTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoFieldsTemplate),
+				configModel.getEncoding());
+		abstractEntityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.abstractEntity),
+				configModel.getEncoding());
+		entityConstructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.entityConstructor),
+				configModel.getEncoding());
+		parentEntityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.parentEntity),
 				configModel.getEncoding());
 	}
 
@@ -433,8 +445,12 @@ public class TaskController {
 			// pojo模式
 			if (quickModel.isHasEntity()) {
 				// 创建vo abstract文件
-				generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate, quickVO,
-						configModel.getEncoding());
+				if (quickModel.isHasAbstractEntity()) {
+
+				} else {
+					generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate,
+							quickVO, configModel.getEncoding());
+				}
 				// 创建DTO 文件
 				if (quickModel.isHasVO()) {
 					generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
@@ -806,7 +822,7 @@ public class TaskController {
 		boolean needGen = true;
 		// 根据包名和类名称产生hash值
 		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
-		quickVO.setAbstractVOSerialUID(Long.toString(hash(hashStr)));
+		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
 		// 文件存在判断是否相等，不相等则生成
 		if (generateFile.exists()) {
 			String oldFileContent = FileUtil.readAsString(generateFile, charset);
@@ -913,6 +929,83 @@ public class TaskController {
 			String after = fileStr.substring(constructorEndIndex + Constants.fieldsEnd.length());
 			String compareConstructor = fileStr.substring(constructorBeginIndex,
 					constructorEndIndex + Constants.fieldsEnd.length());
+			compareConstructor = StringUtil.clearMistyChars(compareConstructor, "").replaceAll("\\s+", "");
+			// 表修改过
+			if (!cleanConstructor.equals(compareConstructor)) {
+				logger.info("修改vo:" + quickVO.getVoName());
+				constructor = constructor.trim();
+				if (constructor.indexOf("\n") == constructor.length() - 1) {
+					constructor = constructor.substring(0, constructor.length() - 1);
+				}
+				if (constructor.indexOf("\r") == constructor.length() - 1) {
+					constructor = constructor.substring(0, constructor.length() - 1);
+				}
+				FileUtil.putStringToFile(before + constructor + after, file, charset);
+			}
+		} else {
+			logger.info("vo 文件中的构造函数默认开始结束符号被修改!表发生修改无法更新vo!");
+		}
+	}
+
+	private static void generateAbstractEntity(String file, String template, QuickVO quickVO, String charset)
+			throws Exception {
+		File generateFile = new File(file);
+		boolean needGen = true;
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getVoPackage() + "." + quickVO.getAbstractPath() + ".Abstract" + quickVO.getVoName();
+		quickVO.setAbstractVOSerialUID(Long.toString(hash(hashStr)));
+		// 文件存在判断是否相等，不相等则生成
+		if (generateFile.exists()) {
+			String oldFileContent = FileUtil.readAsString(generateFile, charset);
+			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
+					new Object[] { quickVO }, template);
+			// 剔除所有回车换行和空白
+			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
+			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
+
+			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
+			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
+
+			// 内容相等
+			if (oldFileContent.equals(newFileContent)) {
+				needGen = false;
+			}
+		}
+		// 需要产生
+		if (needGen) {
+			logger.info("正在生成文件:" + file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
+		}
+	}
+
+	private static void generateParentEntity(String file, QuickVO quickVO, String charset) throws Exception {
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
+		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
+		File voFile = new File(file);
+		// 文件不存在
+		if (!voFile.exists()) {
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, voTemplate, file);
+			return;
+		}
+		// 如果是视图则直接返回
+		if (quickVO.getType().equals("VIEW")) {
+			return;
+		}
+		String fileStr = FileUtil.readAsString(voFile, charset);
+
+		// 文件存在，修改构造函数
+		String constructor = FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
+				constructorTemplate);
+
+		String cleanConstructor = StringUtil.clearMistyChars(constructor, "").replaceAll("\\s+", "");
+		int constructorBeginIndex = fileStr.indexOf(Constants.constructorBegin);
+		int constructorEndIndex = fileStr.indexOf(Constants.constructorEnd);
+		if (constructorBeginIndex != -1 && constructorEndIndex != -1) {
+			String before = fileStr.substring(0, constructorBeginIndex);
+			String after = fileStr.substring(constructorEndIndex + Constants.constructorEnd.length());
+			String compareConstructor = fileStr.substring(constructorBeginIndex,
+					constructorEndIndex + Constants.constructorEnd.length());
 			compareConstructor = StringUtil.clearMistyChars(compareConstructor, "").replaceAll("\\s+", "");
 			// 表修改过
 			if (!cleanConstructor.equals(compareConstructor)) {

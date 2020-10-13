@@ -104,6 +104,10 @@ public class QuickVO implements Serializable {
 	 */
 	private String abstractVOSerialUID;
 
+	private String entitySerialUID;
+
+	private String abstractEntitySerialUID;
+
 	/**
 	 * 是否包含业务主键id
 	 */
@@ -113,7 +117,7 @@ public class QuickVO implements Serializable {
 	 * set方法返回对象自身
 	 */
 	private boolean returnSelf = false;
-	
+
 	/**
 	 * 是否支持google的 lombok
 	 */
@@ -596,6 +600,22 @@ public class QuickVO implements Serializable {
 
 	public void setLombokChain(boolean lombokChain) {
 		this.lombokChain = lombokChain;
+	}
+
+	public String getEntitySerialUID() {
+		return entitySerialUID;
+	}
+
+	public void setEntitySerialUID(String entitySerialUID) {
+		this.entitySerialUID = entitySerialUID;
+	}
+
+	public String getAbstractEntitySerialUID() {
+		return abstractEntitySerialUID;
+	}
+
+	public void setAbstractEntitySerialUID(String abstractEntitySerialUID) {
+		this.abstractEntitySerialUID = abstractEntitySerialUID;
 	}
 
 }
