@@ -208,6 +208,14 @@
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
+						<xsd:attribute name="main-table" type="xsd:string"
+							use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+							<![CDATA[指定主表名称]]>
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
 				<!-- ORM类型转换映射 -->
