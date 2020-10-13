@@ -42,6 +42,11 @@ public class QuickModel implements Serializable {
 	private boolean hasEntity = false;
 
 	/**
+	 * 是否包含抽象实体类
+	 */
+	private boolean hasAbstractEntity = true;
+
+	/**
 	 * 是否支持swagger 注解
 	 */
 	private boolean swaggerApi = false;
@@ -227,6 +232,14 @@ public class QuickModel implements Serializable {
 
 	public void setEntitySubstr(String entitySubstr) {
 		this.entitySubstr = entitySubstr;
+	}
+
+	public boolean isHasAbstractEntity() {
+		return hasAbstractEntity;
+	}
+
+	public void setHasAbstractEntity(boolean hasAbstractEntity) {
+		this.hasAbstractEntity = hasAbstractEntity;
 	}
 
 }
