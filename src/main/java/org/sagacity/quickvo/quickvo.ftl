@@ -46,30 +46,6 @@ public class ${quickVO.voName} extends Abstract${quickVO.voName} {
 	}
 </#if>
 
-<#if (quickVO.pkSizeEqualNotNullSize=='0' && quickVO.fullNotNull=='0')>	
-<#assign paramCnt="0"/> 
-	/** minimal constructor */
-	public ${quickVO.voName}(<#list quickVO.columns as column><#if (column.nullable=='0')><#if (paramCnt=='1')>,</#if><#assign paramCnt='1'/>${column.resultType} ${column.colJavaName?uncap_first}</#if></#list>)
-	{
-		<#list quickVO.columns as column>
-		<#if (column.nullable=='0')>
-		this.${column.colJavaName?uncap_first}=${column.colJavaName?uncap_first};
-		</#if>
-		</#list>
-	}
-</#if>
-
-<#if (quickVO.pkIsAllColumn=='0')>
-<#assign paramCnt="0"/>	
-	/** full constructor */
-	public ${quickVO.voName}(<#list quickVO.columns as column><#if (paramCnt=='1')>,</#if><#assign paramCnt='1'/>${column.resultType} ${column.colJavaName?uncap_first}</#list>)
-	{
-		<#list quickVO.columns as column>
-		this.${column.colJavaName?uncap_first}=${column.colJavaName?uncap_first};
-		</#list>
-	}
-</#if>
-
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
 	/**

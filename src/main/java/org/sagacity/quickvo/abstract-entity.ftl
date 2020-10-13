@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import org.sagacity.sqltoy.config.annotation.Entity;
-import org.sagacity.sqltoy.config.annotation.SqlToyEntity;
 <#if (quickVO.selectFields==true)>
 import org.sagacity.sqltoy.callback.SelectFields;
 </#if>
@@ -43,7 +42,6 @@ import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 <#if (quickVO.swaggerModel)>
 @ApiModel(value="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
 </#if>
-@SqlToyEntity
 @Entity(tableName="${quickVO.tableName}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
 public abstract class Abstract${quickVO.entityName} implements Serializable {
 	
