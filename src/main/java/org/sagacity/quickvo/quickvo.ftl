@@ -31,6 +31,7 @@ public class ${quickVO.voName} extends Abstract${quickVO.voName} {
 	public ${quickVO.voName}() {
 		super();
 	}
+	
 <#if (quickVO.type=="TABLE")>	
 	/*---begin-constructor-area---don't-update-this-area--*/
 <#if (quickVO.singlePk=='1'||quickVO.singlePk=='0')>
@@ -75,6 +76,7 @@ public class ${quickVO.voName} extends Abstract${quickVO.voName} {
 </#if>
 	/*---end-constructor-area---don't-update-this-area--*/
 </#if>
+
 	/**
      * @todo vo columns to String
      */
