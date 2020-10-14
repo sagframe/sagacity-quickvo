@@ -194,6 +194,9 @@ public class TaskController {
 		if (quickModel.isHasEntity()) {
 			entityDir = configModel.getTargetDir() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getEntityPackage(), ".", File.separator);
+			if (quickModel.isHasAbstractEntity()) {
+				entityDir = entityDir + File.separator + configModel.getAbstractPath();
+			}
 			// 创建vo abstract包文件
 			FileUtil.createFolder(FileUtil.formatPath(entityDir));
 		} else {
