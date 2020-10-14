@@ -194,11 +194,12 @@ public class TaskController {
 		if (quickModel.isHasEntity()) {
 			entityDir = configModel.getTargetDir() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getEntityPackage(), ".", File.separator);
+			// 创建abstract entity包文件
 			if (quickModel.isHasAbstractEntity()) {
-				entityDir = entityDir + File.separator + configModel.getAbstractPath();
+				FileUtil.createFolder(FileUtil.formatPath(entityDir + File.separator + configModel.getAbstractPath()));
+			} else {
+				FileUtil.createFolder(FileUtil.formatPath(entityDir));
 			}
-			// 创建vo abstract包文件
-			FileUtil.createFolder(FileUtil.formatPath(entityDir));
 		} else {
 			// 创建vo abstract包文件
 			FileUtil.createFolder(FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
