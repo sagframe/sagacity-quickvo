@@ -76,6 +76,7 @@ public class ${quickVO.entityName} extends Abstract${quickVO.entityName} {
 </#if>
 	/*---end-constructor-area---don't-update-this-area--*/
 </#if>
+
 	/**
      * @todo vo columns to String
      */
