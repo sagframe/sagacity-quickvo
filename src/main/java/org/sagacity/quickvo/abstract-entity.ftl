@@ -66,7 +66,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	@BusinessId(generator="${businessId.generator}"<#if (businessId.signature?exists)>,signature="${businessId.signature}"</#if><#if (businessId.relatedColumns?exists)>,relatedColumns={<#list businessId.relatedColumns as relatedCol><#if (relatedCol_index>0)>,</#if>"${relatedCol}"</#list>}</#if><#if (businessId.length?exists)>,length=${businessId.length}</#if><#if (businessId.sequenceSize?exists)>,sequenceSize=${businessId.sequenceSize}</#if>)
 	</#if>
 	@Column(name="${column.colName}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=java.sql.Types.<#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
-	private ${column.resultType} ${column.colJavaName?uncap_first};
+	protected ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
 
@@ -76,7 +76,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	 * 主键关联子表信息
 	 */
 	@OneToMany(fields={${exportTable.pkColJavaName}},mappedTable="${exportTable.pkRefTableName}",mappedColumns={${exportTable.pkRefColName}},mappedFields={${exportTable.pkRefColJavaName}}<#if (exportTable.load?exists)>,load="${exportTable.load}"</#if><#if (exportTable.updateSql?exists)>,update="${exportTable.updateSql}"</#if><#if (exportTable.deleteRule==0)>,delete=false</#if>)
-	private List<${exportTable.pkRefTableJavaName?cap_first}> ${exportTable.pkRefTableJavaName?uncap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s=new ArrayList<${exportTable.pkRefTableJavaName?cap_first}>();
+	protected List<${exportTable.pkRefTableJavaName?cap_first}> ${exportTable.pkRefTableJavaName?uncap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s=new ArrayList<${exportTable.pkRefTableJavaName?cap_first}>();
 
 </#list>
 </#if>
@@ -105,7 +105,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	 *@param ${column.colJavaName?uncap_first} the ${column.colJavaName?uncap_first} to set
 	 */
 	<#if (quickVO.returnSelf==true)>
-	public ${quickVO.entityName} set${column.colJavaName?cap_first}(${column.resultType} ${column.colJavaName?uncap_first}) {
+	public Abstract${quickVO.entityName} set${column.colJavaName?cap_first}(${column.resultType} ${column.colJavaName?uncap_first}) {
 		this.${column.colJavaName?uncap_first}=${column.colJavaName?uncap_first};
 		return this;
 	}
