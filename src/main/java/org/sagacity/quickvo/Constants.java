@@ -36,16 +36,6 @@ public class Constants implements Serializable {
 	private static final long serialVersionUID = 8594672495773042796L;
 
 	/**
-	 * java vo freemarker模板
-	 */
-	//public static String voTempate = "org/sagacity/quickvo/quickvo.ftl";
-
-	/**
-	 * java vo 抽象类freemarker模板
-	 */
-	//public static String voAbstractTempate = "org/sagacity/quickvo/abstract-quickvo.ftl";
-
-	/**
 	 * dto 类freemarker模板
 	 */
 	public static String dtoTempalte = "org/sagacity/quickvo/dto.ftl";
@@ -58,18 +48,8 @@ public class Constants implements Serializable {
 	/**
 	 * vo中构造函数模板，用于当数据库表发生改变后修改vo中的构造函数
 	 */
-	//public static String voConstructorTemplate = "org/sagacity/quickvo/quickvo-constructor.ftl";
-
-	/**
-	 * vo中构造函数模板，用于当数据库表发生改变后修改vo中的构造函数
-	 */
 	public static String dtoFieldsTemplate = "org/sagacity/quickvo/dto-fields.ftl";
 
-	/**
-	 * 
-	 */
-	//public static String constructor = "org/sagacity/quickvo/quickvo-constructor.ftl";
-	
 	public static String abstractEntity = "org/sagacity/quickvo/abstract-entity.ftl";
 	public static String parentEntity = "org/sagacity/quickvo/parent-entity.ftl";
 	public static String entityConstructor = "org/sagacity/quickvo/entity-constructor.ftl";
