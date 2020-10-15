@@ -50,7 +50,7 @@ public class ${quickVO.entityName} implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = ${quickVO.abstractVOSerialUID}L;
+	private static final long serialVersionUID = ${quickVO.entitySerialUID}L;
 	
 <#list quickVO.columns as column>
 	/**

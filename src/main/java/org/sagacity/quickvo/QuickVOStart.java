@@ -1,6 +1,3 @@
-/**
- * @Copyright 2009 版权归陈仁飞，不要肆意侵权抄袭，如引用请注明出处保留作者信息。
- */
 package org.sagacity.quickvo;
 
 import static java.lang.System.out;
@@ -28,7 +25,7 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("=========     welcome use sagacity-quickvo-4.16.1     ==========");
+			out.println("=========     welcome use sagacity-quickvo-4.16.2     ==========");
 			// 解析配置文件
 			ConfigModel configModel = XMLConfigLoader.parse();
 			TaskController.setConfigModel(configModel);
@@ -62,7 +59,7 @@ public class QuickVOStart {
 		Constants.BASE_LOCATE = baseDir;
 		// 代码调试时使用(真实场景不起作用,注意pom中要增加对应数据库驱动才可以运行)
 		if (args == null || args.length == 0) {
-			Constants.BASE_LOCATE = "D:/workspace/personal/sqltoy/sqltoy-postgresql/tools/quickvo";
+			Constants.BASE_LOCATE = "D:\\workspace\\personal\\github\\sqltoy-strict\\tools\\quickvo";
 			Constants.QUICK_CONFIG_FILE = "quickvo.xml";
 		}
 		// 开始根据数据库产生VO文件

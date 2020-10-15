@@ -86,6 +86,13 @@
 											<xsd:complexType>
 												<xsd:attribute name="package"
 													type="xsd:string" use="required" />
+												<xsd:attribute name="name" type="xsd:string" />
+												<xsd:attribute name="has-abstract"
+													type="xsd:boolean" default="true">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[实体对象是否需要分抽象类和实体类两个,抽象类字段跟数据库表完全一致,非抽象类中可以扩展一些属性]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 												<xsd:attribute name="substr" type="xsd:string"
 													use="required">
 													<xsd:annotation>
@@ -208,6 +215,14 @@
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
+						<xsd:attribute name="main-table" type="xsd:string"
+							use="required">
+							<xsd:annotation>
+								<xsd:documentation>
+							<![CDATA[指定主表名称]]>
+								</xsd:documentation>
+							</xsd:annotation>
+						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
 				<!-- ORM类型转换映射 -->

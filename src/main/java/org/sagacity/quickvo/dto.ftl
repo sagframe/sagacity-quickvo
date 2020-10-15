@@ -36,7 +36,7 @@ public class ${quickVO.voName} implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = ${quickVO.abstractVOSerialUID}L;
+	private static final long serialVersionUID = ${quickVO.voSerialUID}L;
 	
 /*---begin-auto-generate-don't-update-this-area--*/	
 <#list quickVO.columns as column>

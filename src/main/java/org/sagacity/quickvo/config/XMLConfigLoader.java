@@ -160,6 +160,10 @@ public class XMLConfigLoader {
 					if (entity.hasAttribute("substr")) {
 						quickModel.setEntitySubstr(Constants.replaceConstants(entity.getAttribute("substr")));
 					}
+					// 是否包含抽象类
+					if (entity.hasAttribute("has-abstract")) {
+						quickModel.setHasAbstractEntity(Boolean.parseBoolean(entity.getAttribute("has-abstract")));
+					}
 					if (entity.hasAttribute("name")) {
 						quickModel.setEntityName(Constants.replaceConstants(entity.getAttribute("name")));
 					} else {
@@ -300,30 +304,30 @@ public class XMLConfigLoader {
 			Element mainCasade;
 			for (int m = 0; m < mainCascades.getLength(); m++) {
 				mainCasade = (Element) mainCascades.item(m);
-				mainTable = mainCasade.hasAttribute("main-table") ? ("quickvo_temp_maintable" + m)
-						: mainCasade.getAttribute("main-table");
-				NodeList cascades = mainCasade.getElementsByTagName("table");
-				Element cascadeElt;
-				List cascadeModelList = new ArrayList<CascadeModel>();
-				for (int i = 0; i < cascades.getLength(); i++) {
-					cascadeElt = (Element) cascades.item(i);
-					CascadeModel cascade = new CascadeModel();
-					cascade.setTableName(cascadeElt.getAttribute("name"));
-					if (cascadeElt.hasAttribute("delete")) {
-						cascade.setDelete(Boolean.parseBoolean(cascadeElt.getAttribute("delete")));
+				if (mainCasade.hasAttribute("main-table")) {
+					mainTable = mainCasade.getAttribute("main-table");
+					NodeList cascades = mainCasade.getElementsByTagName("table");
+					Element cascadeElt;
+					List cascadeModelList = new ArrayList<CascadeModel>();
+					for (int i = 0; i < cascades.getLength(); i++) {
+						cascadeElt = (Element) cascades.item(i);
+						CascadeModel cascade = new CascadeModel();
+						cascade.setTableName(cascadeElt.getAttribute("name"));
+						if (cascadeElt.hasAttribute("delete")) {
+							cascade.setDelete(Boolean.parseBoolean(cascadeElt.getAttribute("delete")));
+						}
+						// lazy load 的特定sql，可以自行定义,如:enabled=1附加条件
+						if (cascadeElt.hasAttribute("load")) {
+							cascade.setLoad(cascadeElt.getAttribute("load"));
+						}
+						// 新的配置模式
+						if (cascadeElt.hasAttribute("update-cascade")) {
+							cascade.setUpdateSql(cascadeElt.getAttribute("update-cascade"));
+						}
+						cascadeModelList.add(cascade);
 					}
-					// lazy load 的特定sql，可以自行定义,如:enabled=1附加条件
-					if (cascadeElt.hasAttribute("load")) {
-						cascade.setLoad(cascadeElt.getAttribute("load"));
-					}
-
-					// 新的配置模式
-					if (cascadeElt.hasAttribute("update-cascade")) {
-						cascade.setUpdateSql(cascadeElt.getAttribute("update-cascade"));
-					}
-					cascadeModelList.add(cascade);
+					configModel.addCascadeConfig(mainTable, cascadeModelList);
 				}
-				configModel.addCascadeConfig(mainTable, cascadeModelList);
 			}
 		}
 
