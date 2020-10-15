@@ -80,6 +80,8 @@ public class XMLConfigLoader {
 		// 设置抽象类路径
 		if (tasks.hasAttribute("abstractPath")) {
 			configModel.setAbstractPath(Constants.replaceConstants(tasks.getAttribute("abstractPath")));
+		} else if (tasks.hasAttribute("abstract-path")) {
+			configModel.setAbstractPath(Constants.replaceConstants(tasks.getAttribute("abstract-path")));
 		}
 
 		// 设置编码格式
@@ -152,7 +154,7 @@ public class XMLConfigLoader {
 				nodeList = quickvo.getElementsByTagName("vo");
 				if (nodeList.getLength() > 0) {
 					vo = (Element) nodeList.item(0);
-					//存在entity和dto 形式，这时的vo等同于dto
+					// 存在entity和dto 形式，这时的vo等同于dto
 					if (quickModel.isHasEntity()) {
 						quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
 						if (vo.hasAttribute("substr")) {
@@ -172,7 +174,7 @@ public class XMLConfigLoader {
 							quickModel.setVoName("#{subName}");
 						}
 						quickModel.setHasVO(true);
-					} //只有vo，则用entity来代替
+					} // 只有vo，则用entity来代替
 					else {
 						quickModel.setEntityPackage(Constants.replaceConstants(vo.getAttribute("package")));
 						if (vo.hasAttribute("substr")) {
