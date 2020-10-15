@@ -85,8 +85,6 @@ public class Constants implements Serializable {
 	public static String constructorEnd = "/*---end-constructor-area---don't-update-this-area--*/";
 	public static String pkStructRegs = "\\/[\\*]{1,2}\\s*pk\\s+constructor\\s*\\*\\/";
 
-	public static String minStructRegs = "\\/[\\*]{1,2}\\s*minimal\\s+constructor\\s*\\*\\/";
-	public static String maxStructRegs = "\\/[\\*]{1,2}\\s*full\\s+constructor\\s*\\*\\/";
 	/**
 	 * 运行时默认路径
 	 */
