@@ -27,7 +27,6 @@ import org.sagacity.sqltoy.config.annotation.BusinessId;
 import ${import};
 </#list>
 </#if>
-
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
 <#list quickVO.exportTables as exportTable>
