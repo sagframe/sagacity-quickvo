@@ -45,30 +45,26 @@ import org.sagacity.quickvo.utils.FreemarkerUtil;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class TaskController {
 	/**
-	 * vo的模板内容
+	 * 定义全局日志
 	 */
-	private static String voTemplate;
+	private static Logger logger = LoggerUtil.getLogger();
 
+	/**
+	 * dto模板
+	 */
 	private static String dtoTemplate;
-
-	private static String entityTemplate;
-	/**
-	 * vo抽象类的模板
-	 */
-	private static String abstractVoTemplate;
-
-	/**
-	 * vo结构化方法模板
-	 */
-	private static String constructorTemplate;
-
 	private static String dtoFieldsTemplate;
 
-	private static String abstractEntityTemplate;
+	/**
+	 * 实体对象模板
+	 */
+	private static String entityTemplate;
+
+	private static String entityAbstractTemplate;
 
 	private static String entityConstructorTemplate;
 
-	private static String parentEntityTemplate;
+	private static String entityParentTemplate;
 
 	/**
 	 * 任务配置
@@ -83,31 +79,22 @@ public class TaskController {
 	}
 
 	/**
-	 * 定义全局日志
-	 */
-	private static Logger logger = LoggerUtil.getLogger();
-
-	/**
 	 * @todo 加载freemarker模板
 	 * @param configModel
 	 */
 	private static void init() {
-		voTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voTempate), configModel.getEncoding());
 		dtoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoTempalte),
-				configModel.getEncoding());
-		entityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.entityTemplate),
-				configModel.getEncoding());
-		abstractVoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.voAbstractTempate),
-				configModel.getEncoding());
-		constructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.constructor),
 				configModel.getEncoding());
 		dtoFieldsTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoFieldsTemplate),
 				configModel.getEncoding());
-		abstractEntityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.abstractEntity),
+		// 无抽象类的实体类模板
+		entityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.entityTemplate),
+				configModel.getEncoding());
+		entityAbstractTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.abstractEntity),
 				configModel.getEncoding());
 		entityConstructorTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.entityConstructor),
 				configModel.getEncoding());
-		parentEntityTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.parentEntity),
+		entityParentTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.parentEntity),
 				configModel.getEncoding());
 	}
 
@@ -446,39 +433,27 @@ public class TaskController {
 			quickVO.setImports(impList);
 			// 删除多余导入类型
 			deleteUselessTypes(impList, colList);
-			// pojo模式
-			if (quickModel.isHasEntity()) {
-				// 创建vo abstract文件
-				if (quickModel.isHasAbstractEntity()) {
-					// 创建abstract entity文件
-					generateAbstractEntity(
-							entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
-									+ quickVO.getEntityName() + ".java",
-							abstractEntityTemplate, quickVO, configModel.getEncoding());
+			// 创建vo abstract文件
+			if (quickModel.isHasAbstractEntity()) {
+				// 创建abstract entity文件
+				generateAbstractEntity(
+						entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
+								+ quickVO.getEntityName() + ".java",
+						entityAbstractTemplate, quickVO, configModel.getEncoding());
 
-					// 创建entity 文件
-					generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
-							configModel.getEncoding());
-				} else {
-					generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate,
-							quickVO, configModel.getEncoding());
-				}
-				// 创建DTO 文件
-				if (quickModel.isHasVO()) {
-					generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
-							configModel.getEncoding());
-				}
+				// 创建entity 文件
+				generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
+						configModel.getEncoding());
 			} else {
-				// 创建vo abstract文件
-				generateAbstractVO(
-						voPackageDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
-								+ quickVO.getVoName() + ".java",
-						abstractVoTemplate, quickVO, configModel.getEncoding());
-
-				// 创建vo 文件
-				generateVO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+				generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate, quickVO,
 						configModel.getEncoding());
 			}
+			// 创建DTO 文件
+			if (quickModel.isHasVO()) {
+				generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+						configModel.getEncoding());
+			}
+
 		}
 	}
 
@@ -790,45 +765,6 @@ public class TaskController {
 		}
 	}
 
-	/**
-	 * @todo 判断文件内容是否一致，不一致重新生成，主要针对abstractVO和VOFactory
-	 * @param file
-	 * @param template
-	 * @param quickVO
-	 * @param charset
-	 * @throws Exception
-	 */
-	private static void generateAbstractVO(String file, String template, QuickVO quickVO, String charset)
-			throws Exception {
-		File generateFile = new File(file);
-		boolean needGen = true;
-		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getVoPackage() + "." + quickVO.getAbstractPath() + ".Abstract" + quickVO.getVoName();
-		quickVO.setAbstractVOSerialUID(Long.toString(hash(hashStr)));
-		// 文件存在判断是否相等，不相等则生成
-		if (generateFile.exists()) {
-			String oldFileContent = FileUtil.readAsString(generateFile, charset);
-			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
-					new Object[] { quickVO }, template);
-			// 剔除所有回车换行和空白
-			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
-			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
-
-			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
-			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
-
-			// 内容相等
-			if (oldFileContent.equals(newFileContent)) {
-				needGen = false;
-			}
-		}
-		// 需要产生
-		if (needGen) {
-			logger.info("正在生成文件:" + file);
-			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
-		}
-	}
-
 	private static void generateEntity(String file, String template, QuickVO quickVO, String charset) throws Exception {
 		File generateFile = new File(file);
 		boolean needGen = true;
@@ -856,59 +792,6 @@ public class TaskController {
 		if (needGen) {
 			logger.info("正在生成文件:" + file);
 			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
-		}
-	}
-
-	/**
-	 * @todo 产生vo，判断数据库表是否修改，如修改则对vo文件的构造函数进行修改
-	 * @param file
-	 * @param quickVO
-	 * @param charset
-	 * @throws Exception
-	 */
-	private static void generateVO(String file, QuickVO quickVO, String charset) throws Exception {
-		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getVoPackage() + "." + quickVO.getVoName();
-		quickVO.setVoSerialUID(Long.toString(hash(hashStr)));
-		File voFile = new File(file);
-		// 文件不存在
-		if (!voFile.exists()) {
-			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, voTemplate, file);
-			return;
-		}
-		// 如果是视图则直接返回
-		if (quickVO.getType().equals("VIEW")) {
-			return;
-		}
-		String fileStr = FileUtil.readAsString(voFile, charset);
-
-		// 文件存在，修改构造函数
-		String constructor = FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
-				constructorTemplate);
-
-		String cleanConstructor = StringUtil.clearMistyChars(constructor, "").replaceAll("\\s+", "");
-		int constructorBeginIndex = fileStr.indexOf(Constants.constructorBegin);
-		int constructorEndIndex = fileStr.indexOf(Constants.constructorEnd);
-		if (constructorBeginIndex != -1 && constructorEndIndex != -1) {
-			String before = fileStr.substring(0, constructorBeginIndex);
-			String after = fileStr.substring(constructorEndIndex + Constants.constructorEnd.length());
-			String compareConstructor = fileStr.substring(constructorBeginIndex,
-					constructorEndIndex + Constants.constructorEnd.length());
-			compareConstructor = StringUtil.clearMistyChars(compareConstructor, "").replaceAll("\\s+", "");
-			// 表修改过
-			if (!cleanConstructor.equals(compareConstructor)) {
-				logger.info("修改vo:" + quickVO.getVoName());
-				constructor = constructor.trim();
-				if (constructor.indexOf("\n") == constructor.length() - 1) {
-					constructor = constructor.substring(0, constructor.length() - 1);
-				}
-				if (constructor.indexOf("\r") == constructor.length() - 1) {
-					constructor = constructor.substring(0, constructor.length() - 1);
-				}
-				FileUtil.putStringToFile(before + constructor + after, file, charset);
-			}
-		} else {
-			logger.info("vo 文件中的构造函数默认开始结束符号被修改!表发生修改无法更新vo!");
 		}
 	}
 
@@ -999,7 +882,7 @@ public class TaskController {
 		// 文件不存在
 		if (!entityFile.exists()) {
 			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
-					parentEntityTemplate, file);
+					entityParentTemplate, file);
 			return;
 		}
 		// 如果是视图则直接返回

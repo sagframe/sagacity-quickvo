@@ -129,29 +129,6 @@ public class XMLConfigLoader {
 					quickModel.setExcludeTables(Constants.replaceConstants(quickvo.getAttribute("exclude")));
 				}
 
-				// vo
-				nodeList = quickvo.getElementsByTagName("vo");
-				if (nodeList.getLength() > 0) {
-					vo = (Element) nodeList.item(0);
-					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
-					if (vo.hasAttribute("substr")) {
-						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-					}
-
-					if (vo.hasAttribute("lombok")) {
-						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
-					}
-
-					if (vo.hasAttribute("lombok-chain")) {
-						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
-					}
-					if (vo.hasAttribute("name")) {
-						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-					} else {
-						quickModel.setVoName("#{subName}");
-					}
-					quickModel.setHasVO(true);
-				}
 				// 实体bean
 				nodeList = quickvo.getElementsByTagName("entity");
 				if (nodeList.getLength() > 0) {
@@ -171,6 +148,46 @@ public class XMLConfigLoader {
 					}
 					quickModel.setHasEntity(true);
 				}
+				// vo(update 2020-10-15 单独vo时意义转为entity兼容旧模式)，如跟entity一起使用等于dto的概念
+				nodeList = quickvo.getElementsByTagName("vo");
+				if (nodeList.getLength() > 0) {
+					vo = (Element) nodeList.item(0);
+					//存在entity和dto 形式，这时的vo等同于dto
+					if (quickModel.isHasEntity()) {
+						quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
+						if (vo.hasAttribute("substr")) {
+							quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
+						}
+
+						if (vo.hasAttribute("lombok")) {
+							quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+						}
+
+						if (vo.hasAttribute("lombok-chain")) {
+							quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+						}
+						if (vo.hasAttribute("name")) {
+							quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+						} else {
+							quickModel.setVoName("#{subName}");
+						}
+						quickModel.setHasVO(true);
+					} //只有vo，则用entity来代替
+					else {
+						quickModel.setEntityPackage(Constants.replaceConstants(vo.getAttribute("package")));
+						if (vo.hasAttribute("substr")) {
+							quickModel.setEntitySubstr(Constants.replaceConstants(vo.getAttribute("substr")));
+						}
+
+						if (vo.hasAttribute("name")) {
+							quickModel.setEntityName(Constants.replaceConstants(vo.getAttribute("name")));
+						} else {
+							quickModel.setEntityName("#{subName}");
+						}
+						quickModel.setHasEntity(true);
+					}
+				}
+
 				quickModels.add(quickModel);
 			}
 		}
