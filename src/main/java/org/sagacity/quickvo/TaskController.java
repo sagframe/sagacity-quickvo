@@ -117,10 +117,12 @@ public class TaskController {
 		QuickModel quickModel;
 		String supportLinkedSet = Constants.getKeyValue("field.support.linked.set");
 		String selectFieldsClass = Constants.getKeyValue("generate.selectFields.class");
+		//支持链式set
 		boolean isSupport = false;
 		if (StringUtil.isNotBlank(supportLinkedSet)) {
 			isSupport = Boolean.parseBoolean(supportLinkedSet);
 		}
+		//产生SelectField内部类
 		boolean generateFieldsClass = true;
 		if (StringUtil.isNotBlank(selectFieldsClass)) {
 			generateFieldsClass = Boolean.parseBoolean(selectFieldsClass);
