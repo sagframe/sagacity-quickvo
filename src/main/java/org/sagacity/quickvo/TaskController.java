@@ -118,9 +118,9 @@ public class TaskController {
 		String supportLinkedSet = Constants.getKeyValue("field.support.linked.set");
 		String selectFieldsClass = Constants.getKeyValue("generate.selectFields.class");
 		//支持链式set
-		boolean isSupport = false;
+		boolean isLinkSet = false;
 		if (StringUtil.isNotBlank(supportLinkedSet)) {
-			isSupport = Boolean.parseBoolean(supportLinkedSet);
+			isLinkSet = Boolean.parseBoolean(supportLinkedSet);
 		}
 		//产生SelectField内部类
 		boolean generateFieldsClass = true;
@@ -136,7 +136,7 @@ public class TaskController {
 				logger.info("数据库:[" + quickModel.getDataSource() + "]连接异常,请确认你的数据库配置信息或者数据库环境!");
 			} else {
 				logger.info("开始执行第:{" + i + "} 个任务,includes=:" + quickModel.getIncludeTables());
-				createTask(quickModel, isSupport, generateFieldsClass);
+				createTask(quickModel, isLinkSet, generateFieldsClass);
 				// 销毁数据库连接
 				DBHelper.close();
 			}
