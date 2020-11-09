@@ -53,7 +53,6 @@ public class Constants implements Serializable {
 	public static String abstractEntity = "org/sagacity/quickvo/abstract-entity.ftl";
 	public static String parentEntity = "org/sagacity/quickvo/parent-entity.ftl";
 	public static String entityConstructor = "org/sagacity/quickvo/entity-constructor.ftl";
-	
 
 	/**
 	 * 主键默认生成策略
@@ -102,7 +101,7 @@ public class Constants implements Serializable {
 	public static final String[][] jdbcTypMapping = {
 			// jdbc.type java.type importType precision(数据长度) scale(小数位)
 			{ "REAL", "Float", "" }, { "TINYINT", "Integer", "" }, { "SHORT", "Short", "" },
-			{ "SMALLINT", "Integer", "" }, { "MEDIUMINT", "Integer", "" },
+			{ "SMALLINT", "Integer", "" }, { "MEDIUMINT", "Integer", "" }, { "SERIAL", "Integer", "" },
 			{ "BIGSERIAL", "BigInteger", "java.math.BigInteger" }, { "SERIAL8", "BigInteger", "java.math.BigInteger" },
 			{ "BIGINT", "BigInteger", "java.math.BigInteger" }, { "INT", "Integer", "" }, { "INTEGER", "Integer", "" },
 			{ "INT2", "Integer", "" }, { "INT4", "Integer", "" }, { "Int8", "Integer", "" }, { "Int16", "Integer", "" },
@@ -141,10 +140,10 @@ public class Constants implements Serializable {
 	public static final String[][] jdbcAry = { { "REAL", "REAL" }, { "YEAR", "DATE" }, { "DateTime", "DATE" },
 			{ "Int", "INTEGER" }, { "Int2", "INTEGER" }, { "Int4", "INTEGER" }, { "Int8", "INTEGER" },
 			{ "SMALLINT", "SMALLINT" }, { "MEDIUMINT", "INTEGER", "" }, { "Int16", "INTEGER" }, { "Int32", "INTEGER" },
-			{ "Int64", "BIGINT" }, { "SERIAL8", "BIGINT" }, { "BIGSERIAL", "BIGINT" }, { "Enum8", "INTEGER" },
-			{ "Enum16", "INTEGER" }, { "UInt8", "INTEGER" }, { "UInt16", "INTEGER" }, { "UInt32", "INTEGER" },
-			{ "UInt64", "BIGINT" }, { "FLOAT4", "FLOAT" }, { "FLOAT8", "FLOAT" }, { "FLOAT32", "FLOAT" },
-			{ "FLOAT64", "DOUBLE" }, { "STRING", "VARCHAR" }, { "FixedSTRING", "VARCHAR" },
+			{ "Int64", "BIGINT" }, { "SERIAL8", "BIGINT" }, { "SERIAL", "INTEGER", "" }, { "BIGSERIAL", "BIGINT" },
+			{ "Enum8", "INTEGER" }, { "Enum16", "INTEGER" }, { "UInt8", "INTEGER" }, { "UInt16", "INTEGER" },
+			{ "UInt32", "INTEGER" }, { "UInt64", "BIGINT" }, { "FLOAT4", "FLOAT" }, { "FLOAT8", "FLOAT" },
+			{ "FLOAT32", "FLOAT" }, { "FLOAT64", "DOUBLE" }, { "STRING", "VARCHAR" }, { "FixedSTRING", "VARCHAR" },
 			{ "LONG VARGRAPHIC", "CLOB" }, { "VARGRAPHIC", "VARCHAR" }, { "GRAPHIC", "VARCHAR" },
 			{ "LONG VARCHAR", "VARCHAR" }, { "DATE", "DATE" }, { "DATETIME", "DATE" }, { "TIMESTAMP", "TIMESTAMP" },
 			{ "TIMESTAMP(6)", "TIMESTAMP" }, { "TIME", "TIME" }, { "CHAR", "CHAR" }, { "CLOB", "CLOB" },
