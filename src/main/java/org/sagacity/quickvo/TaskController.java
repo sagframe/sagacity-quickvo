@@ -756,6 +756,7 @@ public class TaskController {
 								exportKey.setAutoSave(cascadeModel.isSave() ? 1 : 0);
 								exportKey.setCascade(cascadeModel.isDelete() ? 1 : 0);
 								exportKey.setUpdateSql(cascadeModel.getUpdateSql());
+								exportKey.setOrderBy(cascadeModel.getOrderBy());
 							}
 						}
 					} else {
