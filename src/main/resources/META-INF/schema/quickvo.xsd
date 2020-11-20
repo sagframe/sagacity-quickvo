@@ -196,7 +196,7 @@
 					</xsd:complexType>
 				</xsd:element>
 				<!-- 主子表级联配置 -->
-				<xsd:element name="cascade" maxOccurs="unbounded">
+				<xsd:element name="cascade" maxOccurs="1">
 					<xsd:annotation>
 						<xsd:documentation>
 							<![CDATA[指定主表对应的子表操作模式,操作模式分:主表级联修改：一般分删除和停用(默认是删除)，load：级联加载,可以不写]]>
@@ -216,14 +216,6 @@
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
-						<xsd:attribute name="main-table" type="xsd:string"
-							use="required">
-							<xsd:annotation>
-								<xsd:documentation>
-							<![CDATA[指定主表名称]]>
-								</xsd:documentation>
-							</xsd:annotation>
-						</xsd:attribute>
 					</xsd:complexType>
 				</xsd:element>
 				<!-- ORM类型转换映射 -->

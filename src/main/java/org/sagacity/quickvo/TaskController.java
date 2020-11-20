@@ -748,7 +748,7 @@ public class TaskController {
 					exportKey.setPkEqualsFkStr(
 							"main.get".concat(StringUtil.firstToUpperCase(pkColJavaName)).concat("().equals(item.get")
 									.concat(StringUtil.firstToUpperCase(pkRefColJavaName)).concat("())"));
-					cascadeModels = configModel.getCascadeConfig(quickVO.getTableName());
+					cascadeModels = configModel.getCascadeConfig();
 					if (cascadeModels != null) {
 						for (CascadeModel cascadeModel : cascadeModels) {
 							if (refTable.matches("(?i)".concat(cascadeModel.getTableName()))) {
