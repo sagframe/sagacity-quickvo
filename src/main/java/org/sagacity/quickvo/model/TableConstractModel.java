@@ -88,6 +88,11 @@ public class TableConstractModel implements Serializable {
 	private String load;
 
 	/**
+	 * 排序
+	 */
+	private String orderBy;
+
+	/**
 	 * 自动保存
 	 */
 	private int autoSave = 1;
@@ -319,5 +324,19 @@ public class TableConstractModel implements Serializable {
 	 */
 	public void setUpdateSql(String updateSql) {
 		this.updateSql = updateSql;
+	}
+
+	/**
+	 * @return the orderBy
+	 */
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	/**
+	 * @param orderBy the orderBy to set
+	 */
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
 	}
 }

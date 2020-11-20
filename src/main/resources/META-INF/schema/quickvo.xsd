@@ -212,6 +212,7 @@
 										type="xsd:string" />
 									<xsd:attribute name="load" type="xsd:string"
 										default="default" />
+									<xsd:attribute name="orderBy" type="xsd:string"/>
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>

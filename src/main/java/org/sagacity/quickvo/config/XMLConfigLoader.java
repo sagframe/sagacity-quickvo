@@ -343,6 +343,12 @@ public class XMLConfigLoader {
 						if (cascadeElt.hasAttribute("update-cascade")) {
 							cascade.setUpdateSql(cascadeElt.getAttribute("update-cascade"));
 						}
+						// 排序
+						if (cascadeElt.hasAttribute("orderBy")) {
+							cascade.setOrderBy(cascadeElt.getAttribute("orderBy"));
+						} else if (cascadeElt.hasAttribute("order-by")) {
+							cascade.setOrderBy(cascadeElt.getAttribute("order-by"));
+						}
 						cascadeModelList.add(cascade);
 					}
 					configModel.addCascadeConfig(mainTable, cascadeModelList);

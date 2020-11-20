@@ -41,6 +41,8 @@ public class CascadeModel implements Serializable {
 	 * 修改主表时对于字表级联保存时是否先做删除操作
 	 */
 	private String updateSql;
+	
+	private String orderBy;
 
 	/**
 	 * @return the tableName
@@ -110,6 +112,20 @@ public class CascadeModel implements Serializable {
 	 */
 	public void setUpdateSql(String updateSql) {
 		this.updateSql = updateSql;
+	}
+
+	/**
+	 * @return the orderBy
+	 */
+	public String getOrderBy() {
+		return orderBy;
+	}
+
+	/**
+	 * @param orderBy the orderBy to set
+	 */
+	public void setOrderBy(String orderBy) {
+		this.orderBy = orderBy;
 	}
 
 }
