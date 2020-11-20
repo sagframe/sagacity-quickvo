@@ -319,40 +319,40 @@ public class XMLConfigLoader {
 		// 级联操作设置
 		if (nodeList.getLength() > 0) {
 			NodeList mainCascades = nodeList;
-			//String mainTable;
+			// String mainTable;
 			Element mainCasade;
 			for (int m = 0; m < mainCascades.getLength(); m++) {
 				mainCasade = (Element) mainCascades.item(m);
-				//if (mainCasade.hasAttribute("main-table")) {
-					//mainTable = mainCasade.getAttribute("main-table");
-					NodeList cascades = mainCasade.getElementsByTagName("table");
-					Element cascadeElt;
-					List cascadeModelList = new ArrayList<CascadeModel>();
-					for (int i = 0; i < cascades.getLength(); i++) {
-						cascadeElt = (Element) cascades.item(i);
-						CascadeModel cascade = new CascadeModel();
-						cascade.setTableName(cascadeElt.getAttribute("name"));
-						if (cascadeElt.hasAttribute("delete")) {
-							cascade.setDelete(Boolean.parseBoolean(cascadeElt.getAttribute("delete")));
-						}
-						// lazy load 的特定sql，可以自行定义,如:enabled=1附加条件
-						if (cascadeElt.hasAttribute("load")) {
-							cascade.setLoad(cascadeElt.getAttribute("load"));
-						}
-						// 新的配置模式
-						if (cascadeElt.hasAttribute("update-cascade")) {
-							cascade.setUpdateSql(cascadeElt.getAttribute("update-cascade"));
-						}
-						// 排序
-						if (cascadeElt.hasAttribute("orderBy")) {
-							cascade.setOrderBy(cascadeElt.getAttribute("orderBy"));
-						} else if (cascadeElt.hasAttribute("order-by")) {
-							cascade.setOrderBy(cascadeElt.getAttribute("order-by"));
-						}
-						cascadeModelList.add(cascade);
+				// if (mainCasade.hasAttribute("main-table")) {
+				// mainTable = mainCasade.getAttribute("main-table");
+				NodeList cascades = mainCasade.getElementsByTagName("table");
+				Element cascadeElt;
+				List cascadeModelList = new ArrayList<CascadeModel>();
+				for (int i = 0; i < cascades.getLength(); i++) {
+					cascadeElt = (Element) cascades.item(i);
+					CascadeModel cascade = new CascadeModel();
+					cascade.setTableName(cascadeElt.getAttribute("name"));
+					if (cascadeElt.hasAttribute("delete")) {
+						cascade.setDelete(Boolean.parseBoolean(cascadeElt.getAttribute("delete")));
 					}
-					configModel.setCascadeConfig(cascadeModelList);
-				//}
+					// lazy load 的特定sql，可以自行定义,如:enabled=1附加条件
+					if (cascadeElt.hasAttribute("load")) {
+						cascade.setLoad(cascadeElt.getAttribute("load"));
+					}
+					// 新的配置模式
+					if (cascadeElt.hasAttribute("update-cascade")) {
+						cascade.setUpdateSql(cascadeElt.getAttribute("update-cascade"));
+					}
+					// 排序
+					if (cascadeElt.hasAttribute("orderBy")) {
+						cascade.setOrderBy(cascadeElt.getAttribute("orderBy"));
+					} else if (cascadeElt.hasAttribute("order-by")) {
+						cascade.setOrderBy(cascadeElt.getAttribute("order-by"));
+					}
+					cascadeModelList.add(cascade);
+				}
+				configModel.addCascadeConfig(cascadeModelList);
+				// }
 			}
 		}
 

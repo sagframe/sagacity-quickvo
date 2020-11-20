@@ -61,7 +61,7 @@ public class ConfigModel implements Serializable {
 	 */
 	// private HashMap<String, List<CascadeModel>> cascadeConfig = new
 	// HashMap<String, List<CascadeModel>>();
-	private List<CascadeModel> cascadeConfig;
+	private List<CascadeModel> cascadeConfig = new ArrayList<CascadeModel>();
 
 	/**
 	 * 主键生成策略
@@ -192,8 +192,8 @@ public class ConfigModel implements Serializable {
 		return cascadeConfig;
 	}
 
-	public void setCascadeConfig(List<CascadeModel> cascadeModels) {
-		this.cascadeConfig = cascadeModels;
+	public void addCascadeConfig(List<CascadeModel> cascadeModels) {
+		this.cascadeConfig.addAll(cascadeModels);
 	}
 
 	public void addBusinessId(BusinessIdConfig businessIdConfig) {
