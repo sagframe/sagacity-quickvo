@@ -5,7 +5,7 @@
 	<groupId>com.sagframe</groupId>
 	<name>sqltoy-quickvo</name>
 	<artifactId>sqltoy-quickvo</artifactId>
-	<version>4.16.5</version>
+	<version>4.16.6</version>
 	<description>sqltoy vo generate tools</description>
 	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
@@ -181,7 +181,7 @@
 				</executions>
 			</plugin>
 
-			<!-- <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
 				<version>1.6</version>
@@ -193,7 +193,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin> -->
+			</plugin>
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
