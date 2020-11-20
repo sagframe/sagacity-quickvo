@@ -59,7 +59,9 @@ public class ConfigModel implements Serializable {
 	/**
 	 * 级联设置
 	 */
-	private HashMap<String, List<CascadeModel>> cascadeConfig = new HashMap<String, List<CascadeModel>>();
+	// private HashMap<String, List<CascadeModel>> cascadeConfig = new
+	// HashMap<String, List<CascadeModel>>();
+	private List<CascadeModel> cascadeConfig;
 
 	/**
 	 * 主键生成策略
@@ -186,12 +188,12 @@ public class ConfigModel implements Serializable {
 	/**
 	 * @return the cascadeConfig
 	 */
-	public List<CascadeModel> getCascadeConfig(String mainTable) {
-		return cascadeConfig.get(mainTable.toLowerCase());
+	public List<CascadeModel> getCascadeConfig() {
+		return cascadeConfig;
 	}
 
-	public void addCascadeConfig(String mainTable, List<CascadeModel> cascadeModels) {
-		this.cascadeConfig.put(mainTable.toLowerCase(), cascadeModels);
+	public void setCascadeConfig(List<CascadeModel> cascadeModels) {
+		this.cascadeConfig = cascadeModels;
 	}
 
 	public void addBusinessId(BusinessIdConfig businessIdConfig) {

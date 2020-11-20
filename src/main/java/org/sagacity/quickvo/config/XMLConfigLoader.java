@@ -319,12 +319,12 @@ public class XMLConfigLoader {
 		// 级联操作设置
 		if (nodeList.getLength() > 0) {
 			NodeList mainCascades = nodeList;
-			String mainTable;
+			//String mainTable;
 			Element mainCasade;
 			for (int m = 0; m < mainCascades.getLength(); m++) {
 				mainCasade = (Element) mainCascades.item(m);
-				if (mainCasade.hasAttribute("main-table")) {
-					mainTable = mainCasade.getAttribute("main-table");
+				//if (mainCasade.hasAttribute("main-table")) {
+					//mainTable = mainCasade.getAttribute("main-table");
 					NodeList cascades = mainCasade.getElementsByTagName("table");
 					Element cascadeElt;
 					List cascadeModelList = new ArrayList<CascadeModel>();
@@ -351,8 +351,8 @@ public class XMLConfigLoader {
 						}
 						cascadeModelList.add(cascade);
 					}
-					configModel.addCascadeConfig(mainTable, cascadeModelList);
-				}
+					configModel.setCascadeConfig(cascadeModelList);
+				//}
 			}
 		}
 
