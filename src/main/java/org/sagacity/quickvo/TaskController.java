@@ -117,12 +117,12 @@ public class TaskController {
 		QuickModel quickModel;
 		String supportLinkedSet = Constants.getKeyValue("field.support.linked.set");
 		String selectFieldsClass = Constants.getKeyValue("generate.selectFields.class");
-		//支持链式set
+		// 支持链式set
 		boolean isLinkSet = false;
 		if (StringUtil.isNotBlank(supportLinkedSet)) {
 			isLinkSet = Boolean.parseBoolean(supportLinkedSet);
 		}
-		//产生SelectField内部类
+		// 产生SelectField内部类
 		boolean generateFieldsClass = true;
 		if (StringUtil.isNotBlank(selectFieldsClass)) {
 			generateFieldsClass = Boolean.parseBoolean(selectFieldsClass);
@@ -751,7 +751,7 @@ public class TaskController {
 					cascadeModels = configModel.getCascadeConfig();
 					if (cascadeModels != null) {
 						for (CascadeModel cascadeModel : cascadeModels) {
-							if (refTable.matches("(?i)".concat(cascadeModel.getTableName()))) {
+							if (refTable.equalsIgnoreCase(cascadeModel.getTableName())) {
 								exportKey.setLoad(cascadeModel.getLoad());
 								exportKey.setAutoSave(cascadeModel.isSave() ? 1 : 0);
 								exportKey.setCascade(cascadeModel.isDelete() ? 1 : 0);
