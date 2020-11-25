@@ -59,7 +59,7 @@ public class QuickVOStart {
 		Constants.BASE_LOCATE = baseDir;
 		// 代码调试时使用(真实场景不起作用,注意pom中要增加对应数据库驱动才可以运行)
 		if (args == null || args.length == 0) {
-			Constants.BASE_LOCATE = "D:\\workspace\\personal\\github\\sqltoy-strict\\tools\\quickvo";
+			Constants.BASE_LOCATE = "D:\\workspace\\sqltoy\\sqltoy-postgresql\\tools\\quickvo";
 			Constants.QUICK_CONFIG_FILE = "quickvo.xml";
 		}
 		// 开始根据数据库产生VO文件
