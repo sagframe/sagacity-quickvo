@@ -597,7 +597,8 @@ public class TaskController {
 						}
 						// 类型匹配
 						if (mapped) {
-							importType = colTypeMapping.getJavaType();
+							//规避数组类型
+							importType = colTypeMapping.getJavaType().replaceAll("[", "").replaceAll("]", "").trim();
 							break;
 						}
 					}
