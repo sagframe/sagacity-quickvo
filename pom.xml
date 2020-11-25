@@ -5,13 +5,14 @@
 	<groupId>com.sagframe</groupId>
 	<name>sqltoy-quickvo</name>
 	<artifactId>sqltoy-quickvo</artifactId>
-	<version>4.16.6</version>
+	<version>4.16.7</version>
 	<description>sqltoy vo generate tools</description>
 	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<freemarker.version>2.3.30</freemarker.version>
 		<jackson-dataformat.version>2.11.2</jackson-dataformat.version>
+		<!-- <postgresql.version>42.2.18</postgresql.version> -->
 	</properties>
 	<licenses>
 		<license>
@@ -48,6 +49,11 @@
 		</repository>
 	</distributionManagement>
 	<dependencies>
+		<!-- <dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgresql.version}</version>
+		</dependency> -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-yaml</artifactId>
