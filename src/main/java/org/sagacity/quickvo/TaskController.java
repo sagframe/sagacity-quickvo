@@ -434,7 +434,7 @@ public class TaskController {
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
 			// 删除多余导入类型
-			deleteUselessTypes(impList, colList);
+			//deleteUselessTypes(impList, colList);
 			// 创建vo abstract文件
 			if (quickModel.isHasAbstractEntity()) {
 				// 创建abstract entity文件
@@ -640,7 +640,9 @@ public class TaskController {
 			}
 			// 增加类引入类型对象
 			if (importType != null && importType.indexOf(".") != -1 && !impList.contains(importType)) {
-				impList.add(importType);
+				if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
+					impList.add(importType);
+				}
 			}
 			if (colTypeMapping != null && StringUtil.isNotBlank(colTypeMapping.getImportTypes())) {
 				String[] imports = colTypeMapping.getImportTypes().split("\\,");
