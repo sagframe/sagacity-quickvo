@@ -474,7 +474,7 @@ public class TaskController {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
-		ColumnTypeMapping colTypeMapping;
+		ColumnTypeMapping colTypeMapping = null;
 		TableConstractModel constractModel = null;
 		String importType;
 		int precision;
@@ -597,8 +597,9 @@ public class TaskController {
 						}
 						// 类型匹配
 						if (mapped) {
-							//规避数组类型
-							importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "").trim();
+							// 规避数组类型
+							importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
+									.trim();
 							break;
 						}
 					}
@@ -640,6 +641,14 @@ public class TaskController {
 			// 增加类引入类型对象
 			if (importType != null && importType.indexOf(".") != -1 && !impList.contains(importType)) {
 				impList.add(importType);
+			}
+			if (colTypeMapping != null && StringUtil.isNotBlank(colTypeMapping.getImportTypes())) {
+				String[] imports = colTypeMapping.getImportTypes().split("\\,");
+				for (String imp : imports) {
+					if (!impList.contains(imp.trim())) {
+						impList.add(imp.trim());
+					}
+				}
 			}
 			quickColMetas.add(quickColMeta);
 		}

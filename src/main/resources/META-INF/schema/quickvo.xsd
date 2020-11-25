@@ -212,7 +212,7 @@
 										type="xsd:string" />
 									<xsd:attribute name="load" type="xsd:string"
 										default="default" />
-									<xsd:attribute name="orderBy" type="xsd:string"/>
+									<xsd:attribute name="orderBy" type="xsd:string" />
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
@@ -236,6 +236,14 @@
 									<xsd:attribute name="jdbc-type" type="xsd:string" />
 									<xsd:attribute name="java-type" type="xsd:string"
 										use="required" />
+									<xsd:attribute name="import-types"
+										type="xsd:string">
+										<xsd:annotation>
+											<xsd:documentation>
+												<![CDATA[设置需要import的类型,多个用逗号分隔]]>
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
