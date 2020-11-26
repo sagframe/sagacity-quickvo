@@ -6,8 +6,8 @@ import java.util.logging.Logger;
 
 import org.sagacity.quickvo.config.XMLConfigLoader;
 import org.sagacity.quickvo.model.ConfigModel;
-import org.sagacity.quickvo.utils.LoggerUtil;
 import org.sagacity.quickvo.utils.FreemarkerUtil;
+import org.sagacity.quickvo.utils.LoggerUtil;
 
 /**
  * @project sagacity-quickvo

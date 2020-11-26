@@ -3,6 +3,8 @@
  */
 package org.sagacity.quickvo.utils;
 
+import static java.lang.System.err;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,7 +25,6 @@ import org.sagacity.quickvo.utils.DBUtil.DbType;
 import org.sagacity.quickvo.utils.callback.PreparedStatementResultHandler;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import static java.lang.System.err;
 
 /**
  * @project sagacity-quickvo

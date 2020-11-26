@@ -32,9 +32,9 @@ import org.sagacity.quickvo.model.TableConstractModel;
 import org.sagacity.quickvo.model.TableMeta;
 import org.sagacity.quickvo.utils.DBHelper;
 import org.sagacity.quickvo.utils.FileUtil;
+import org.sagacity.quickvo.utils.FreemarkerUtil;
 import org.sagacity.quickvo.utils.LoggerUtil;
 import org.sagacity.quickvo.utils.StringUtil;
-import org.sagacity.quickvo.utils.FreemarkerUtil;
 
 /**
  * @project sagacity-quickvo
