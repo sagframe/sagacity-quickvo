@@ -261,6 +261,10 @@ public class XMLConfigLoader {
 						colTypeMapping.setJdbcType(type.getAttribute("jdbc-type"));
 					}
 
+					if (type.hasAttribute("import-types")) {
+						colTypeMapping.setImportTypes(type.getAttribute("import-types"));
+					}
+
 					if (type.hasAttribute("precision")) {
 						if (StringUtil.isNotBlank(type.getAttribute("precision"))) {
 							precision = type.getAttribute("precision").split("\\..");

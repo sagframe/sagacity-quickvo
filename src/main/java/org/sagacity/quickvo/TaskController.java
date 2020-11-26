@@ -32,9 +32,9 @@ import org.sagacity.quickvo.model.TableConstractModel;
 import org.sagacity.quickvo.model.TableMeta;
 import org.sagacity.quickvo.utils.DBHelper;
 import org.sagacity.quickvo.utils.FileUtil;
+import org.sagacity.quickvo.utils.FreemarkerUtil;
 import org.sagacity.quickvo.utils.LoggerUtil;
 import org.sagacity.quickvo.utils.StringUtil;
-import org.sagacity.quickvo.utils.FreemarkerUtil;
 
 /**
  * @project sagacity-quickvo
@@ -434,7 +434,7 @@ public class TaskController {
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
 			// 删除多余导入类型
-			deleteUselessTypes(impList, colList);
+			//deleteUselessTypes(impList, colList);
 			// 创建vo abstract文件
 			if (quickModel.isHasAbstractEntity()) {
 				// 创建abstract entity文件
@@ -474,7 +474,7 @@ public class TaskController {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
-		ColumnTypeMapping colTypeMapping;
+		ColumnTypeMapping colTypeMapping = null;
 		TableConstractModel constractModel = null;
 		String importType;
 		int precision;
@@ -597,7 +597,9 @@ public class TaskController {
 						}
 						// 类型匹配
 						if (mapped) {
-							importType = colTypeMapping.getJavaType();
+							// 规避数组类型
+							importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
+									.trim();
 							break;
 						}
 					}
@@ -638,7 +640,17 @@ public class TaskController {
 			}
 			// 增加类引入类型对象
 			if (importType != null && importType.indexOf(".") != -1 && !impList.contains(importType)) {
-				impList.add(importType);
+				if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
+					impList.add(importType);
+				}
+			}
+			if (colTypeMapping != null && StringUtil.isNotBlank(colTypeMapping.getImportTypes())) {
+				String[] imports = colTypeMapping.getImportTypes().split("\\,");
+				for (String imp : imports) {
+					if (!impList.contains(imp.trim())) {
+						impList.add(imp.trim());
+					}
+				}
 			}
 			quickColMetas.add(quickColMeta);
 		}

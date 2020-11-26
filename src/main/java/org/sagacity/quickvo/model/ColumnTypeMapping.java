@@ -53,6 +53,11 @@ public class ColumnTypeMapping implements Serializable {
 	private String resultType;
 
 	/**
+	 * 导入依赖的类型
+	 */
+	private String importTypes;
+
+	/**
 	 * @return the jdbcType
 	 */
 	public String getJdbcType() {
@@ -160,4 +165,13 @@ public class ColumnTypeMapping implements Serializable {
 		}
 	}
 
+	public String getImportTypes() {
+		return importTypes;
+	}
+
+	public void setImportTypes(String importTypes) {
+		this.importTypes = importTypes;
+	}
+
+	
 }
