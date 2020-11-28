@@ -25,14 +25,24 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("=========     welcome use sagacity-quickvo-4.16.8     ==========");
+			out.println("=========    welcome use sagacity-quickvo-4.16.9     ==========");
 			// 解析配置文件
 			ConfigModel configModel = XMLConfigLoader.parse();
 			TaskController.setConfigModel(configModel);
 			// 创建vo和vof
 			TaskController.create();
 			FreemarkerUtil.destory();
-			logger.info("成功完成vo以及vo<-->po映射类的生成!");
+			// 发生表字段重复现象
+			if (Constants.hasRepeatField) {
+				logger.info("/*------------已经发生生成的VO对象字段重复致命性错误原因提醒!---------------------------------------*/\n"
+						+ "/*-1、原因就是datasource中的schema 和 catalog 配置问题,导致在多用户多实例环境下隔离不正确!\n"
+						+ "/*-2、比如mysql场景下可以设置schema和catalog的值一致进行尝试!\n"
+						+ "/*-3、datasource中是可以配置schema和catalog属性的，如果没有可以自行调整!\n"
+						+ "/*-4、取表字段的内部原理:conn.getMetaData().getColumns(catalog, schema, tableName, \"%\");\n"
+						+ "/*-------------------------------------------------------------*/");
+			} else {
+				logger.info("成功完成vo以及vo<-->po映射类的生成!");
+			}
 		} catch (ClassNotFoundException connectionException) {
 			logger.info("数据库驱动加载失败!请将数据库驱动jar文件放到当前目录libs目录下!" + connectionException.getMessage());
 		} catch (Exception e) {

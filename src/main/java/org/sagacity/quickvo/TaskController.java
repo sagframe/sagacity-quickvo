@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.sagacity.quickvo.model.BusinessIdConfig;
@@ -163,7 +165,11 @@ public class TaskController {
 		List tables = DBHelper.getTableAndView(includes, quickModel.getExcludeTables() == null ? null
 				: new String[] { "(?i)".concat(quickModel.getExcludeTables()) });
 		if (tables == null || tables.isEmpty()) {
-			logger.info("没有取到匹配的表,请检查数据库配置是否正确,尤其关注:catalog 或 schema 配置以及任务中 includes 正则表达式配置!");
+			logger.info("/*--------没有取到匹配的表，错误原因提示,请严重关注!-------------------------------*/\n"
+					+ "/*-1、请检查task配置中的: include=\"" + quickModel.getIncludeTables() + "\"是否正确!这是用来表名匹配的正则表达式!\n"
+					+ "/*-2、请检查datasource配置,关注schema、catalog属性配置是否正确、或者大小写,其核心原理:conn.getMetaData().getTables(catalog, schema,*, TABLE);\n"
+					+ "/* -------友情提示:datasoure中是可以包含: schema=''和 catalog='' 属性的，请灵活应用! ----------- \n"
+					+ "/*---------------------------------------------------*/");
 			return;
 		}
 		logger.info("当前任务共取出:" + tables.size() + " 张表或视图!");
@@ -263,7 +269,7 @@ public class TaskController {
 
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
-			List colList = processTableCols(configModel, DBHelper.getTableColumnMeta(tableName),
+			List<QuickColMeta> colList = processTableCols(configModel, DBHelper.getTableColumnMeta(tableName),
 					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList, dbType, dialect);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
 			// 处理主键被其它表作为外键关联
@@ -434,7 +440,7 @@ public class TaskController {
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
 			// 删除多余导入类型
-			//deleteUselessTypes(impList, colList);
+			// deleteUselessTypes(impList, colList);
 			// 创建vo abstract文件
 			if (quickModel.isHasAbstractEntity()) {
 				// 创建abstract entity文件
@@ -485,10 +491,17 @@ public class TaskController {
 		if (configModel.getTypeMapping() != null && !configModel.getTypeMapping().isEmpty()) {
 			typeMappSize = configModel.getTypeMapping().size();
 		}
+		Set<String> colsSet = new HashSet<String>();
 		for (int i = 0; i < cols.size(); i++) {
 			colMeta = (TableColumnMeta) cols.get(i);
 			QuickColMeta quickColMeta = new QuickColMeta();
 			quickColMeta.setColRemark(colMeta.getColRemark());
+			//判断是否存在重复字段
+			if (colsSet.contains(colMeta.getColName().toLowerCase())) {
+				Constants.hasRepeatField = true;
+			} else {
+				colsSet.add(colMeta.getColName().toLowerCase());
+			}
 			// update 2020-4-8 剔除掉UNSIGNED对类型的干扰
 			String jdbcType = colMeta.getTypeName().replaceFirst("(?i)\\sUNSIGNED", "");
 			if (colMeta.getTypeName().indexOf(".") != -1) {
