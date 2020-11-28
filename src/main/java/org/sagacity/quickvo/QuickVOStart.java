@@ -25,14 +25,33 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("=========     welcome use sagacity-quickvo-4.16.8     ==========");
+			out.println("\n\n=========    welcome use sagacity-quickvo-4.16.9     ==========");
+			out.println("/*----遇到问题请关注日志提示，最常见错误有2个:                                            \n"
+					+ "/*-1、没有匹配到表: include表达式或 schema和catalog配置错误(含大小写)         \n"
+					+ "/*-2、VO中字段出现重复字段，错误就是schema和catalog配置问题                           \n"
+					+ "/*---------------------------------------------------------------*/\n\n ");
+			Thread.sleep(1500);
+
 			// 解析配置文件
 			ConfigModel configModel = XMLConfigLoader.parse();
 			TaskController.setConfigModel(configModel);
 			// 创建vo和vof
 			TaskController.create();
 			FreemarkerUtil.destory();
-			logger.info("成功完成vo以及vo<-->po映射类的生成!");
+			// 发生表字段重复现象
+			if (Constants.hasRepeatField) {
+				Thread.sleep(1000);
+				logger.info("\n\n\n/*------------任务已结束,生成的VO对象中有重复字段致命性错误,具体原因:---------------------------*/\n"
+						+ "/*-  就是datasource中的schema 和 catalog 配置问题,导致在多用户多实例环境下隔离不正确!\n"
+						+ "/*--------------------------处理协助----------------------------------\n"
+						+ "/*-1、比如mysql场景下可以设置schema和catalog的值一致进行尝试!\n"
+						+ "/*-2、datasource中是可以配置schema和catalog属性的，如果没有可以自行调整和尝试赋值(不同数据库一般跟用户名，库名、tablespace等相关)!\n"
+						+ "/*-3、取表字段的内部原理:conn.getMetaData().getColumns(catalog, schema, tableName, \"%\");\n"
+						+ "/*-------------------------------------------------------------*/");
+				Thread.sleep(10000);
+			} else {
+				logger.info("成功完成vo以及vo<-->po映射类的生成!");
+			}
 		} catch (ClassNotFoundException connectionException) {
 			logger.info("数据库驱动加载失败!请将数据库驱动jar文件放到当前目录libs目录下!" + connectionException.getMessage());
 		} catch (Exception e) {

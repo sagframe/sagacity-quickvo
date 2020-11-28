@@ -157,11 +157,12 @@ public class Constants implements Serializable {
 			{ "VARBINARY", "BINARY" }, { "LONGVARBINARY", "BINARY" }, { "BYTEA", "BINARY" }, { "LONGBLOB", "BLOB" },
 			{ "BOOLEAN", "BOOLEAN" }, { "BOOL", "BOOLEAN" }, { "MEDIUMBLOB", "BLOB" }, { "LONGTEXT", "VARCHAR" },
 			{ "MEDIUMTEXT", "VARCHAR" }, { "TEXT", "VARCHAR" }, { "_TEXT", "ARRAY" }, { "JSON", "VARCHAR" },
-			{ "TINYTEXT", "VARCHAR" }, { "VARCHAR", "VARCHAR" },{ "_VARCHAR", "ARRAY" }, { "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" },
-			{ "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" }, { "INT", "INTEGER" }, { "INTEGER", "INTEGER" },
-			{ "BIGINT", "BIGINT" }, { "BIT", "BIT" }, { "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" },
-			{ "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" }, { "NUMERIC", "DECIMAL" }, { "_NUMERIC", "ARRAY" },
-			{ "IMAGE", "LONGVARBINARY" }, { "GEOMETRY", "VARCHAR" }, { "SDO_GEOMETRY", "VARCHAR" } };
+			{ "TINYTEXT", "VARCHAR" }, { "VARCHAR", "VARCHAR" }, { "_VARCHAR", "ARRAY" }, { "NVARCHAR", "VARCHAR" },
+			{ "BPCHAR", "VARCHAR" }, { "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" }, { "INT", "INTEGER" },
+			{ "INTEGER", "INTEGER" }, { "BIGINT", "BIGINT" }, { "BIT", "BIT" }, { "NUMBER", "DECIMAL" },
+			{ "DECIMAL", "DECIMAL" }, { "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" }, { "NUMERIC", "DECIMAL" },
+			{ "_NUMERIC", "ARRAY" }, { "IMAGE", "LONGVARBINARY" }, { "GEOMETRY", "VARCHAR" },
+			{ "SDO_GEOMETRY", "VARCHAR" } };
 
 	/**
 	 * 全局常量map
@@ -175,6 +176,11 @@ public class Constants implements Serializable {
 		}
 		return Integer.parseInt(maxScale);
 	}
+
+	/**
+	 * 是否存在表中字段重复(多个schema场景出现了隔离问题)
+	 */
+	public static boolean hasRepeatField = false;
 
 	/**
 	 * @todo 加载xml中的参数
