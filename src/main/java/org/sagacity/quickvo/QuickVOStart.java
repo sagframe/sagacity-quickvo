@@ -43,7 +43,7 @@ public class QuickVOStart {
 				Thread.sleep(1000);
 				logger.info("\n\n\n/*------------任务已结束,生成的VO对象中有重复字段致命性错误,具体原因:---------------------------*/\n"
 						+ "/*-  就是datasource中的schema 和 catalog 配置问题,导致在多用户多实例环境下隔离不正确!\n"
-						+ "/*--------------------------处理协助分析-------------------------------\n"
+						+ "/*--------------------------处理协助----------------------------------\n"
 						+ "/*-1、比如mysql场景下可以设置schema和catalog的值一致进行尝试!\n"
 						+ "/*-2、datasource中是可以配置schema和catalog属性的，如果没有可以自行调整和尝试赋值(不同数据库一般跟用户名，库名、tablespace等相关)!\n"
 						+ "/*-3、取表字段的内部原理:conn.getMetaData().getColumns(catalog, schema, tableName, \"%\");\n"
