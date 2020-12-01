@@ -496,7 +496,7 @@ public class TaskController {
 			colMeta = (TableColumnMeta) cols.get(i);
 			QuickColMeta quickColMeta = new QuickColMeta();
 			quickColMeta.setColRemark(colMeta.getColRemark());
-			//判断是否存在重复字段
+			// 判断是否存在重复字段
 			if (colsSet.contains(colMeta.getColName().toLowerCase())) {
 				Constants.hasRepeatField = true;
 			} else {
@@ -536,8 +536,9 @@ public class TaskController {
 
 			// 默认数据类型进行匹配
 			String[] jdbcTypeMap;
-			for (int k = 0; k < Constants.jdbcTypMapping.length; k++) {
-				jdbcTypeMap = Constants.jdbcTypMapping[k];
+			String[][] jdbcTypeMapping = Constants.getJdbcTypeMapping(dbType);
+			for (int k = 0; k < jdbcTypeMapping.length; k++) {
+				jdbcTypeMap = jdbcTypeMapping[k];
 				if (sqlType.equalsIgnoreCase(jdbcTypeMap[0])) {
 					// 针对一些数据库要求提供数据库类型和数据类型双重判断
 					if ((jdbcTypeMap.length == 4 && dialect.equals(jdbcTypeMap[3])) || jdbcTypeMap.length == 3) {
@@ -675,29 +676,29 @@ public class TaskController {
 	 * @param impTypes
 	 * @param columns
 	 */
-	private static void deleteUselessTypes(List impTypes, List columns) {
-		if (impTypes == null || impTypes.isEmpty()) {
-			return;
-		}
-		QuickColMeta quickColMeta;
-		boolean isMatched = false;
-		String dataType;
-		for (int i = 0; i < impTypes.size(); i++) {
-			dataType = (String) impTypes.get(i);
-			for (int j = 0; j < columns.size(); j++) {
-				quickColMeta = (QuickColMeta) columns.get(j);
-				if (StringUtil.indexOfIgnoreCase(dataType, quickColMeta.getResultType()) != -1) {
-					isMatched = true;
-					break;
-				}
-			}
-			// 没有匹配的数据类型，则将import类型数组中去除相应类型
-			if (!isMatched) {
-				impTypes.remove(i);
-				i--;
-			}
-		}
-	}
+//	private static void deleteUselessTypes(List impTypes, List columns) {
+//		if (impTypes == null || impTypes.isEmpty()) {
+//			return;
+//		}
+//		QuickColMeta quickColMeta;
+//		boolean isMatched = false;
+//		String dataType;
+//		for (int i = 0; i < impTypes.size(); i++) {
+//			dataType = (String) impTypes.get(i);
+//			for (int j = 0; j < columns.size(); j++) {
+//				quickColMeta = (QuickColMeta) columns.get(j);
+//				if (StringUtil.indexOfIgnoreCase(dataType, quickColMeta.getResultType()) != -1) {
+//					isMatched = true;
+//					break;
+//				}
+//			}
+//			// 没有匹配的数据类型，则将import类型数组中去除相应类型
+//			if (!isMatched) {
+//				impTypes.remove(i);
+//				i--;
+//			}
+//		}
+//	}
 
 	/**
 	 * @todo 判断字段是否全不为null,是返回1，可以有null返回0

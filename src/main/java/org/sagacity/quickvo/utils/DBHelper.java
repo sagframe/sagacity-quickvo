@@ -21,7 +21,7 @@ import org.sagacity.quickvo.model.DataSourceModel;
 import org.sagacity.quickvo.model.TableColumnMeta;
 import org.sagacity.quickvo.model.TableConstractModel;
 import org.sagacity.quickvo.model.TableMeta;
-import org.sagacity.quickvo.utils.DBUtil.DbType;
+import org.sagacity.quickvo.utils.DBUtil.DBType;
 import org.sagacity.quickvo.utils.callback.PreparedStatementResultHandler;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -141,12 +141,12 @@ public class DBHelper {
 		// 数据库表注释，默认为remarks，不同数据库其名称不一样
 		String commentName = "REMARKS";
 		// oracle数据库
-		if (dbType == DbType.ORACLE || dbType == DbType.ORACLE12) {
+		if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
 			pst = conn.prepareStatement("select * from user_tab_comments");
 			rs = pst.executeQuery();
 			commentName = "COMMENTS";
 		} // mysql数据库
-		else if (dbType == DbType.MYSQL) {
+		else if (dbType == DBType.MYSQL) {
 			StringBuilder queryStr = new StringBuilder("SELECT TABLE_NAME,TABLE_SCHEMA,TABLE_TYPE,TABLE_COMMENT ");
 			queryStr.append(" FROM INFORMATION_SCHEMA.TABLES where 1=1 ");
 			if (schema != null) {
@@ -231,7 +231,7 @@ public class DBHelper {
 		ResultSet rs;
 		// sqlserver
 		String tableComment = null;
-		if (dbType == DbType.SQLSERVER) {
+		if (dbType == DBType.SQLSERVER) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append("select cast(isnull(f.value,'') as varchar(1000)) COMMENTS");
 			queryStr.append(" from syscolumns a");
@@ -265,8 +265,8 @@ public class DBHelper {
 		ResultSet rs;
 		HashMap filedsComments = null;
 		// sybase or sqlserver
-		if (dbType == DbType.SQLSERVER) {
-			if (dbType == DbType.SQLSERVER) {
+		if (dbType == DBType.SQLSERVER) {
+			if (dbType == DBType.SQLSERVER) {
 				StringBuilder queryStr = new StringBuilder();
 				queryStr.append("SELECT a.name COLUMN_NAME,");
 				queryStr.append(" cast(isnull(g.[value],'') as varchar(1000)) as COMMENTS");
@@ -311,7 +311,7 @@ public class DBHelper {
 						if (colName == null) {
 							colName = rs.getString("column_name");
 						}
-						if (dbType == DbType.SQLSERVER) {
+						if (dbType == DBType.SQLSERVER) {
 							if (metaMap == null) {
 								colMeta = new TableColumnMeta();
 								colMeta.setColName(colName);
@@ -368,7 +368,7 @@ public class DBHelper {
 		}
 
 		// oracle 数据库
-		if (dbType == DbType.ORACLE || dbType == DbType.ORACLE12) {
+		if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append("SELECT t1.*,t2.DATA_DEFAULT FROM (SELECT COLUMN_NAME,COMMENTS");
 			queryStr.append("  FROM user_col_comments");
@@ -397,7 +397,7 @@ public class DBHelper {
 					});
 		}
 		// clickhouse 数据库
-		if (dbType == DbType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append(
 					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY from system.columns t where t.table=?");
@@ -426,7 +426,7 @@ public class DBHelper {
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
-		if (dbType == DbType.MYSQL) {
+		if (dbType == DBType.MYSQL) {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, "%");
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
@@ -469,7 +469,7 @@ public class DBHelper {
 							}
 						} catch (Exception e) {
 						}
-						if (dbType == DbType.ORACLE12) {
+						if (dbType == DBType.ORACLE) {
 							if (colMeta.getColDefault() != null
 									&& colMeta.getColDefault().toLowerCase().endsWith(".nextval")) {
 								colMeta.setAutoIncrement(true);
@@ -586,7 +586,7 @@ public class DBHelper {
 	public static List getTablePrimaryKeys(String tableName) throws Exception {
 		int dbType = DBUtil.getDbType(conn);
 		ResultSet rs;
-		if (dbType == DbType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE) {
 			rs = conn.createStatement().executeQuery("select t.name COLUMN_NAME from system.columns t where t.table='"
 					+ tableName + "' and t.is_in_primary_key=1");
 		} else {
@@ -615,7 +615,7 @@ public class DBHelper {
 	public static String getTablePKConstraint(String tableName) throws Exception {
 		String pkName = null;
 		int dbType = DBUtil.getDbType(conn);
-		if (dbType == DbType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE) {
 			return pkName;
 		}
 		try {
