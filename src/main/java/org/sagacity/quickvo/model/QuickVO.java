@@ -129,6 +129,11 @@ public class QuickVO implements Serializable {
 	private boolean lombokChain = false;
 
 	/**
+	 * 
+	 */
+	private String extendsClass;
+
+	/**
 	 * @return the singlePk
 	 */
 	public String getSinglePk() {
@@ -616,6 +621,20 @@ public class QuickVO implements Serializable {
 
 	public void setAbstractEntitySerialUID(String abstractEntitySerialUID) {
 		this.abstractEntitySerialUID = abstractEntitySerialUID;
+	}
+
+	/**
+	 * @return the extendsClass
+	 */
+	public String getExtendsClass() {
+		return extendsClass;
+	}
+
+	/**
+	 * @param extendsClass the extendsClass to set
+	 */
+	public void setExtendsClass(String extendsClass) {
+		this.extendsClass = extendsClass;
 	}
 
 }

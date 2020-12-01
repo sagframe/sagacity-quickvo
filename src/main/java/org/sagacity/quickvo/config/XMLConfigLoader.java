@@ -148,6 +148,11 @@ public class XMLConfigLoader {
 					} else {
 						quickModel.setEntityName("#{subName}");
 					}
+
+					// 是否有父类
+					if (entity.hasAttribute("extends")) {
+						quickModel.setVoExtends(entity.getAttribute("extends"));
+					}
 					quickModel.setHasEntity(true);
 				}
 				// vo(update 2020-10-15 单独vo时意义转为entity兼容旧模式)，如跟entity一起使用等于dto的概念
@@ -172,6 +177,10 @@ public class XMLConfigLoader {
 							quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
 						} else {
 							quickModel.setVoName("#{subName}");
+						}
+						// 是否有父类
+						if (vo.hasAttribute("extends")) {
+							quickModel.setVoExtends(vo.getAttribute("extends"));
 						}
 						quickModel.setHasVO(true);
 					} // 只有vo，则用entity来代替
