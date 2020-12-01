@@ -52,8 +52,8 @@ public class QuickVOStart {
 			} else {
 				logger.info("成功完成vo以及vo<-->po映射类的生成!");
 			}
-		} catch (ClassNotFoundException connectionException) {
-			logger.info("数据库驱动加载失败!请将数据库驱动jar文件放到当前目录libs目录下!" + connectionException.getMessage());
+		} catch (ClassNotFoundException e) {
+			logger.info("数据库驱动加载失败!请将数据库驱动jar文件放到当前目录libs目录下!" + e.getMessage());
 		} catch (Exception e) {
 			logger.info(e.getMessage());
 		}
