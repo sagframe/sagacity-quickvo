@@ -423,7 +423,6 @@ public class DBHelper {
 					});
 		}
 		final HashMap metaMap = filedsComments;
-
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
@@ -508,7 +507,7 @@ public class DBHelper {
 		if (result.indexOf("(") != -1 && result.indexOf(")") != -1 && result.indexOf("::") != -1) {
 			result = result.substring(result.indexOf("(") + 1, result.indexOf("::"));
 		}
-		//postgresql
+		// postgresql
 		if (result.indexOf("'") != -1 && result.indexOf("::") != -1) {
 			result = result.substring(0, result.indexOf("::"));
 		}
