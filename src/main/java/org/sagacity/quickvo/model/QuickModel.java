@@ -25,6 +25,16 @@ public class QuickModel implements Serializable {
 	private boolean hasVO = false;
 
 	/**
+	 * 实体类继承
+	 */
+	private String entityExtends;
+
+	/**
+	 * vo继承父类
+	 */
+	private String voExtends;
+
+	/**
 	 * 是否支持google的 lombok
 	 */
 	private boolean lombok = false;
@@ -240,6 +250,34 @@ public class QuickModel implements Serializable {
 
 	public void setHasAbstractEntity(boolean hasAbstractEntity) {
 		this.hasAbstractEntity = hasAbstractEntity;
+	}
+
+	/**
+	 * @return the voExtends
+	 */
+	public String getVoExtends() {
+		return voExtends;
+	}
+
+	/**
+	 * @param voExtends the voExtends to set
+	 */
+	public void setVoExtends(String voExtends) {
+		this.voExtends = voExtends;
+	}
+
+	/**
+	 * @return the entityExtends
+	 */
+	public String getEntityExtends() {
+		return entityExtends;
+	}
+
+	/**
+	 * @param entityExtends the entityExtends to set
+	 */
+	public void setEntityExtends(String entityExtends) {
+		this.entityExtends = entityExtends;
 	}
 
 }

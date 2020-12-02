@@ -16,6 +16,9 @@ import lombok.*;
 import ${import};
 </#list>
 </#if>
+<#if (quickVO.voExtends?exists)>
+import ${quickVO.voExtends};
+</#if>
 
 /**
  * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
@@ -31,7 +34,11 @@ import ${import};
 @Accessors(fluent = true)
 </#if>
 </#if>
+<#if (quickVO.voExtends?exists)>
+public class ${quickVO.voName} extends ${quickVO.voExtends?substring(quickVO.voExtends?last_index_of(".")+1)} implements Serializable {
+<#else>
 public class ${quickVO.voName} implements Serializable {
+</#if>
 	
 	/**
 	 * 
