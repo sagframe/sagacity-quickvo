@@ -25,8 +25,8 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("\n\n=========    welcome use sagacity-quickvo-4.16.9     ==========");
-			out.println("/*----遇到问题请关注日志提示，最常见错误有2个:                                            \n"
+			out.println("\n\n=========    welcome use sagacity-quickvo-4.17.1     ==========");
+			out.println("/*----遇到问题请关注日志提示，最常见错误有2个:     ----------------------------*/\n"
 					+ "/*-1、没有匹配到表: include表达式或 schema和catalog配置错误(含大小写)         \n"
 					+ "/*-2、VO中字段出现重复字段，错误就是schema和catalog配置问题                           \n"
 					+ "/*---------------------------------------------------------------*/\n\n ");
