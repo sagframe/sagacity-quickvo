@@ -151,7 +151,7 @@ public class XMLConfigLoader {
 
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
-						quickModel.setVoExtends(entity.getAttribute("extends"));
+						quickModel.setEntityExtends(entity.getAttribute("extends"));
 					}
 					quickModel.setHasEntity(true);
 				}
@@ -194,6 +194,10 @@ public class XMLConfigLoader {
 							quickModel.setEntityName(Constants.replaceConstants(vo.getAttribute("name")));
 						} else {
 							quickModel.setEntityName("#{subName}");
+						}
+						// 是否有父类
+						if (vo.hasAttribute("extends")) {
+							quickModel.setEntityExtends(vo.getAttribute("extends"));
 						}
 						quickModel.setHasEntity(true);
 					}

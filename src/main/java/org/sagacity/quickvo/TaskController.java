@@ -215,6 +215,8 @@ public class TaskController {
 			businessIdConfig = configModel.getBusinessId(tableName);
 			quickVO = new QuickVO();
 			quickVO.setSelectFields(selectFields);
+			quickVO.setVoExtends(quickModel.getVoExtends());
+			quickVO.setEntityExtends(quickModel.getEntityExtends());
 			// 匹配表主键产生策略，主键策略通过配置文件进行附加定义
 			PrimaryKeyStrategy primaryKeyStrategy = getPrimaryKeyStrategy(configModel.getPkGeneratorStrategy(),
 					tableName);

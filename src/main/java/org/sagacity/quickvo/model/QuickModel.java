@@ -25,6 +25,11 @@ public class QuickModel implements Serializable {
 	private boolean hasVO = false;
 
 	/**
+	 * 实体类继承
+	 */
+	private String entityExtends;
+
+	/**
 	 * vo继承父类
 	 */
 	private String voExtends;
@@ -261,5 +266,18 @@ public class QuickModel implements Serializable {
 		this.voExtends = voExtends;
 	}
 
-	
+	/**
+	 * @return the entityExtends
+	 */
+	public String getEntityExtends() {
+		return entityExtends;
+	}
+
+	/**
+	 * @param entityExtends the entityExtends to set
+	 */
+	public void setEntityExtends(String entityExtends) {
+		this.entityExtends = entityExtends;
+	}
+
 }

@@ -32,6 +32,9 @@ import org.sagacity.sqltoy.config.annotation.OneToMany;
 import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>
 </#if>
+<#if (quickVO.entityExtends?exists)>
+import ${quickVO.entityExtends};
+</#if>
 
 /**
  * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
@@ -42,7 +45,11 @@ import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 @ApiModel(value="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
 </#if>
 @Entity(tableName="${quickVO.tableName}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
+<#if (quickVO.entityExtends?exists)>
+public abstract class Abstract${quickVO.entityName} extends ${quickVO.entityExtends?substring(quickVO.entityExtends?last_index_of(".")+1)} implements Serializable {
+<#else>
 public abstract class Abstract${quickVO.entityName} implements Serializable {
+</#if>
 	
 	/**
 	 * 
