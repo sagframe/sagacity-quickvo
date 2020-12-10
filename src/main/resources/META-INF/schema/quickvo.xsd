@@ -169,7 +169,7 @@
 				<!-- 业务主键策略 -->
 				<xsd:element name="business-primary-key" maxOccurs="1">
 					<xsd:complexType>
-						<xsd:choice maxOccurs="unbounded">
+						<xsd:choice maxOccurs="unbounded" minOccurs="0">
 							<xsd:element name="table">
 								<xsd:complexType>
 									<xsd:attribute name="name" use="required"
