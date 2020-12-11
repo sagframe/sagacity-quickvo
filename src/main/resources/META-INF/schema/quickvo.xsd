@@ -169,7 +169,7 @@
 				<!-- 业务主键策略 -->
 				<xsd:element name="business-primary-key" maxOccurs="1">
 					<xsd:complexType>
-						<xsd:choice maxOccurs="unbounded">
+						<xsd:choice maxOccurs="unbounded" minOccurs="0">
 							<xsd:element name="table">
 								<xsd:complexType>
 									<xsd:attribute name="name" use="required"
@@ -239,7 +239,7 @@
 					</xsd:annotation>
 					<xsd:complexType>
 						<xsd:sequence maxOccurs="unbounded">
-							<xsd:element name="sql-type" maxOccurs="unbounded">
+							<xsd:element name="sql-type" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:attribute name="native-types"
 										type="xsd:string" use="required" />
