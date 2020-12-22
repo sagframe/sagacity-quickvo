@@ -47,6 +47,7 @@ public class DBUtil {
 
 		// 9.5+ 开始
 		public final static String POSTGRESQL = "postgresql";
+		public final static String GREENPLUM = "greenplum";
 
 		// 华为gaussdb(源于postgresql)未验证
 		public final static String GAUSSDB = "gaussdb";
@@ -137,6 +138,7 @@ public class DBUtil {
 		DBNameTypeMap.put(Dialect.INNOSQL, DBType.MYSQL);
 
 		DBNameTypeMap.put(Dialect.POSTGRESQL, DBType.POSTGRESQL);
+		DBNameTypeMap.put(Dialect.GREENPLUM, DBType.POSTGRESQL);
 		DBNameTypeMap.put(Dialect.GAUSSDB, DBType.GAUSSDB);
 
 		DBNameTypeMap.put(Dialect.MONGO, DBType.MONGO);
@@ -179,6 +181,9 @@ public class DBUtil {
 			}
 			// postgresql
 			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.POSTGRESQL) != -1) {
+				return Dialect.POSTGRESQL;
+			}
+			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GREENPLUM) != -1) {
 				return Dialect.POSTGRESQL;
 			}
 			// sqlserver,只支持2012或以上版本
@@ -274,6 +279,8 @@ public class DBUtil {
 			}
 			// 9.5以上为标准支持模式
 			else if (dbDialect.equals(Dialect.POSTGRESQL)) {
+				dbType = DBType.POSTGRESQL;
+			} else if (dbDialect.equals(Dialect.GREENPLUM)) {
 				dbType = DBType.POSTGRESQL;
 			}
 			// sqlserver,只支持2012或以上版本
