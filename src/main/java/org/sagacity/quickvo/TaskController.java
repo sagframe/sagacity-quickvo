@@ -758,13 +758,15 @@ public class TaskController {
 			for (TableConstractModel exportKey : exportKeys) {
 				refTable = exportKey.getPkRefTableName();
 				refJavaTable = StringUtil.toHumpStr(refTable, true);
-				if (StringUtil.isNotBlank(fieldPrefix) && exportKey.getPkColName().startsWith(fieldPrefix)) {
+				if (StringUtil.isNotBlank(fieldPrefix)
+						&& exportKey.getPkColName().toLowerCase().startsWith(fieldPrefix)) {
 					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName().substring(fieldPrefix.length()),
 							false);
 				} else {
 					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName(), false);
 				}
-				if (StringUtil.isNotBlank(fieldPrefix) && exportKey.getPkRefColName().startsWith(fieldPrefix)) {
+				if (StringUtil.isNotBlank(fieldPrefix)
+						&& exportKey.getPkRefColName().toLowerCase().startsWith(fieldPrefix)) {
 					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName().substring(fieldPrefix.length()),
 							false);
 				} else {
