@@ -25,6 +25,11 @@ public class QuickModel implements Serializable {
 	private boolean hasVO = false;
 
 	/**
+	 * 字段统一剔除的前缀
+	 */
+	private String fieldRidPrefix;
+
+	/**
 	 * 实体类继承
 	 */
 	private String entityExtends;
@@ -278,6 +283,20 @@ public class QuickModel implements Serializable {
 	 */
 	public void setEntityExtends(String entityExtends) {
 		this.entityExtends = entityExtends;
+	}
+
+	/**
+	 * @return the fieldRidPrefix
+	 */
+	public String getFieldRidPrefix() {
+		return fieldRidPrefix;
+	}
+
+	/**
+	 * @param fieldRidPrefix the fieldRidPrefix to set
+	 */
+	public void setFieldRidPrefix(String fieldRidPrefix) {
+		this.fieldRidPrefix = fieldRidPrefix;
 	}
 
 }

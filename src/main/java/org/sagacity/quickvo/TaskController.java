@@ -272,7 +272,8 @@ public class TaskController {
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
 			List<QuickColMeta> colList = processTableCols(configModel, DBHelper.getTableColumnMeta(tableName),
-					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList, dbType, dialect);
+					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList,
+					quickModel.getFieldRidPrefix(), dbType, dialect);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
 			// 处理主键被其它表作为外键关联
 			processExportTables(quickVO, exportKeys, quickModel);
@@ -473,12 +474,14 @@ public class TaskController {
 	 * @param cols
 	 * @param fks
 	 * @param impList
+	 * @param ridPrefix
 	 * @param dbType
+	 * @param dialect
 	 * @return
 	 * @throws Exception
 	 */
-	private static List processTableCols(ConfigModel configModel, List cols, List fks, List impList, int dbType,
-			String dialect) throws Exception {
+	private static List processTableCols(ConfigModel configModel, List cols, List fks, List impList, String ridPrefix,
+			int dbType, String dialect) throws Exception {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
@@ -519,7 +522,13 @@ public class TaskController {
 			quickColMeta.setDataType(jdbcType);
 			quickColMeta.setColName(colMeta.getColName());
 			quickColMeta.setAutoIncrement(Boolean.toString(colMeta.isAutoIncrement()));
-			quickColMeta.setColJavaName(StringUtil.toHumpStr(colMeta.getColName(), true));
+			// 剔除字段统一前缀
+			if (StringUtil.isNotBlank(ridPrefix) && colMeta.getColName().toLowerCase().startsWith(ridPrefix)) {
+				quickColMeta
+						.setColJavaName(StringUtil.toHumpStr(colMeta.getColName().substring(ridPrefix.length()), true));
+			} else {
+				quickColMeta.setColJavaName(StringUtil.toHumpStr(colMeta.getColName(), true));
+			}
 
 			quickColMeta.setJdbcType(jdbcType);
 			quickColMeta.setPrecision(colMeta.getPrecision());
@@ -631,8 +640,14 @@ public class TaskController {
 					if (colMeta.getColName().equalsIgnoreCase(constractModel.getFkColName())) {
 						quickColMeta
 								.setFkRefJavaTableName(StringUtil.toHumpStr(constractModel.getFkRefTableName(), true));
-						quickColMeta
-								.setFkRefTableColJavaName(StringUtil.toHumpStr(constractModel.getPkColName(), true));
+						if (StringUtil.isNotBlank(ridPrefix)
+								&& constractModel.getPkColName().toLowerCase().startsWith(ridPrefix)) {
+							quickColMeta.setFkRefTableColJavaName(StringUtil
+									.toHumpStr(constractModel.getPkColName().substring(ridPrefix.length()), true));
+						} else {
+							quickColMeta.setFkRefTableColJavaName(
+									StringUtil.toHumpStr(constractModel.getPkColName(), true));
+						}
 						break;
 					}
 				}
@@ -739,11 +754,22 @@ public class TaskController {
 			String pkColJavaName;
 			String pkRefColJavaName;
 			String refJavaTable;
+			String fieldPrefix = quickModel.getFieldRidPrefix();
 			for (TableConstractModel exportKey : exportKeys) {
 				refTable = exportKey.getPkRefTableName();
 				refJavaTable = StringUtil.toHumpStr(refTable, true);
-				pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName(), false);
-				pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName(), false);
+				if (StringUtil.isNotBlank(fieldPrefix) && exportKey.getPkColName().startsWith(fieldPrefix)) {
+					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName().substring(fieldPrefix.length()),
+							false);
+				} else {
+					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName(), false);
+				}
+				if (StringUtil.isNotBlank(fieldPrefix) && exportKey.getPkRefColName().startsWith(fieldPrefix)) {
+					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName().substring(fieldPrefix.length()),
+							false);
+				} else {
+					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName(), false);
+				}
 				if (subTablesMap.containsKey(refTable)) {
 					subTable = subTablesMap.get(refTable);
 					subTable.setPkColName(subTable.getPkColName() + ",\"" + exportKey.getPkColName() + "\"");

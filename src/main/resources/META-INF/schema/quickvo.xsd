@@ -124,6 +124,12 @@
 									<xsd:attribute name="include" type="xsd:string"
 										use="required" />
 									<xsd:attribute name="exclude" type="xsd:string" />
+									<xsd:attribute name="fields-rid-prefix"
+										type="xsd:string">
+										<xsd:annotation>
+											<xsd:documentation><![CDATA[部分用户数据库表字段喜欢统一设置一个开始符号，如:A_，在转成VO时希望剔除掉这个符号]]></xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
 								</xsd:complexType>
 							</xsd:element>
 						</xsd:sequence>
@@ -239,7 +245,8 @@
 					</xsd:annotation>
 					<xsd:complexType>
 						<xsd:sequence maxOccurs="unbounded">
-							<xsd:element name="sql-type" maxOccurs="unbounded" minOccurs="0">
+							<xsd:element name="sql-type" maxOccurs="unbounded"
+								minOccurs="0">
 								<xsd:complexType>
 									<xsd:attribute name="native-types"
 										type="xsd:string" use="required" />
