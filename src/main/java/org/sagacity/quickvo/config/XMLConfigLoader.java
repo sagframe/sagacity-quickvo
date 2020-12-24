@@ -120,6 +120,12 @@ public class XMLConfigLoader {
 				if (quickvo.hasAttribute("swagger-model")) {
 					quickModel.setSwaggerApi(Boolean.parseBoolean(quickvo.getAttribute("swagger-model")));
 				}
+
+				// 字段统一剔除的前缀
+				if (quickvo.hasAttribute("fields-rid-prefix")) {
+					quickModel.setFieldRidPrefix(quickvo.getAttribute("fields-rid-prefix").toLowerCase());
+				}
+
 				if (quickvo.hasAttribute("include")) {
 					// *表示全部,等同于没有include配置
 					if (!quickvo.getAttribute("include").equals("*")) {
