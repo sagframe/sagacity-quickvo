@@ -1,5 +1,9 @@
 package org.sagacity.quickvo.dialect;
 
+/**
+ * @author zhongxuchen
+ * @date 2020-10-12
+ */
 public class DefaultConstants {
 	/**
 	 * 默认数据类型匹配关系定义

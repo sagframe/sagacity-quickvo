@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @project sagacity-quickvo
  * @description 表关联的数据模型
  * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:TableConstractModel.java,Revision:v1.0,2009-04-19
+ * @version v1.0,2009-04-19
  */
 public class TableConstractModel implements Serializable {
 	/**

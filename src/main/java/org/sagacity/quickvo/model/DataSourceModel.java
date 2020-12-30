@@ -9,7 +9,7 @@ import java.io.Serializable;
  * @project sagacity-quickvo
  * @description 数据库配置模型
  * @author zhongxuchen <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:DataSourceModel.java,Revision:v1.0,Date:2017年12月30日
+ * @version v1.0,Date:2017年12月30日
  */
 public class DataSourceModel implements Serializable {
 	/**

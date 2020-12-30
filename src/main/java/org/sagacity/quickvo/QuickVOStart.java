@@ -13,7 +13,7 @@ import org.sagacity.quickvo.utils.LoggerUtil;
  * @project sagacity-quickvo
  * @description 快速从数据库生成VO以及VO<-->PO 映射的mapping工具
  * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:QuickVOStart.java,Revision:v2.0,Date:2009-04-15
+ * @version v2.0,Date:2009-04-15
  */
 public class QuickVOStart {
 	private static Logger logger = LoggerUtil.getLogger();

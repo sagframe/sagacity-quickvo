@@ -12,7 +12,7 @@ import java.util.List;
  * @project sagacity-quickvo
  * @description 任务配置数据模型
  * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:ConfigModel.java,Revision:v1.0,Date:2010-7-21
+ * @version v1.0,Date:2010-7-21
  */
 @SuppressWarnings("rawtypes")
 public class ConfigModel implements Serializable {

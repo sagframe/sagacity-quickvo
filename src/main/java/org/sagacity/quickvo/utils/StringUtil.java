@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @project sagacity-quickvo
  * @description 字符串处理常用功能
  * @author zhongxuchen <a href="mailto:zhongxuchen@gmail.com">联系作者</a>
- * @version id:StringUtil.java,Revision:v1.0,Date:2007-10-19
+ * @version v1.0,Date:2007-10-19
  */
 public class StringUtil {
 	/**
