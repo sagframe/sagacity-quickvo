@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @project sagacity-quickvo
  * @description 级联关系模型
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2016年12月1日
  */
 public class CascadeModel implements Serializable {

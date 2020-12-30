@@ -29,7 +29,7 @@ import org.w3c.dom.NodeList;
 /**
  * @project sagacity-quickvo
  * @description 解析xml配置文件
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2010-7-21
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })

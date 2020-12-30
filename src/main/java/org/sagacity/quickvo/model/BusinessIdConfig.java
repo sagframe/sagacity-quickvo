@@ -8,7 +8,7 @@ import java.io.Serializable;
 /**
  * @project sagacity-quickvo
  * @description 业务主键配置
- * @author zhongxuchen <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2018年1月20日
  */
 public class BusinessIdConfig implements Serializable {

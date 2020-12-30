@@ -15,7 +15,7 @@ import org.sagacity.quickvo.utils.callback.PreparedStatementResultHandler;
 /**
  * @project sagacity-quickvo
  * @description 数据库连接工具类
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2008-11-24
  */
 public class DBUtil {

@@ -28,7 +28,7 @@ import org.w3c.dom.NodeList;
 /**
  * @project sagacity-quickvo
  * @description quickVO涉及的常量定义
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2009-04-18
  */
 @SuppressWarnings({ "rawtypes" })

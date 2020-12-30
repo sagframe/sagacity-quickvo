@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @project sagacity-quickvo
  * @description 数据库表Meta信息
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2009-2-24
  */
 public class TableMeta implements Serializable {

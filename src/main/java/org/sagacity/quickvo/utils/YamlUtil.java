@@ -13,7 +13,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLParser;
 /**
  * @project sagacity-quickvo
  * @description 提供基于YAML配置文件的解析
- * @author zhongxuchen <a href="mailto:zhongxuchen@gmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2007-10-19
  */
 public class YamlUtil {

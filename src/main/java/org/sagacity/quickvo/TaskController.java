@@ -41,7 +41,7 @@ import org.sagacity.quickvo.utils.StringUtil;
 /**
  * @project sagacity-quickvo
  * @description 获取数据库表或视图信息,生成VO、AbstractVO、VOFactory文件
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
+ * @author zhongxuchen
  * @version v1.0,Date:2010-7-21
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
