@@ -54,14 +54,16 @@ public class ${quickVO.entityName} extends Abstract${quickVO.entityName} {
 	 */
 	public void mapping${exportTable.pkRefTableJavaName?cap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s(List<${quickVO.entityName}> mainSet,List<${exportTable.pkRefTableJavaName?cap_first}> itemSet)
     {
-    	if(mainSet==null || mainSet.isEmpty() || itemSet==null||itemSet.isEmpty())
-    		return;
+    	if(mainSet==null || mainSet.isEmpty() || itemSet==null||itemSet.isEmpty()){
+			return;
+	    }
     	${quickVO.entityName} main;
     	${exportTable.pkRefTableJavaName?cap_first} item;
     	for(int i=0;i<mainSet.size();i++){
     		main=mainSet.get(i);
-    		if(itemSet.size()==0)
+    		if(itemSet.size()==0){
     			break;
+	        }
     		for(int j=0;j<itemSet.size();j++){
     			item=itemSet.get(j);
     			if(${exportTable.pkEqualsFkStr}){
