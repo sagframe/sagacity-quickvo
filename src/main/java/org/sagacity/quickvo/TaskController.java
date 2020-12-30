@@ -125,7 +125,7 @@ public class TaskController {
 			isLinkSet = Boolean.parseBoolean(supportLinkedSet);
 		}
 		// 产生SelectField内部类
-		boolean generateFieldsClass = true;
+		boolean generateFieldsClass = false;
 		if (StringUtil.isNotBlank(selectFieldsClass)) {
 			generateFieldsClass = Boolean.parseBoolean(selectFieldsClass);
 		}
