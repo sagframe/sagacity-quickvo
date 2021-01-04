@@ -180,15 +180,5 @@ public class ${quickVO.entityName} implements Serializable {
     
 </#list>
 	}
-	
-	public static class Fields {
-<#list quickVO.columns as column>
-        /**
-         * ${column.colRemark!""}
-         */
-    	public static String ${column.colJavaName?uncap_first}="${column.colJavaName?uncap_first}";
-    
-</#list>
-	}
 </#if>
 }

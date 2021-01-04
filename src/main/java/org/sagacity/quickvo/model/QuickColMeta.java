@@ -10,8 +10,8 @@ import java.util.List;
 /**
  * @project sagacity-quickvo
  * @description quickvo 存放列信息的对象
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:QuickColMeta.java,Revision:v1.0,Date:2009-04-19
+ * @author zhongxuchen
+ * @version v1.0,Date:2009-04-19
  */
 public class QuickColMeta implements Serializable {
 	/**

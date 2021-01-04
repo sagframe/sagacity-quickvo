@@ -9,8 +9,8 @@ import java.util.HashMap;
 /**
  * @project sagacity-quickvo
  * @description 数据库字段对应字段数据类型映射模型
- * @author chenrenfei $<a href="mailto:zhongxuchen@hotmail.com">联系作者</a>$
- * @version id:ColumnTypeMapping.java,Revision:v1.0,2009-04-16
+ * @author zhongxuchen
+ * @version v1.0,2009-04-16
  */
 public class ColumnTypeMapping implements Serializable {
 	/**

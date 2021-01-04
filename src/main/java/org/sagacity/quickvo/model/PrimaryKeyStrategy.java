@@ -8,8 +8,8 @@ import java.io.Serializable;
 /**
  * @project sagacity-quickvo
  * @description 主键生成策略模型
- * @author renfei.chen <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:PrimaryKeyStrage.java,Revision:v1.0,Date:2012-6-7
+ * @author zhongxuchen
+ * @version v1.0,Date:2012-6-7
  */
 public class PrimaryKeyStrategy implements Serializable {
 	/**

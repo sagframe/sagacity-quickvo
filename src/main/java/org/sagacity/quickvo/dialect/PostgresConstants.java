@@ -4,8 +4,8 @@
 package org.sagacity.quickvo.dialect;
 
 /**
- * @author zhong
- *
+ * @author zhongxuchen
+ * @date 2020-10-12
  */
 public class PostgresConstants {
 	public static final String[][] jdbcTypeMapping = {

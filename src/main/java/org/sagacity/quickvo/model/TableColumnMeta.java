@@ -3,8 +3,8 @@ package org.sagacity.quickvo.model;
 /**
  * @project sagacity-quickvo
  * @description 数据库表字段属性
- * @author chenrenfei <a href="mailto:zhongxuchen@hotmail.com">联系作者</a>
- * @version id:TableColumnMeta.java,Revision:v1.0,Date:2009-2-24
+ * @author zhongxuchen
+ * @version v1.0,Date:2009-2-24
  */
 public class TableColumnMeta implements java.io.Serializable {
 	/**
