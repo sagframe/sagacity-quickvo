@@ -64,7 +64,7 @@ public class QuickModel implements Serializable {
 	/**
 	 * 是否支持swagger 注解
 	 */
-	private boolean swaggerApi = false;
+	private String swaggerApi = "false";
 
 	/**
 	 * 作者，主要针对Dao层提供任务责任人
@@ -180,14 +180,14 @@ public class QuickModel implements Serializable {
 	/**
 	 * @return the swaggerApi
 	 */
-	public boolean isSwaggerApi() {
+	public String getSwaggerApi() {
 		return swaggerApi;
 	}
 
 	/**
 	 * @param swaggerApi the swaggerApi to set
 	 */
-	public void setSwaggerApi(boolean swaggerApi) {
+	public void setSwaggerApi(String swaggerApi) {
 		this.swaggerApi = swaggerApi;
 	}
 

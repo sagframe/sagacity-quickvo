@@ -118,8 +118,14 @@
 										type="xsd:string" />
 									<xsd:attribute name="active" type="xsd:boolean"
 										use="required" />
-									<xsd:attribute name="swagger-model"
-										type="xsd:boolean" />
+									<xsd:attribute name="swagger-model">
+										<xsd:simpleType>
+											<xsd:restriction base="xsd:string">
+												<xsd:enumeration value="v3" />
+												<xsd:enumeration value="v2" />
+											</xsd:restriction>
+										</xsd:simpleType>
+									</xsd:attribute>
 									<xsd:attribute name="author" type="xsd:string" />
 									<xsd:attribute name="include" type="xsd:string"
 										use="required" />

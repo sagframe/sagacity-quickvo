@@ -183,7 +183,7 @@ public class QuickVO implements Serializable {
 	/**
 	 * 支持swaggerApi
 	 */
-	private boolean swaggerModel = false;
+	private String swaggerModel = "false";
 
 	/**
 	 * @return the tableRemark
@@ -560,14 +560,14 @@ public class QuickVO implements Serializable {
 	/**
 	 * @return the swaggerModel
 	 */
-	public boolean isSwaggerModel() {
+	public String getSwaggerModel() {
 		return swaggerModel;
 	}
 
 	/**
 	 * @param swaggerModel the swaggerModel to set
 	 */
-	public void setSwaggerModel(boolean swaggerModel) {
+	public void setSwaggerModel(String swaggerModel) {
 		this.swaggerModel = swaggerModel;
 	}
 
