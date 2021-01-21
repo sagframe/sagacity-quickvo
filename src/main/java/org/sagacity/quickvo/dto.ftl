@@ -4,9 +4,12 @@
 package ${quickVO.voPackage};
 
 import java.io.Serializable;
-<#if (quickVO.swaggerModel)>
+<#if (quickVO.swaggerModel=="v2")>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+</#if>
+<#if (quickVO.swaggerModel=="v3")>
+import io.swagger.v3.oas.annotations.media.Schema;
 </#if>
 <#if (quickVO.lombok)>
 import lombok.*;
@@ -25,8 +28,11 @@ import ${quickVO.voExtends};
  * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
  * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
  */
-<#if (quickVO.swaggerModel)>
+<#if (quickVO.swaggerModel=="v2")>
 @ApiModel(value="${quickVO.voName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
+</#if>
+<#if (quickVO.swaggerModel=="v3")>
+@Schema(name="${quickVO.voName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
 </#if>
 <#if (quickVO.lombok)>
 @Data
@@ -50,8 +56,11 @@ public class ${quickVO.voName} implements Serializable {
 	/**
 	 * ${column.colRemark!""}
 	 */
-	<#if (quickVO.swaggerModel)>
+	<#if (quickVO.swaggerModel=="v2")>
 	@ApiModelProperty(value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
+	</#if>
+	<#if (quickVO.swaggerModel=="v3")>
+	@Schema(name="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
 	</#if>
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 	

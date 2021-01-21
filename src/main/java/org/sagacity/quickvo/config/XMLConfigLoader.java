@@ -118,7 +118,11 @@ public class XMLConfigLoader {
 					quickModel.setDataSource(quickvo.getAttribute("dataSource"));
 				}
 				if (quickvo.hasAttribute("swagger-model")) {
-					quickModel.setSwaggerApi(quickvo.getAttribute("swagger-model"));
+					quickModel.setSwaggerApi(quickvo.getAttribute("swagger-model").toLowerCase());
+					if (!quickModel.getSwaggerApi().equalsIgnoreCase("false")
+							&& !quickModel.getSwaggerApi().equalsIgnoreCase("v3")) {
+						quickModel.setSwaggerApi("v2");
+					}
 				}
 
 				// 字段统一剔除的前缀

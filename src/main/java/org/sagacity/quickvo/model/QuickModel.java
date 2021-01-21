@@ -180,7 +180,7 @@ public class QuickModel implements Serializable {
 	/**
 	 * @return the swaggerApi
 	 */
-	public String isSwaggerApi() {
+	public String getSwaggerApi() {
 		return swaggerApi;
 	}
 
