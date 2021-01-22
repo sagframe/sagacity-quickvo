@@ -22,6 +22,14 @@ public class QuickModel implements Serializable {
 	private String voPackage;
 	private String voSubstr;
 	private String voName;
+
+	/**
+	 * 路径
+	 */
+	private String voPath;
+
+	private String entityPath;
+
 	private boolean hasVO = false;
 
 	/**
@@ -297,6 +305,34 @@ public class QuickModel implements Serializable {
 	 */
 	public void setFieldRidPrefix(String fieldRidPrefix) {
 		this.fieldRidPrefix = fieldRidPrefix;
+	}
+
+	/**
+	 * @return the voPath
+	 */
+	public String getVoPath() {
+		return voPath;
+	}
+
+	/**
+	 * @param voPath the voPath to set
+	 */
+	public void setVoPath(String voPath) {
+		this.voPath = voPath;
+	}
+
+	/**
+	 * @return the entityPath
+	 */
+	public String getEntityPath() {
+		return entityPath;
+	}
+
+	/**
+	 * @param entityPath the entityPath to set
+	 */
+	public void setEntityPath(String entityPath) {
+		this.entityPath = entityPath;
 	}
 
 }
