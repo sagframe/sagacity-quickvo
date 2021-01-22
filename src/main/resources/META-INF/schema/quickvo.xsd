@@ -123,6 +123,7 @@
 											<xsd:restriction base="xsd:string">
 												<xsd:enumeration value="v3" />
 												<xsd:enumeration value="v2" />
+												<xsd:enumeration value="false" />
 											</xsd:restriction>
 										</xsd:simpleType>
 									</xsd:attribute>
