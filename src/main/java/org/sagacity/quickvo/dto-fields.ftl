@@ -4,10 +4,10 @@
 	 * ${column.colRemark!""}
 	 */
 	<#if (quickVO.swaggerModel=="v2")>
-	@ApiModelProperty(value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
+	@ApiModelProperty(name="${column.colName}",value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
 	</#if>
 	<#if (quickVO.swaggerModel=="v3")>
-	@Schema(name="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
+	@Schema(name="${column.colName}",description="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
 	</#if>
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 	
