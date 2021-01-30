@@ -575,7 +575,7 @@ public class TaskController {
 				// 逆向进行匹配
 				for (int j = typeMappSize - 1; j >= 0; j--) {
 					colTypeMapping = (ColumnTypeMapping) configModel.getTypeMapping().get(j);
-					if (colTypeMapping.getTableField() == null || (colTypeMapping.getTableField() != null
+					if (StringUtil.isBlank(colTypeMapping.getTableField()) || (colTypeMapping.getTableField() != null
 							&& colTypeMapping.getTableField().equals(tableField))) {
 						// 类型一致(小写)
 						if (colTypeMapping.getNativeTypes().containsKey(sqlType)) {
