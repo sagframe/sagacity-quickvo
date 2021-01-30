@@ -280,6 +280,10 @@ public class XMLConfigLoader {
 					// 兼容老版本
 					colTypeMapping.putNativeTypes(type.getAttribute("native-types").split("\\,"));
 
+					if (type.hasAttribute("table-field")) {
+						colTypeMapping.setTableField(type.getAttribute("table-field").toLowerCase());
+					}
+
 					if (type.hasAttribute("jdbc-type")) {
 						colTypeMapping.setJdbcType(type.getAttribute("jdbc-type"));
 					}

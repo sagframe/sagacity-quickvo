@@ -255,6 +255,14 @@
 							<xsd:element name="sql-type" maxOccurs="unbounded"
 								minOccurs="0">
 								<xsd:complexType>
+									<xsd:attribute name="table-field"
+										type="xsd:string">
+										<xsd:annotation>
+											<xsd:documentation>
+												<![CDATA[格式:staff_info.teamList 针对类似json格式数据需要映射成不同对象,需要填写table.field格式作为唯一匹配]]>
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
 									<xsd:attribute name="native-types"
 										type="xsd:string" use="required" />
 									<xsd:attribute name="precision" type="xsd:string" />

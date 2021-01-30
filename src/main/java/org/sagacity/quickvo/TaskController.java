@@ -271,9 +271,9 @@ public class TaskController {
 
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
-			List<QuickColMeta> colList = processTableCols(configModel, DBHelper.getTableColumnMeta(tableName),
-					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList,
-					quickModel.getFieldRidPrefix(), dbType, dialect);
+			List<QuickColMeta> colList = processTableCols(configModel, tableName,
+					DBHelper.getTableColumnMeta(tableName), isTable ? DBHelper.getTableImpForeignKeys(tableName) : null,
+					impList, quickModel.getFieldRidPrefix(), dbType, dialect);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
 			// 处理主键被其它表作为外键关联
 			processExportTables(quickVO, exportKeys, quickModel);
@@ -480,8 +480,8 @@ public class TaskController {
 	 * @return
 	 * @throws Exception
 	 */
-	private static List processTableCols(ConfigModel configModel, List cols, List fks, List impList, String ridPrefix,
-			int dbType, String dialect) throws Exception {
+	private static List processTableCols(ConfigModel configModel, String tableName, List cols, List fks, List impList,
+			String ridPrefix, int dbType, String dialect) throws Exception {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
@@ -497,8 +497,10 @@ public class TaskController {
 			typeMappSize = configModel.getTypeMapping().size();
 		}
 		Set<String> colsSet = new HashSet<String>();
+		String tableField;
 		for (int i = 0; i < cols.size(); i++) {
 			colMeta = (TableColumnMeta) cols.get(i);
+			tableField = tableName.concat(".").concat(colMeta.getColName()).toLowerCase();
 			QuickColMeta quickColMeta = new QuickColMeta();
 			quickColMeta.setColRemark(colMeta.getColRemark());
 			// 判断是否存在重复字段
@@ -573,59 +575,63 @@ public class TaskController {
 				// 逆向进行匹配
 				for (int j = typeMappSize - 1; j >= 0; j--) {
 					colTypeMapping = (ColumnTypeMapping) configModel.getTypeMapping().get(j);
-					// 类型一致(小写)
-					if (colTypeMapping.getNativeTypes().containsKey(sqlType)) {
-						boolean mapped = false;
-						// 不判断长度
-						if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() == -1) {
-							if (null != colTypeMapping.getJdbcType()) {
-								quickColMeta.setDataType(colTypeMapping.getJdbcType());
-							}
-							quickColMeta.setResultType(colTypeMapping.getResultType());
-							mapped = true;
-						}
-
-						// 判断小数
-						if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() != -1) {
-							if (colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
+					if (colTypeMapping.getTableField() == null || (colTypeMapping.getTableField() != null
+							&& colTypeMapping.getTableField().equals(tableField))) {
+						// 类型一致(小写)
+						if (colTypeMapping.getNativeTypes().containsKey(sqlType)) {
+							boolean mapped = false;
+							// 不判断长度
+							if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() == -1) {
 								if (null != colTypeMapping.getJdbcType()) {
 									quickColMeta.setDataType(colTypeMapping.getJdbcType());
 								}
 								quickColMeta.setResultType(colTypeMapping.getResultType());
 								mapped = true;
 							}
-						}
 
-						// 判断长度
-						if (colTypeMapping.getScaleMax() == -1 && colTypeMapping.getPrecisionMax() != -1) {
-							if (colTypeMapping.getPrecisionMax() >= precision
-									&& colTypeMapping.getPrecisionMin() <= precision) {
-								if (null != colTypeMapping.getJdbcType())
-									quickColMeta.setDataType(colTypeMapping.getJdbcType());
-								quickColMeta.setResultType(colTypeMapping.getResultType());
-								mapped = true;
-							}
-						}
-
-						// 判断长度和小数位
-						if (colTypeMapping.getScaleMax() != -1 && colTypeMapping.getPrecisionMax() != -1) {
-							// 长度跟整数位相等表示没有小数
-							if (colTypeMapping.getPrecisionMax() >= precision
-									&& colTypeMapping.getPrecisionMin() <= precision
-									&& colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
-								if (null != colTypeMapping.getJdbcType()) {
-									quickColMeta.setDataType(colTypeMapping.getJdbcType());
+							// 判断小数
+							if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() != -1) {
+								if (colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
+									if (null != colTypeMapping.getJdbcType()) {
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									}
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
 								}
-								quickColMeta.setResultType(colTypeMapping.getResultType());
-								mapped = true;
 							}
-						}
-						// 类型匹配
-						if (mapped) {
-							// 规避数组类型
-							importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
-									.trim();
-							break;
+
+							// 判断长度
+							if (colTypeMapping.getScaleMax() == -1 && colTypeMapping.getPrecisionMax() != -1) {
+								if (colTypeMapping.getPrecisionMax() >= precision
+										&& colTypeMapping.getPrecisionMin() <= precision) {
+									if (null != colTypeMapping.getJdbcType())
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
+								}
+							}
+
+							// 判断长度和小数位
+							if (colTypeMapping.getScaleMax() != -1 && colTypeMapping.getPrecisionMax() != -1) {
+								// 长度跟整数位相等表示没有小数
+								if (colTypeMapping.getPrecisionMax() >= precision
+										&& colTypeMapping.getPrecisionMin() <= precision
+										&& colTypeMapping.getScaleMax() >= scale
+										&& colTypeMapping.getScaleMin() <= scale) {
+									if (null != colTypeMapping.getJdbcType()) {
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									}
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
+								}
+							}
+							// 类型匹配
+							if (mapped) {
+								// 规避数组类型
+								importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
+										.trim();
+								break;
+							}
 						}
 					}
 				}
