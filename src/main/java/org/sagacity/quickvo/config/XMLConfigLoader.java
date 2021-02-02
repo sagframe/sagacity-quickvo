@@ -160,7 +160,9 @@ public class XMLConfigLoader {
 					}
 					// 存放路径
 					if (entity.hasAttribute("path")) {
-						quickModel.setEntityPath(entity.getAttribute("path"));
+						quickModel.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE, entity.getAttribute("path")));
+					} else {
+						quickModel.setEntityPath(configModel.getTargetDir());
 					}
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
@@ -178,13 +180,16 @@ public class XMLConfigLoader {
 						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
 
+					// 是否支持lombok
 					if (vo.hasAttribute("lombok")) {
 						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
 					}
 
 					// 存放路径
 					if (vo.hasAttribute("path")) {
-						quickModel.setVoPath(vo.getAttribute("path"));
+						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE, vo.getAttribute("path")));
+					} else {
+						quickModel.setVoPath(configModel.getTargetDir());
 					}
 
 					if (vo.hasAttribute("lombok-chain")) {

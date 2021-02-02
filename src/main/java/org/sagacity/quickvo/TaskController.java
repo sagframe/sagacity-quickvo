@@ -181,13 +181,13 @@ public class TaskController {
 		TableMeta tableMeta;
 		List pks = null;
 		if (quickModel.isHasVO()) {
-			voPackageDir = configModel.getTargetDir() + File.separator
+			voPackageDir = quickModel.getVoPath() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getVoPackage(), ".", File.separator);
 			// 创建vo包文件
 			FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
 		}
 		if (quickModel.isHasEntity()) {
-			entityDir = configModel.getTargetDir() + File.separator
+			entityDir = quickModel.getEntityPath() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getEntityPackage(), ".", File.separator);
 			// 创建abstract entity包文件
 			if (quickModel.isHasAbstractEntity()) {
