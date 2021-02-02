@@ -195,9 +195,6 @@ public class TaskController {
 			} else {
 				FileUtil.createFolder(FileUtil.formatPath(entityDir));
 			}
-		} else {
-			// 创建vo abstract包文件
-			FileUtil.createFolder(FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
 		}
 
 		// 表或视图的标志

@@ -158,7 +158,10 @@ public class XMLConfigLoader {
 					} else {
 						quickModel.setEntityName("#{subName}");
 					}
-
+					// 存放路径
+					if (entity.hasAttribute("path")) {
+						quickModel.setEntityPath(entity.getAttribute("path"));
+					}
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
 						quickModel.setEntityExtends(entity.getAttribute("extends"));
@@ -170,49 +173,34 @@ public class XMLConfigLoader {
 				if (nodeList.getLength() > 0) {
 					vo = (Element) nodeList.item(0);
 					// 存在entity和dto 形式，这时的vo等同于dto
-					if (quickModel.isHasEntity()) {
-						quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
-						if (vo.hasAttribute("substr")) {
-							quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-						}
-
-						if (vo.hasAttribute("lombok")) {
-							quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
-						}
-
-						if (vo.hasAttribute("lombok-chain")) {
-							quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
-						}
-						if (vo.hasAttribute("name")) {
-							quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-						} else {
-							quickModel.setVoName("#{subName}");
-						}
-						// 是否有父类
-						if (vo.hasAttribute("extends")) {
-							quickModel.setVoExtends(vo.getAttribute("extends"));
-						}
-						quickModel.setHasVO(true);
-					} // 只有vo，则用entity来代替
-					else {
-						quickModel.setEntityPackage(Constants.replaceConstants(vo.getAttribute("package")));
-						if (vo.hasAttribute("substr")) {
-							quickModel.setEntitySubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-						}
-
-						if (vo.hasAttribute("name")) {
-							quickModel.setEntityName(Constants.replaceConstants(vo.getAttribute("name")));
-						} else {
-							quickModel.setEntityName("#{subName}");
-						}
-						// 是否有父类
-						if (vo.hasAttribute("extends")) {
-							quickModel.setEntityExtends(vo.getAttribute("extends"));
-						}
-						quickModel.setHasEntity(true);
+					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
+					if (vo.hasAttribute("substr")) {
+						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
-				}
 
+					if (vo.hasAttribute("lombok")) {
+						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+					}
+
+					// 存放路径
+					if (vo.hasAttribute("path")) {
+						quickModel.setVoPath(vo.getAttribute("path"));
+					}
+
+					if (vo.hasAttribute("lombok-chain")) {
+						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+					}
+					if (vo.hasAttribute("name")) {
+						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+					} else {
+						quickModel.setVoName("#{subName}");
+					}
+					// 是否有父类
+					if (vo.hasAttribute("extends")) {
+						quickModel.setVoExtends(vo.getAttribute("extends"));
+					}
+					quickModel.setHasVO(true);
+				}
 				quickModels.add(quickModel);
 			}
 		}

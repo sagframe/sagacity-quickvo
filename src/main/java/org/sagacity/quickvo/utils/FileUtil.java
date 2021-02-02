@@ -390,4 +390,10 @@ public class FileUtil {
 			// do nothing
 		}
 	}
+
+	public static void main(String[] args) {
+		String baseFile = "D:\\workspace\\github\\sqltoy\\sqltoy-strict\\tools";
+		String linkFile = FileUtil.skipPath(baseFile, "../../sqltoy-quickstart/src");
+		System.err.println(linkFile);
+	}
 }
