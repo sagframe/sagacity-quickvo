@@ -439,9 +439,7 @@ public class TaskController {
 
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
-			// 删除多余导入类型
-			// deleteUselessTypes(impList, colList);
-			// 创建vo abstract文件
+			// 创建entity文件
 			if (quickModel.isHasAbstractEntity()) {
 				// 创建abstract entity文件
 				generateAbstractEntity(
@@ -690,35 +688,6 @@ public class TaskController {
 		}
 		return quickColMetas;
 	}
-
-	/**
-	 * @todo 删除多余的导入数据类型
-	 * @param impTypes
-	 * @param columns
-	 */
-//	private static void deleteUselessTypes(List impTypes, List columns) {
-//		if (impTypes == null || impTypes.isEmpty()) {
-//			return;
-//		}
-//		QuickColMeta quickColMeta;
-//		boolean isMatched = false;
-//		String dataType;
-//		for (int i = 0; i < impTypes.size(); i++) {
-//			dataType = (String) impTypes.get(i);
-//			for (int j = 0; j < columns.size(); j++) {
-//				quickColMeta = (QuickColMeta) columns.get(j);
-//				if (StringUtil.indexOfIgnoreCase(dataType, quickColMeta.getResultType()) != -1) {
-//					isMatched = true;
-//					break;
-//				}
-//			}
-//			// 没有匹配的数据类型，则将import类型数组中去除相应类型
-//			if (!isMatched) {
-//				impTypes.remove(i);
-//				i--;
-//			}
-//		}
-//	}
 
 	/**
 	 * @todo 判断字段是否全不为null,是返回1，可以有null返回0
