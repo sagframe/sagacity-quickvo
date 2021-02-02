@@ -87,7 +87,7 @@
 												</xsd:attribute>
 												<xsd:attribute name="to-dir" type="xsd:string">
 													<xsd:annotation>
-														<xsd:documentation><![CDATA[将vo或dto生成到具体路径]]></xsd:documentation>
+														<xsd:documentation><![CDATA[将vo或dto生成到具体路径,可以是绝对路径,也可以是当前路径的相对路径]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
 											</xsd:complexType>
@@ -118,7 +118,7 @@
 												</xsd:attribute>
 												<xsd:attribute name="to-dir" type="xsd:string">
 													<xsd:annotation>
-														<xsd:documentation><![CDATA[将pojo生成到具体路径]]></xsd:documentation>
+														<xsd:documentation><![CDATA[将pojo生成到具体路径,可以是绝对路径,也可以是当前路径的相对路径]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
 											</xsd:complexType>
