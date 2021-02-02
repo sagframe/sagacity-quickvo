@@ -5,10 +5,10 @@ package ${quickVO.entityPackage};
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.ArrayList;
 import org.sagacity.sqltoy.config.annotation.Entity;
 import org.sagacity.sqltoy.config.annotation.SqlToyEntity;
 <#if (quickVO.selectFields==true)>
+import java.util.ArrayList;
 import org.sagacity.sqltoy.callback.SelectFields;
 </#if>
 <#if (quickVO.type=="TABLE")>
