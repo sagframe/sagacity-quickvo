@@ -440,19 +440,21 @@ public class TaskController {
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
 			// 创建entity文件
-			if (quickModel.isHasAbstractEntity()) {
-				// 创建abstract entity文件
-				generateAbstractEntity(
-						entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
-								+ quickVO.getEntityName() + ".java",
-						entityAbstractTemplate, quickVO, configModel.getEncoding());
+			if (quickModel.isHasEntity()) {
+				if (quickModel.isHasAbstractEntity()) {
+					// 创建abstract entity文件
+					generateAbstractEntity(
+							entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
+									+ quickVO.getEntityName() + ".java",
+							entityAbstractTemplate, quickVO, configModel.getEncoding());
 
-				// 创建entity 文件
-				generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
-						configModel.getEncoding());
-			} else {
-				generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate, quickVO,
-						configModel.getEncoding());
+					// 创建entity 文件
+					generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
+							configModel.getEncoding());
+				} else {
+					generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate,
+							quickVO, configModel.getEncoding());
+				}
 			}
 			// 创建DTO 文件
 			if (quickModel.isHasVO()) {
