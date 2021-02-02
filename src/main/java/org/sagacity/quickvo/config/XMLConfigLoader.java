@@ -159,8 +159,9 @@ public class XMLConfigLoader {
 						quickModel.setEntityName("#{subName}");
 					}
 					// 存放路径
-					if (entity.hasAttribute("path")) {
-						quickModel.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE, entity.getAttribute("path")));
+					if (entity.hasAttribute("to-dir")) {
+						quickModel
+								.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE, entity.getAttribute("to-dir")));
 					} else {
 						quickModel.setEntityPath(configModel.getTargetDir());
 					}
@@ -186,8 +187,8 @@ public class XMLConfigLoader {
 					}
 
 					// 存放路径
-					if (vo.hasAttribute("path")) {
-						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE, vo.getAttribute("path")));
+					if (vo.hasAttribute("to-dir")) {
+						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE, vo.getAttribute("to-dir")));
 					} else {
 						quickModel.setVoPath(configModel.getTargetDir());
 					}

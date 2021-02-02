@@ -85,6 +85,11 @@
 														<xsd:documentation><![CDATA[指定生成VO extends的父类]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
+												<xsd:attribute name="to-dir" type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[将vo或dto生成到具体路径]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
 										<xsd:element name="entity" minOccurs="0"
@@ -109,6 +114,11 @@
 													type="xsd:string">
 													<xsd:annotation>
 														<xsd:documentation><![CDATA[指定生成POJO extends的父类]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="to-dir" type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[将pojo生成到具体路径]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
 											</xsd:complexType>
