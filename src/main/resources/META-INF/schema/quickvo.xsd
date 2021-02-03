@@ -59,12 +59,6 @@
 											<xsd:complexType>
 												<xsd:attribute name="package"
 													type="xsd:string" use="required" />
-												<xsd:attribute name="has-abstract"
-													type="xsd:boolean" default="true">
-													<xsd:annotation>
-														<xsd:documentation><![CDATA[DTO是否创建抽象类]]></xsd:documentation>
-													</xsd:annotation>
-												</xsd:attribute>
 												<xsd:attribute name="substr" type="xsd:string"
 													use="required">
 													<xsd:annotation>

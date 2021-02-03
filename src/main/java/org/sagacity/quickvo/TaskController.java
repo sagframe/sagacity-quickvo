@@ -461,7 +461,6 @@ public class TaskController {
 				generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
 						configModel.getEncoding());
 			}
-
 		}
 	}
 
