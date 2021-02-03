@@ -25,7 +25,7 @@ import ${quickVO.voExtends};
 /**
  * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
  * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
- * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
+ * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>@description ${quickVO.tableRemark}</#if>  
  */
 <#if (quickVO.lombok)>
 @Data
