@@ -19,6 +19,11 @@ public class ColumnTypeMapping implements Serializable {
 	private static final long serialVersionUID = 5178780217838061638L;
 
 	/**
+	 * 表名、字段名组合，适用于JSON类型场景
+	 */
+	private String tableField;
+
+	/**
 	 * jdbc中的数据类型
 	 */
 	private String jdbcType;
@@ -173,5 +178,12 @@ public class ColumnTypeMapping implements Serializable {
 		this.importTypes = importTypes;
 	}
 
-	
+	public String getTableField() {
+		return tableField;
+	}
+
+	public void setTableField(String tableField) {
+		this.tableField = tableField;
+	}
+
 }

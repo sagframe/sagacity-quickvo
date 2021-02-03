@@ -22,7 +22,13 @@ public class QuickModel implements Serializable {
 	private String voPackage;
 	private String voSubstr;
 	private String voName;
-	private boolean hasVO = false;
+
+	/**
+	 * 路径
+	 */
+	private String voPath;
+
+	private String entityPath;
 
 	/**
 	 * 字段统一剔除的前缀
@@ -52,14 +58,14 @@ public class QuickModel implements Serializable {
 	private String dataSource;
 
 	/**
-	 * entity模式
-	 */
-	private boolean hasEntity = false;
-
-	/**
 	 * 是否包含抽象实体类
 	 */
 	private boolean hasAbstractEntity = true;
+
+	/**
+	 * 是否存在抽象VO
+	 */
+	private boolean hasAbstractVO = false;
 
 	/**
 	 * 是否支持swagger 注解
@@ -80,6 +86,10 @@ public class QuickModel implements Serializable {
 	 * 排除的表
 	 */
 	private String excludeTables;
+
+	private boolean hasEntity = false;
+
+	private boolean hasVO = false;
 
 	public String getEntityName() {
 		return entityName;
@@ -192,20 +202,6 @@ public class QuickModel implements Serializable {
 	}
 
 	/**
-	 * @return the hasEntity
-	 */
-	public boolean isHasEntity() {
-		return hasEntity;
-	}
-
-	/**
-	 * @param hasEntity the hasEntity to set
-	 */
-	public void setHasEntity(boolean hasEntity) {
-		this.hasEntity = hasEntity;
-	}
-
-	/**
 	 * @return the lombok
 	 */
 	public boolean isLombok() {
@@ -231,14 +227,6 @@ public class QuickModel implements Serializable {
 	 */
 	public void setLombokChain(boolean lombokChain) {
 		this.lombokChain = lombokChain;
-	}
-
-	public boolean isHasVO() {
-		return hasVO;
-	}
-
-	public void setHasVO(boolean hasVO) {
-		this.hasVO = hasVO;
 	}
 
 	public String getEntitySubstr() {
@@ -299,4 +287,73 @@ public class QuickModel implements Serializable {
 		this.fieldRidPrefix = fieldRidPrefix;
 	}
 
+	/**
+	 * @return the voPath
+	 */
+	public String getVoPath() {
+		return voPath;
+	}
+
+	/**
+	 * @param voPath the voPath to set
+	 */
+	public void setVoPath(String voPath) {
+		this.voPath = voPath;
+	}
+
+	/**
+	 * @return the entityPath
+	 */
+	public String getEntityPath() {
+		return entityPath;
+	}
+
+	/**
+	 * @param entityPath the entityPath to set
+	 */
+	public void setEntityPath(String entityPath) {
+		this.entityPath = entityPath;
+	}
+
+	/**
+	 * @return the hasEntity
+	 */
+	public boolean isHasEntity() {
+		return hasEntity;
+	}
+
+	/**
+	 * @param hasEntity the hasEntity to set
+	 */
+	public void setHasEntity(boolean hasEntity) {
+		this.hasEntity = hasEntity;
+	}
+
+	/**
+	 * @return the hasVO
+	 */
+	public boolean isHasVO() {
+		return hasVO;
+	}
+
+	/**
+	 * @param hasVO the hasVO to set
+	 */
+	public void setHasVO(boolean hasVO) {
+		this.hasVO = hasVO;
+	}
+
+	/**
+	 * @return the hasAbstractVO
+	 */
+	public boolean isHasAbstractVO() {
+		return hasAbstractVO;
+	}
+
+	/**
+	 * @param hasAbstractVO the hasAbstractVO to set
+	 */
+	public void setHasAbstractVO(boolean hasAbstractVO) {
+		this.hasAbstractVO = hasAbstractVO;
+	}
 }

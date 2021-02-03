@@ -59,6 +59,12 @@
 											<xsd:complexType>
 												<xsd:attribute name="package"
 													type="xsd:string" use="required" />
+												<xsd:attribute name="has-abstract"
+													type="xsd:boolean" default="true">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[DTO是否创建抽象类]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 												<xsd:attribute name="substr" type="xsd:string"
 													use="required">
 													<xsd:annotation>
@@ -85,6 +91,11 @@
 														<xsd:documentation><![CDATA[指定生成VO extends的父类]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
+												<xsd:attribute name="to-dir" type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[将vo或dto生成到具体路径,可以是绝对路径,也可以是当前路径的相对路径]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 											</xsd:complexType>
 										</xsd:element>
 										<xsd:element name="entity" minOccurs="0"
@@ -109,6 +120,11 @@
 													type="xsd:string">
 													<xsd:annotation>
 														<xsd:documentation><![CDATA[指定生成POJO extends的父类]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="to-dir" type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[将pojo生成到具体路径,可以是绝对路径,也可以是当前路径的相对路径]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
 											</xsd:complexType>
@@ -255,6 +271,14 @@
 							<xsd:element name="sql-type" maxOccurs="unbounded"
 								minOccurs="0">
 								<xsd:complexType>
+									<xsd:attribute name="table-field"
+										type="xsd:string">
+										<xsd:annotation>
+											<xsd:documentation>
+												<![CDATA[格式:staff_info.teamList 针对类似json格式数据需要映射成不同对象,需要填写table.field格式作为唯一匹配]]>
+											</xsd:documentation>
+										</xsd:annotation>
+									</xsd:attribute>
 									<xsd:attribute name="native-types"
 										type="xsd:string" use="required" />
 									<xsd:attribute name="precision" type="xsd:string" />

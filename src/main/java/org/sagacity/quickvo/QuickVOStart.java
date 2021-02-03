@@ -25,7 +25,7 @@ public class QuickVOStart {
 	 */
 	public void doStart() {
 		try {
-			out.println("\n\n=========    welcome use sagacity-quickvo-4.17.10     ==========");
+			out.println("\n\n=========    welcome use sagacity-quickvo-4.18.0     ==========");
 			out.println("/*----遇到问题请关注日志提示，最常见错误有2个:     ----------------------------*/\n"
 					+ "/*-1、没有匹配到表: include表达式或 schema和catalog配置错误(含大小写)         \n"
 					+ "/*-2、VO中字段出现重复字段，错误就是schema和catalog配置问题                           \n"
@@ -78,7 +78,7 @@ public class QuickVOStart {
 		Constants.BASE_LOCATE = baseDir;
 		// 代码调试时使用(真实场景不起作用,注意pom中要增加对应数据库驱动才可以运行)
 		if (args == null || args.length == 0) {
-			Constants.BASE_LOCATE = "D:\\personal\\sqltoy\\sqltoy-postgresql\\tools\\quickvo";
+			Constants.BASE_LOCATE = "D:\\workspace\\github\\sqltoy\\sqltoy-quickstart\\tools\\quickvo";
 			Constants.QUICK_CONFIG_FILE = "quickvo.xml";
 		}
 		// 开始根据数据库产生VO文件

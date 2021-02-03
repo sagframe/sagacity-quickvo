@@ -40,7 +40,7 @@ import org.sagacity.quickvo.utils.StringUtil;
 
 /**
  * @project sagacity-quickvo
- * @description 获取数据库表或视图信息,生成VO、AbstractVO、VOFactory文件
+ * @description 获取数据库表或视图信息,生成VO、AbstractVO文件
  * @author zhongxuchen
  * @version v1.0,Date:2010-7-21
  */
@@ -55,6 +55,10 @@ public class TaskController {
 	 * dto模板
 	 */
 	private static String dtoTemplate;
+
+	private static String dtoAbstractTemplate;
+
+	private static String dtoParentTemplate;
 	private static String dtoFieldsTemplate;
 
 	/**
@@ -86,6 +90,10 @@ public class TaskController {
 	 */
 	private static void init() {
 		dtoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoTempalte),
+				configModel.getEncoding());
+		dtoAbstractTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoAbstractTempalte),
+				configModel.getEncoding());
+		dtoParentTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoParentTempalte),
 				configModel.getEncoding());
 		dtoFieldsTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoFieldsTemplate),
 				configModel.getEncoding());
@@ -181,13 +189,18 @@ public class TaskController {
 		TableMeta tableMeta;
 		List pks = null;
 		if (quickModel.isHasVO()) {
-			voPackageDir = configModel.getTargetDir() + File.separator
+			voPackageDir = quickModel.getVoPath() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getVoPackage(), ".", File.separator);
 			// 创建vo包文件
-			FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
+			if (quickModel.isHasAbstractVO()) {
+				FileUtil.createFolder(
+						FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
+			} else {
+				FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
+			}
 		}
 		if (quickModel.isHasEntity()) {
-			entityDir = configModel.getTargetDir() + File.separator
+			entityDir = quickModel.getEntityPath() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getEntityPackage(), ".", File.separator);
 			// 创建abstract entity包文件
 			if (quickModel.isHasAbstractEntity()) {
@@ -195,9 +208,6 @@ public class TaskController {
 			} else {
 				FileUtil.createFolder(FileUtil.formatPath(entityDir));
 			}
-		} else {
-			// 创建vo abstract包文件
-			FileUtil.createFolder(FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
 		}
 
 		// 表或视图的标志
@@ -271,9 +281,9 @@ public class TaskController {
 
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
-			List<QuickColMeta> colList = processTableCols(configModel, DBHelper.getTableColumnMeta(tableName),
-					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList,
-					quickModel.getFieldRidPrefix(), dbType, dialect);
+			List<QuickColMeta> colList = processTableCols(configModel, tableName,
+					DBHelper.getTableColumnMeta(tableName), isTable ? DBHelper.getTableImpForeignKeys(tableName) : null,
+					impList, quickModel.getFieldRidPrefix(), dbType, dialect);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
 			// 处理主键被其它表作为外键关联
 			processExportTables(quickVO, exportKeys, quickModel);
@@ -442,27 +452,35 @@ public class TaskController {
 
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
-			// 删除多余导入类型
-			// deleteUselessTypes(impList, colList);
-			// 创建vo abstract文件
-			if (quickModel.isHasAbstractEntity()) {
-				// 创建abstract entity文件
-				generateAbstractEntity(
-						entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
-								+ quickVO.getEntityName() + ".java",
-						entityAbstractTemplate, quickVO, configModel.getEncoding());
+			// 创建entity文件
+			if (quickModel.isHasEntity()) {
+				if (quickModel.isHasAbstractEntity()) {
+					// 创建abstract entity文件
+					generateAbstractEntity(
+							entityDir + File.separator + configModel.getAbstractPath() + File.separator + "Abstract"
+									+ quickVO.getEntityName() + ".java",
+							entityAbstractTemplate, quickVO, configModel.getEncoding());
 
-				// 创建entity 文件
-				generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
-						configModel.getEncoding());
-			} else {
-				generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate, quickVO,
-						configModel.getEncoding());
+					// 创建entity 文件
+					generateParentEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", quickVO,
+							configModel.getEncoding());
+				} else {
+					generateEntity(entityDir + File.separator + quickVO.getEntityName() + ".java", entityTemplate,
+							quickVO, configModel.getEncoding());
+				}
 			}
 			// 创建DTO 文件
 			if (quickModel.isHasVO()) {
-				generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
-						configModel.getEncoding());
+				if (quickModel.isHasAbstractVO()) {
+					// 创建抽象dto
+					generateAbstractDTO(voPackageDir + File.separator + configModel.getAbstractPath() + File.separator
+							+ "Abstract" + quickVO.getVoName() + ".java", quickVO, configModel.getEncoding());
+					generateParentDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+							configModel.getEncoding());
+				} else {
+					generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+							configModel.getEncoding());
+				}
 			}
 
 		}
@@ -480,8 +498,8 @@ public class TaskController {
 	 * @return
 	 * @throws Exception
 	 */
-	private static List processTableCols(ConfigModel configModel, List cols, List fks, List impList, String ridPrefix,
-			int dbType, String dialect) throws Exception {
+	private static List processTableCols(ConfigModel configModel, String tableName, List cols, List fks, List impList,
+			String ridPrefix, int dbType, String dialect) throws Exception {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
@@ -497,8 +515,10 @@ public class TaskController {
 			typeMappSize = configModel.getTypeMapping().size();
 		}
 		Set<String> colsSet = new HashSet<String>();
+		String tableField;
 		for (int i = 0; i < cols.size(); i++) {
 			colMeta = (TableColumnMeta) cols.get(i);
+			tableField = tableName.concat(".").concat(colMeta.getColName()).toLowerCase();
 			QuickColMeta quickColMeta = new QuickColMeta();
 			quickColMeta.setColRemark(colMeta.getColRemark());
 			// 判断是否存在重复字段
@@ -573,59 +593,63 @@ public class TaskController {
 				// 逆向进行匹配
 				for (int j = typeMappSize - 1; j >= 0; j--) {
 					colTypeMapping = (ColumnTypeMapping) configModel.getTypeMapping().get(j);
-					// 类型一致(小写)
-					if (colTypeMapping.getNativeTypes().containsKey(sqlType)) {
-						boolean mapped = false;
-						// 不判断长度
-						if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() == -1) {
-							if (null != colTypeMapping.getJdbcType()) {
-								quickColMeta.setDataType(colTypeMapping.getJdbcType());
-							}
-							quickColMeta.setResultType(colTypeMapping.getResultType());
-							mapped = true;
-						}
-
-						// 判断小数
-						if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() != -1) {
-							if (colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
+					if (StringUtil.isBlank(colTypeMapping.getTableField()) || (colTypeMapping.getTableField() != null
+							&& colTypeMapping.getTableField().equals(tableField))) {
+						// 类型一致(小写)
+						if (colTypeMapping.getNativeTypes().containsKey(sqlType)) {
+							boolean mapped = false;
+							// 不判断长度
+							if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() == -1) {
 								if (null != colTypeMapping.getJdbcType()) {
 									quickColMeta.setDataType(colTypeMapping.getJdbcType());
 								}
 								quickColMeta.setResultType(colTypeMapping.getResultType());
 								mapped = true;
 							}
-						}
 
-						// 判断长度
-						if (colTypeMapping.getScaleMax() == -1 && colTypeMapping.getPrecisionMax() != -1) {
-							if (colTypeMapping.getPrecisionMax() >= precision
-									&& colTypeMapping.getPrecisionMin() <= precision) {
-								if (null != colTypeMapping.getJdbcType())
-									quickColMeta.setDataType(colTypeMapping.getJdbcType());
-								quickColMeta.setResultType(colTypeMapping.getResultType());
-								mapped = true;
-							}
-						}
-
-						// 判断长度和小数位
-						if (colTypeMapping.getScaleMax() != -1 && colTypeMapping.getPrecisionMax() != -1) {
-							// 长度跟整数位相等表示没有小数
-							if (colTypeMapping.getPrecisionMax() >= precision
-									&& colTypeMapping.getPrecisionMin() <= precision
-									&& colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
-								if (null != colTypeMapping.getJdbcType()) {
-									quickColMeta.setDataType(colTypeMapping.getJdbcType());
+							// 判断小数
+							if (colTypeMapping.getPrecisionMax() == -1 && colTypeMapping.getScaleMax() != -1) {
+								if (colTypeMapping.getScaleMax() >= scale && colTypeMapping.getScaleMin() <= scale) {
+									if (null != colTypeMapping.getJdbcType()) {
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									}
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
 								}
-								quickColMeta.setResultType(colTypeMapping.getResultType());
-								mapped = true;
 							}
-						}
-						// 类型匹配
-						if (mapped) {
-							// 规避数组类型
-							importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
-									.trim();
-							break;
+
+							// 判断长度
+							if (colTypeMapping.getScaleMax() == -1 && colTypeMapping.getPrecisionMax() != -1) {
+								if (colTypeMapping.getPrecisionMax() >= precision
+										&& colTypeMapping.getPrecisionMin() <= precision) {
+									if (null != colTypeMapping.getJdbcType())
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
+								}
+							}
+
+							// 判断长度和小数位
+							if (colTypeMapping.getScaleMax() != -1 && colTypeMapping.getPrecisionMax() != -1) {
+								// 长度跟整数位相等表示没有小数
+								if (colTypeMapping.getPrecisionMax() >= precision
+										&& colTypeMapping.getPrecisionMin() <= precision
+										&& colTypeMapping.getScaleMax() >= scale
+										&& colTypeMapping.getScaleMin() <= scale) {
+									if (null != colTypeMapping.getJdbcType()) {
+										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									}
+									quickColMeta.setResultType(colTypeMapping.getResultType());
+									mapped = true;
+								}
+							}
+							// 类型匹配
+							if (mapped) {
+								// 规避数组类型
+								importType = colTypeMapping.getJavaType().replaceAll("\\[", "").replaceAll("\\]", "")
+										.trim();
+								break;
+							}
 						}
 					}
 				}
@@ -670,9 +694,14 @@ public class TaskController {
 				}
 			}
 			// 增加类引入类型对象
-			if (importType != null && importType.indexOf(".") != -1 && !impList.contains(importType)) {
-				if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
-					impList.add(importType);
+			if (importType != null) {
+				if (importType.indexOf(".") != -1 && !impList.contains(importType)) {
+					if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
+						impList.add(importType);
+					}
+				}
+				if (importType.toLowerCase().startsWith("list<") && !impList.contains("java.util.List")) {
+					impList.add("java.util.List");
 				}
 			}
 			if (colTypeMapping != null && StringUtil.isNotBlank(colTypeMapping.getImportTypes())) {
@@ -687,35 +716,6 @@ public class TaskController {
 		}
 		return quickColMetas;
 	}
-
-	/**
-	 * @todo 删除多余的导入数据类型
-	 * @param impTypes
-	 * @param columns
-	 */
-//	private static void deleteUselessTypes(List impTypes, List columns) {
-//		if (impTypes == null || impTypes.isEmpty()) {
-//			return;
-//		}
-//		QuickColMeta quickColMeta;
-//		boolean isMatched = false;
-//		String dataType;
-//		for (int i = 0; i < impTypes.size(); i++) {
-//			dataType = (String) impTypes.get(i);
-//			for (int j = 0; j < columns.size(); j++) {
-//				quickColMeta = (QuickColMeta) columns.get(j);
-//				if (StringUtil.indexOfIgnoreCase(dataType, quickColMeta.getResultType()) != -1) {
-//					isMatched = true;
-//					break;
-//				}
-//			}
-//			// 没有匹配的数据类型，则将import类型数组中去除相应类型
-//			if (!isMatched) {
-//				impTypes.remove(i);
-//				i--;
-//			}
-//		}
-//	}
 
 	/**
 	 * @todo 判断字段是否全不为null,是返回1，可以有null返回0
@@ -734,7 +734,6 @@ public class TaskController {
 			}
 		}
 		return notNullCnt;
-
 	}
 
 	/**
@@ -824,24 +823,23 @@ public class TaskController {
 		}
 	}
 
-	private static void generateEntity(String file, String template, QuickVO quickVO, String charset) throws Exception {
-		File generateFile = new File(file);
-		boolean needGen = true;
+	private static void generateAbstractDTO(String file, QuickVO quickVO, String charset) throws Exception {
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
-		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
-		// 文件存在判断是否相等，不相等则生成
-		if (generateFile.exists()) {
-			String oldFileContent = FileUtil.readAsString(generateFile, charset);
+		String hashStr = quickVO.getVoPackage() + "." + quickVO.getAbstractPath() + ".Abstract" + quickVO.getVoName();
+		quickVO.setVoAbstractSerialUID(Long.toString(hash(hashStr)));
+		boolean needGen = true;
+		File voFile = new File(file);
+		// 文件不存在
+		if (voFile.exists()) {
+			String oldFileContent = FileUtil.readAsString(voFile, charset);
 			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
-					new Object[] { quickVO }, template);
+					new Object[] { quickVO }, dtoAbstractTemplate);
 			// 剔除所有回车换行和空白
 			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
 			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
 
 			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
 			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
-
 			// 内容相等
 			if (oldFileContent.equals(newFileContent)) {
 				needGen = false;
@@ -850,7 +848,21 @@ public class TaskController {
 		// 需要产生
 		if (needGen) {
 			logger.info("正在生成文件:" + file);
-			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
+					dtoAbstractTemplate, file);
+		}
+	}
+
+	private static void generateParentDTO(String file, QuickVO quickVO, String charset) throws Exception {
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getVoPackage() + "." + quickVO.getVoName();
+		quickVO.setVoSerialUID(Long.toString(hash(hashStr)));
+		File voFile = new File(file);
+		// 文件不存在
+		if (!voFile.exists()) {
+			logger.info("正在生成文件:" + file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, dtoParentTemplate,
+					file);
 		}
 	}
 
@@ -865,12 +877,7 @@ public class TaskController {
 					file);
 			return;
 		}
-		// 如果是视图则直接返回
-		if (quickVO.getType().equals("VIEW")) {
-			return;
-		}
 		String fileStr = FileUtil.readAsString(voFile, charset);
-
 		// 文件存在，修改构造函数
 		String constructor = FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
 				dtoFieldsTemplate);
@@ -898,6 +905,36 @@ public class TaskController {
 			}
 		} else {
 			logger.info("vo 文件中的构造函数默认开始结束符号被修改!表发生修改无法更新vo!");
+		}
+	}
+
+	private static void generateEntity(String file, String template, QuickVO quickVO, String charset) throws Exception {
+		File generateFile = new File(file);
+		boolean needGen = true;
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
+		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
+		// 文件存在判断是否相等，不相等则生成
+		if (generateFile.exists()) {
+			String oldFileContent = FileUtil.readAsString(generateFile, charset);
+			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
+					new Object[] { quickVO }, template);
+			// 剔除所有回车换行和空白
+			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
+			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
+
+			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
+			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
+
+			// 内容相等
+			if (oldFileContent.equals(newFileContent)) {
+				needGen = false;
+			}
+		}
+		// 需要产生
+		if (needGen) {
+			logger.info("正在生成文件:" + file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
 		}
 	}
 

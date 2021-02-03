@@ -158,7 +158,13 @@ public class XMLConfigLoader {
 					} else {
 						quickModel.setEntityName("#{subName}");
 					}
-
+					// 存放路径
+					if (entity.hasAttribute("to-dir")) {
+						quickModel
+								.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE, entity.getAttribute("to-dir")));
+					} else {
+						quickModel.setEntityPath(configModel.getTargetDir());
+					}
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
 						quickModel.setEntityExtends(entity.getAttribute("extends"));
@@ -170,49 +176,41 @@ public class XMLConfigLoader {
 				if (nodeList.getLength() > 0) {
 					vo = (Element) nodeList.item(0);
 					// 存在entity和dto 形式，这时的vo等同于dto
-					if (quickModel.isHasEntity()) {
-						quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
-						if (vo.hasAttribute("substr")) {
-							quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-						}
-
-						if (vo.hasAttribute("lombok")) {
-							quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
-						}
-
-						if (vo.hasAttribute("lombok-chain")) {
-							quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
-						}
-						if (vo.hasAttribute("name")) {
-							quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
-						} else {
-							quickModel.setVoName("#{subName}");
-						}
-						// 是否有父类
-						if (vo.hasAttribute("extends")) {
-							quickModel.setVoExtends(vo.getAttribute("extends"));
-						}
-						quickModel.setHasVO(true);
-					} // 只有vo，则用entity来代替
-					else {
-						quickModel.setEntityPackage(Constants.replaceConstants(vo.getAttribute("package")));
-						if (vo.hasAttribute("substr")) {
-							quickModel.setEntitySubstr(Constants.replaceConstants(vo.getAttribute("substr")));
-						}
-
-						if (vo.hasAttribute("name")) {
-							quickModel.setEntityName(Constants.replaceConstants(vo.getAttribute("name")));
-						} else {
-							quickModel.setEntityName("#{subName}");
-						}
-						// 是否有父类
-						if (vo.hasAttribute("extends")) {
-							quickModel.setEntityExtends(vo.getAttribute("extends"));
-						}
-						quickModel.setHasEntity(true);
+					quickModel.setVoPackage(Constants.replaceConstants(vo.getAttribute("package")));
+					if (vo.hasAttribute("substr")) {
+						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
-				}
 
+					// 是否支持lombok
+					if (vo.hasAttribute("lombok")) {
+						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+					}
+
+					// 存放路径
+					if (vo.hasAttribute("to-dir")) {
+						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE, vo.getAttribute("to-dir")));
+					} else {
+						quickModel.setVoPath(configModel.getTargetDir());
+					}
+
+					if (vo.hasAttribute("lombok-chain")) {
+						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+					}
+					if (vo.hasAttribute("name")) {
+						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
+					} else {
+						quickModel.setVoName("#{subName}");
+					}
+					// 是否包含抽象类
+					if (vo.hasAttribute("has-abstract")) {
+						quickModel.setHasAbstractVO(Boolean.parseBoolean(vo.getAttribute("has-abstract")));
+					}
+					// 是否有父类
+					if (vo.hasAttribute("extends")) {
+						quickModel.setVoExtends(vo.getAttribute("extends"));
+					}
+					quickModel.setHasVO(true);
+				}
 				quickModels.add(quickModel);
 			}
 		}
@@ -279,6 +277,10 @@ public class XMLConfigLoader {
 					ColumnTypeMapping colTypeMapping = new ColumnTypeMapping();
 					// 兼容老版本
 					colTypeMapping.putNativeTypes(type.getAttribute("native-types").split("\\,"));
+
+					if (type.hasAttribute("table-field")) {
+						colTypeMapping.setTableField(type.getAttribute("table-field").toLowerCase());
+					}
 
 					if (type.hasAttribute("jdbc-type")) {
 						colTypeMapping.setJdbcType(type.getAttribute("jdbc-type"));

@@ -42,6 +42,8 @@ public class Constants implements Serializable {
 	 * dto 类freemarker模板
 	 */
 	public static String dtoTempalte = "org/sagacity/quickvo/dto.ftl";
+	public static String dtoAbstractTempalte = "org/sagacity/quickvo/dto-abstract.ftl";
+	public static String dtoParentTempalte = "org/sagacity/quickvo/dto-parent.ftl";
 
 	/**
 	 * entity实体对象类freemarker模板
