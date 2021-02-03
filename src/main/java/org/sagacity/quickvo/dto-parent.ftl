@@ -3,7 +3,6 @@
  */
 package ${quickVO.voPackage};
 
-import java.io.Serializable;
 import ${quickVO.voPackage}.${quickVO.abstractPath}.Abstract${quickVO.voName};
 <#if (quickVO.swaggerModel=="v2")>
 import io.swagger.annotations.ApiModel;
@@ -32,7 +31,7 @@ import lombok.*;
 @Accessors(fluent = true)
 </#if>
 </#if>
-public class ${quickVO.voName} exends Abstract${quickVO.voName} {
+public class ${quickVO.voName} extends Abstract${quickVO.voName} {
 	
 	/**
 	 * 

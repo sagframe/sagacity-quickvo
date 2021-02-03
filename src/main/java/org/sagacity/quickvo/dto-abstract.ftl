@@ -64,7 +64,7 @@ public class Abstract${quickVO.voName} implements Serializable {
 	 *@param ${column.colJavaName?uncap_first} the ${column.colJavaName?uncap_first} to set
 	 */
 	<#if (quickVO.returnSelf==true)>
-	public ${quickVO.voName} set${column.colJavaName?cap_first}(${column.resultType} ${column.colJavaName?uncap_first}) {
+	public Abstract${quickVO.voName} set${column.colJavaName?cap_first}(${column.resultType} ${column.colJavaName?uncap_first}) {
 		this.${column.colJavaName?uncap_first}=${column.colJavaName?uncap_first};
 		return this;
 	}
