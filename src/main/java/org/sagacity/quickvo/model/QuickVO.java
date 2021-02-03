@@ -98,6 +98,7 @@ public class QuickVO implements Serializable {
 	 * vo的序列化id
 	 */
 	private String voSerialUID;
+	private String voAbstractSerialUID;
 
 	/**
 	 * vo抽象类的序列化id
@@ -651,5 +652,19 @@ public class QuickVO implements Serializable {
 	 */
 	public void setVoExtends(String voExtends) {
 		this.voExtends = voExtends;
+	}
+
+	/**
+	 * @return the voAbstractSerialUID
+	 */
+	public String getVoAbstractSerialUID() {
+		return voAbstractSerialUID;
+	}
+
+	/**
+	 * @param voAbstractSerialUID the voAbstractSerialUID to set
+	 */
+	public void setVoAbstractSerialUID(String voAbstractSerialUID) {
+		this.voAbstractSerialUID = voAbstractSerialUID;
 	}
 }

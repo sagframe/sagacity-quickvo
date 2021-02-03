@@ -55,6 +55,10 @@ public class TaskController {
 	 * dto模板
 	 */
 	private static String dtoTemplate;
+
+	private static String dtoAbstractTemplate;
+
+	private static String dtoParentTemplate;
 	private static String dtoFieldsTemplate;
 
 	/**
@@ -86,6 +90,10 @@ public class TaskController {
 	 */
 	private static void init() {
 		dtoTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoTempalte),
+				configModel.getEncoding());
+		dtoAbstractTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoAbstractTempalte),
+				configModel.getEncoding());
+		dtoParentTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoParentTempalte),
 				configModel.getEncoding());
 		dtoFieldsTemplate = inputStream2String(FileUtil.getResourceAsStream(Constants.dtoFieldsTemplate),
 				configModel.getEncoding());
@@ -184,7 +192,12 @@ public class TaskController {
 			voPackageDir = quickModel.getVoPath() + File.separator
 					+ StringUtil.replaceAllStr(quickModel.getVoPackage(), ".", File.separator);
 			// 创建vo包文件
-			FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
+			if (quickModel.isHasAbstractVO()) {
+				FileUtil.createFolder(
+						FileUtil.formatPath(voPackageDir + File.separator + configModel.getAbstractPath()));
+			} else {
+				FileUtil.createFolder(FileUtil.formatPath(voPackageDir));
+			}
 		}
 		if (quickModel.isHasEntity()) {
 			entityDir = quickModel.getEntityPath() + File.separator
@@ -458,9 +471,18 @@ public class TaskController {
 			}
 			// 创建DTO 文件
 			if (quickModel.isHasVO()) {
-				generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
-						configModel.getEncoding());
+				if (quickModel.isHasAbstractVO()) {
+					// 创建抽象dto
+					generateAbstractDTO(voPackageDir + File.separator + configModel.getAbstractPath() + File.separator
+							+ "Abstract" + quickVO.getVoName() + ".java", quickVO, configModel.getEncoding());
+					generateParentDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+							configModel.getEncoding());
+				} else {
+					generateDTO(voPackageDir + File.separator + quickVO.getVoName() + ".java", quickVO,
+							configModel.getEncoding());
+				}
 			}
+
 		}
 	}
 
@@ -707,7 +729,6 @@ public class TaskController {
 			}
 		}
 		return notNullCnt;
-
 	}
 
 	/**
@@ -797,24 +818,23 @@ public class TaskController {
 		}
 	}
 
-	private static void generateEntity(String file, String template, QuickVO quickVO, String charset) throws Exception {
-		File generateFile = new File(file);
-		boolean needGen = true;
+	private static void generateAbstractDTO(String file, QuickVO quickVO, String charset) throws Exception {
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
-		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
-		// 文件存在判断是否相等，不相等则生成
-		if (generateFile.exists()) {
-			String oldFileContent = FileUtil.readAsString(generateFile, charset);
+		String hashStr = quickVO.getVoPackage() + "." + quickVO.getAbstractPath() + ".Abstract" + quickVO.getVoName();
+		quickVO.setVoAbstractSerialUID(Long.toString(hash(hashStr)));
+		boolean needGen = true;
+		File voFile = new File(file);
+		// 文件不存在
+		if (voFile.exists()) {
+			String oldFileContent = FileUtil.readAsString(voFile, charset);
 			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
-					new Object[] { quickVO }, template);
+					new Object[] { quickVO }, dtoAbstractTemplate);
 			// 剔除所有回车换行和空白
 			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
 			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
 
 			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
 			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
-
 			// 内容相等
 			if (oldFileContent.equals(newFileContent)) {
 				needGen = false;
@@ -823,7 +843,21 @@ public class TaskController {
 		// 需要产生
 		if (needGen) {
 			logger.info("正在生成文件:" + file);
-			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
+					dtoAbstractTemplate, file);
+		}
+	}
+
+	private static void generateParentDTO(String file, QuickVO quickVO, String charset) throws Exception {
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getVoPackage() + "." + quickVO.getVoName();
+		quickVO.setVoSerialUID(Long.toString(hash(hashStr)));
+		File voFile = new File(file);
+		// 文件不存在
+		if (!voFile.exists()) {
+			logger.info("正在生成文件:" + file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, dtoParentTemplate,
+					file);
 		}
 	}
 
@@ -838,12 +872,7 @@ public class TaskController {
 					file);
 			return;
 		}
-		// 如果是视图则直接返回
-		if (quickVO.getType().equals("VIEW")) {
-			return;
-		}
 		String fileStr = FileUtil.readAsString(voFile, charset);
-
 		// 文件存在，修改构造函数
 		String constructor = FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO },
 				dtoFieldsTemplate);
@@ -871,6 +900,36 @@ public class TaskController {
 			}
 		} else {
 			logger.info("vo 文件中的构造函数默认开始结束符号被修改!表发生修改无法更新vo!");
+		}
+	}
+
+	private static void generateEntity(String file, String template, QuickVO quickVO, String charset) throws Exception {
+		File generateFile = new File(file);
+		boolean needGen = true;
+		// 根据包名和类名称产生hash值
+		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
+		quickVO.setEntitySerialUID(Long.toString(hash(hashStr)));
+		// 文件存在判断是否相等，不相等则生成
+		if (generateFile.exists()) {
+			String oldFileContent = FileUtil.readAsString(generateFile, charset);
+			String newFileContent = FreemarkerUtil.getInstance().create(new String[] { "quickVO" },
+					new Object[] { quickVO }, template);
+			// 剔除所有回车换行和空白
+			oldFileContent = StringUtil.clearMistyChars(oldFileContent, "");
+			oldFileContent = StringUtil.replaceAllStr(oldFileContent, " ", "");
+
+			newFileContent = StringUtil.clearMistyChars(newFileContent, "");
+			newFileContent = StringUtil.replaceAllStr(newFileContent, " ", "");
+
+			// 内容相等
+			if (oldFileContent.equals(newFileContent)) {
+				needGen = false;
+			}
+		}
+		// 需要产生
+		if (needGen) {
+			logger.info("正在生成文件:" + file);
+			FreemarkerUtil.getInstance().create(new String[] { "quickVO" }, new Object[] { quickVO }, template, file);
 		}
 	}
 
