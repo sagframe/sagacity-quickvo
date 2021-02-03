@@ -694,9 +694,14 @@ public class TaskController {
 				}
 			}
 			// 增加类引入类型对象
-			if (importType != null && importType.indexOf(".") != -1 && !impList.contains(importType)) {
-				if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
-					impList.add(importType);
+			if (importType != null) {
+				if (importType.indexOf(".") != -1 && !impList.contains(importType)) {
+					if (StringUtil.isBlank(colTypeMapping.getImportTypes())) {
+						impList.add(importType);
+					}
+				}
+				if (importType.toLowerCase().startsWith("list<") && !impList.contains("java.util.List")) {
+					impList.add("java.util.List");
 				}
 			}
 			if (colTypeMapping != null && StringUtil.isNotBlank(colTypeMapping.getImportTypes())) {

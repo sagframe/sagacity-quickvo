@@ -17,7 +17,7 @@ import lombok.*;
 /**
  * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
  * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
- * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>@description ${quickVO.tableRemark}</#if>  
+ * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>@description ${quickVO.tableName},${quickVO.tableRemark}</#if>  
  */
 <#if (quickVO.swaggerModel=="v2")>
 @ApiModel(value="${quickVO.voName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
