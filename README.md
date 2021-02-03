@@ -13,4 +13,4 @@
 * 请参见 https://github.com/sagframe/sqltoy-quickstart 项目
 * 在tools/quickvo 目录下面，配置quickvo.xml 设置相关任务信息，点击quickvo.bat 生成POJO
 
-![quickvo工具目录结构](https://github.com/sagframe/sagacity-quickvo/blob/master/docs/quickvo.png)
+![quickvo工具目录结构](https://github.com/sagframe/sagacity-quickvo/blob/master/docs/quickvo.jpg)
