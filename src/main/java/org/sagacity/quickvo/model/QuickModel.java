@@ -63,6 +63,11 @@ public class QuickModel implements Serializable {
 	private boolean hasAbstractEntity = true;
 
 	/**
+	 * 是否存在抽象VO
+	 */
+	private boolean hasAbstractVO = false;
+
+	/**
 	 * 是否支持swagger 注解
 	 */
 	private String swaggerApi = "false";
@@ -336,5 +341,19 @@ public class QuickModel implements Serializable {
 	 */
 	public void setHasVO(boolean hasVO) {
 		this.hasVO = hasVO;
+	}
+
+	/**
+	 * @return the hasAbstractVO
+	 */
+	public boolean isHasAbstractVO() {
+		return hasAbstractVO;
+	}
+
+	/**
+	 * @param hasAbstractVO the hasAbstractVO to set
+	 */
+	public void setHasAbstractVO(boolean hasAbstractVO) {
+		this.hasAbstractVO = hasAbstractVO;
 	}
 }

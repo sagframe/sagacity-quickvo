@@ -201,6 +201,10 @@ public class XMLConfigLoader {
 					} else {
 						quickModel.setVoName("#{subName}");
 					}
+					// 是否包含抽象类
+					if (vo.hasAttribute("has-abstract")) {
+						quickModel.setHasAbstractVO(Boolean.parseBoolean(vo.getAttribute("has-abstract")));
+					}
 					// 是否有父类
 					if (vo.hasAttribute("extends")) {
 						quickModel.setVoExtends(vo.getAttribute("extends"));

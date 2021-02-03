@@ -40,7 +40,7 @@ import org.sagacity.quickvo.utils.StringUtil;
 
 /**
  * @project sagacity-quickvo
- * @description 获取数据库表或视图信息,生成VO、AbstractVO、VOFactory文件
+ * @description 获取数据库表或视图信息,生成VO、AbstractVO文件
  * @author zhongxuchen
  * @version v1.0,Date:2010-7-21
  */
