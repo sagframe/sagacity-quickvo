@@ -90,7 +90,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	/**
 	 * 主键关联子表信息
 	 */
-	@OneToMany(fields={${exportTable.pkColJavaName}},mappedTable="${exportTable.pkRefTableName}",mappedColumns={${exportTable.pkRefColName}},mappedFields={${exportTable.pkRefColJavaName}}<#if (exportTable.load?exists)>,load="${exportTable.load}"</#if><#if (exportTable.updateSql?exists)>,update="${exportTable.updateSql}"</#if><#if (exportTable.deleteRule==0)>,delete=false</#if><#if (exportTable.orderBy?exists)>,orderBy="${exportTable.orderBy}"</#if>)
+	@OneToMany(fields={${exportTable.pkColJavaName}},mappedFields={${exportTable.pkRefColJavaName}}<#if (exportTable.load?exists)>,load="${exportTable.load}"</#if><#if (exportTable.updateSql?exists)>,update="${exportTable.updateSql}"</#if><#if (exportTable.deleteRule==0)>,delete=false</#if><#if (exportTable.orderBy?exists)>,orderBy="${exportTable.orderBy}"</#if>)
 	protected List<${exportTable.pkRefTableJavaName?cap_first}> ${exportTable.pkRefTableJavaName?uncap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s=new ArrayList<${exportTable.pkRefTableJavaName?cap_first}>();
 
 </#list>
