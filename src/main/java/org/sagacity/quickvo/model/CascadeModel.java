@@ -25,7 +25,7 @@ public class CascadeModel implements Serializable {
 	/**
 	 * 主表删除子表是否删除
 	 */
-	private boolean delete = false;
+	private boolean delete = true;
 
 	/**
 	 * 主表保存，子表是否保存
