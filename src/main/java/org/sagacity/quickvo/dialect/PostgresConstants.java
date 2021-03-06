@@ -37,7 +37,7 @@ public class PostgresConstants {
 
 	public static final String[][] jdbcAry = { { "REAL", "REAL" }, { "YEAR", "DATE" }, { "DateTime", "DATE" },
 			{ "Int", "INTEGER" }, { "Int2", "INTEGER" }, { "_Int2", "ARRAY" }, { "Int4", "INTEGER" },
-			{ "_Int4", "ARRAY" }, { "Int8", "LONG" }, { "_Int8", "ARRAY" }, { "SMALLINT", "SMALLINT" },
+			{ "_Int4", "ARRAY" }, { "Int8", "BIGINT" }, { "_Int8", "ARRAY" }, { "SMALLINT", "SMALLINT" },
 			{ "SERIAL8", "BIGINT" }, { "SERIAL", "INTEGER", "" }, { "BIGSERIAL", "BIGINT" }, { "FLOAT4", "FLOAT" },
 			{ "_FLOAT4", "ARRAY" }, { "FLOAT8", "DOUBLE" }, { "_FLOAT8", "ARRAY" }, { "STRING", "VARCHAR" },
 			{ "LONG VARCHAR", "VARCHAR" }, { "DATE", "DATE" }, { "DATETIME", "DATE" }, { "TIMESTAMP", "TIMESTAMP" },
