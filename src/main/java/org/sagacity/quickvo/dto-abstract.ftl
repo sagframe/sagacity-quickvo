@@ -33,7 +33,7 @@ import ${quickVO.voExtends};
 <#if (quickVO.lombok)>
 @Data
 <#if (quickVO.lombokChain)>
-@Accessors(fluent = true)
+@Accessors(chain = true)
 </#if>
 </#if>
 <#if (quickVO.voExtends?exists)>

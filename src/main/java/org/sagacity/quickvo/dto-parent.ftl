@@ -31,7 +31,7 @@ import lombok.experimental.Accessors;
 <#if (quickVO.lombok)>
 @Data
 <#if (quickVO.lombokChain)>
-@Accessors(fluent = true)
+@Accessors(chain = true)
 </#if>
 </#if>
 public class ${quickVO.voName} extends Abstract${quickVO.voName} {
