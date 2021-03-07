@@ -11,7 +11,10 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 </#if>
 <#if (quickVO.lombok)>
-import lombok.*;
+import lombok.Data;
+<#if (quickVO.lombokChain)>
+import lombok.experimental.Accessors;
+</#if>
 </#if>
 <#if (quickVO.imports?exists && quickVO.imports?size>0)>
 <#list quickVO.imports as import>
@@ -30,7 +33,7 @@ import ${quickVO.voExtends};
 <#if (quickVO.lombok)>
 @Data
 <#if (quickVO.lombokChain)>
-@Accessors(fluent = true)
+@Accessors(chain = true)
 </#if>
 </#if>
 <#if (quickVO.voExtends?exists)>

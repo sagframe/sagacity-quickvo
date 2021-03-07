@@ -11,7 +11,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.v3.oas.annotations.media.Schema;
 </#if>
 <#if (quickVO.lombok)>
-import lombok.*;
+import lombok.Data;
+<#if (quickVO.lombokChain)>
+import lombok.experimental.Accessors;
+</#if>
 </#if>
 
 /**
@@ -28,7 +31,7 @@ import lombok.*;
 <#if (quickVO.lombok)>
 @Data
 <#if (quickVO.lombokChain)>
-@Accessors(fluent = true)
+@Accessors(chain = true)
 </#if>
 </#if>
 public class ${quickVO.voName} extends Abstract${quickVO.voName} {
