@@ -363,7 +363,8 @@ public class TaskController {
 													throw new Exception("please give a sequence for" + tableName
 															+ " where primary key strategy is sequence!");
 												}
-												quickColMeta.setSequence(sequence);
+												quickColMeta.setSequence(
+														sequence.replaceAll("\\$\\{tableName\\}", tableName));
 											}
 											if (strategy.equalsIgnoreCase("generator")) {
 												if (StringUtil.isNotBlank(generator))
