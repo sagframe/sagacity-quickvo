@@ -363,8 +363,9 @@ public class TaskController {
 													throw new Exception("please give a sequence for" + tableName
 															+ " where primary key strategy is sequence!");
 												}
+												//支持sequence命名以seq_${tableName} 跟表名有规则相关模式
 												quickColMeta.setSequence(
-														sequence.replaceAll("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
+														sequence.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
 											}
 											if (strategy.equalsIgnoreCase("generator")) {
 												if (StringUtil.isNotBlank(generator))
