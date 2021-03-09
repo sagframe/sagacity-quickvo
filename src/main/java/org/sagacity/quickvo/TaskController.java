@@ -364,7 +364,7 @@ public class TaskController {
 															+ " where primary key strategy is sequence!");
 												}
 												quickColMeta.setSequence(
-														sequence.replaceAll("\\$\\{tableName\\}", tableName));
+														sequence.replaceAll("(?i)\\$\\{\\s*tableName\\s*\\}", tableName));
 											}
 											if (strategy.equalsIgnoreCase("generator")) {
 												if (StringUtil.isNotBlank(generator))
