@@ -452,7 +452,7 @@ public class TaskController {
 				}
 			}
 
-			// 针对数据库表中字段剔除下划线存在重复问题，自动补齐一个字符A,至于出现多个重复自己去改数据库吧
+			// 针对数据库表中字段存在reciveTime 和recive_time 这种形态优化
 			Set<String> fieldNames = new HashSet<String>();
 			for (QuickColMeta colMeta : colList) {
 				if (!colMeta.getColName().contains("_")) {
