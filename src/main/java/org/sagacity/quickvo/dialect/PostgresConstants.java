@@ -33,7 +33,8 @@ public class PostgresConstants {
 			{ "BOOLEAN", "Boolean", "" }, { "BOOL", "Boolean", "" }, { "TEXT", "String", "" },
 			{ "_TEXT", "String[]", "" }, { "LONGTEXT", "String", "" }, { "TINYTEXT", "String" },
 			{ "LONG VARCHAR", "String", "" }, { "GEOMETRY", "Object", "" }, { "SDO_GEOMETRY", "Object", "" },
-			{ "JSONB", "byte[]", "" }, { "BINARY", "byte[]", "" }, { "BYTEA", "byte[]", "" } };
+			{ "JSONB", "byte[]", "" }, { "BINARY", "byte[]", "" }, { "BYTEA", "byte[]", "" }, { "UUID", "String", "" },
+			{ "TSVECTOR", "String", "" } };
 
 	public static final String[][] jdbcAry = { { "REAL", "REAL" }, { "YEAR", "DATE" }, { "DateTime", "DATE" },
 			{ "Int", "INTEGER" }, { "Int2", "INTEGER" }, { "_Int2", "ARRAY" }, { "Int4", "INTEGER" },
@@ -48,6 +49,6 @@ public class PostgresConstants {
 			{ "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" }, { "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" },
 			{ "INT", "INTEGER" }, { "INTEGER", "INTEGER" }, { "BIGINT", "BIGINT" }, { "BIT", "BIT" },
 			{ "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" }, { "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" },
-			{ "NUMERIC", "DECIMAL" }, { "_NUMERIC", "ARRAY" }, { "GEOMETRY", "VARCHAR" },
-			{ "SDO_GEOMETRY", "VARCHAR" } };
+			{ "NUMERIC", "DECIMAL" }, { "_NUMERIC", "ARRAY" }, { "GEOMETRY", "VARCHAR" }, { "SDO_GEOMETRY", "VARCHAR" },
+			{ "UUID", "VARCHAR" }, { "TSVECTOR", "VARCHAR" } };
 }

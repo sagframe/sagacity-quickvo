@@ -363,9 +363,9 @@ public class TaskController {
 													throw new Exception("please give a sequence for" + tableName
 															+ " where primary key strategy is sequence!");
 												}
-												//支持sequence命名以seq_${tableName} 跟表名有规则相关模式
-												quickColMeta.setSequence(
-														sequence.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
+												// 支持sequence命名以seq_${tableName} 跟表名有规则相关模式
+												quickColMeta.setSequence(sequence
+														.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
 											}
 											if (strategy.equalsIgnoreCase("generator")) {
 												if (StringUtil.isNotBlank(generator))
@@ -452,6 +452,17 @@ public class TaskController {
 				}
 			}
 
+			// 针对数据库表中字段剔除下划线存在重复问题，自动补齐一个字符A,至于出现多个重复自己去改数据库吧
+			Set<String> fieldNames = new HashSet<String>();
+			String fieldName;
+			for (QuickColMeta colMeta : colList) {
+				fieldName = colMeta.getColJavaName().toLowerCase();
+				if (fieldNames.contains(fieldName)) {
+					colMeta.setColJavaName(colMeta.getColJavaName().concat("A"));
+				} else {
+					fieldNames.add(fieldName);
+				}
+			}
 			quickVO.setColumns(colList);
 			quickVO.setImports(impList);
 			// 创建entity文件
