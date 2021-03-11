@@ -231,7 +231,7 @@ public class TaskController {
 			PrimaryKeyStrategy primaryKeyStrategy = getPrimaryKeyStrategy(configModel.getPkGeneratorStrategy(),
 					tableName);
 
-			entityName = StringUtil.toHumpStr(tableName, true);
+			entityName = StringUtil.toHumpStr(tableName, true, true);
 			quickVO.setLombok(quickModel.isLombok());
 			quickVO.setLombokChain(quickModel.isLombokChain());
 			quickVO.setSwaggerModel(quickModel.getSwaggerApi());
@@ -454,13 +454,15 @@ public class TaskController {
 
 			// 针对数据库表中字段剔除下划线存在重复问题，自动补齐一个字符A,至于出现多个重复自己去改数据库吧
 			Set<String> fieldNames = new HashSet<String>();
-			String fieldName;
 			for (QuickColMeta colMeta : colList) {
-				fieldName = colMeta.getColJavaName().toLowerCase();
-				if (fieldNames.contains(fieldName)) {
-					colMeta.setColJavaName(colMeta.getColJavaName().concat("A"));
-				} else {
-					fieldNames.add(fieldName);
+				if (!colMeta.getColName().contains("_")) {
+					fieldNames.add(colMeta.getColName().toLowerCase());
+				}
+			}
+			for (QuickColMeta colMeta : colList) {
+				if (colMeta.getColName().contains("_")
+						&& fieldNames.contains(colMeta.getColName().replace("_", "").toLowerCase())) {
+					colMeta.setColJavaName(StringUtil.toHumpStr(colMeta.getColName(), true, false));
 				}
 			}
 			quickVO.setColumns(colList);
@@ -557,10 +559,10 @@ public class TaskController {
 			quickColMeta.setAutoIncrement(Boolean.toString(colMeta.isAutoIncrement()));
 			// 剔除字段统一前缀
 			if (StringUtil.isNotBlank(ridPrefix) && colMeta.getColName().toLowerCase().startsWith(ridPrefix)) {
-				quickColMeta
-						.setColJavaName(StringUtil.toHumpStr(colMeta.getColName().substring(ridPrefix.length()), true));
+				quickColMeta.setColJavaName(
+						StringUtil.toHumpStr(colMeta.getColName().substring(ridPrefix.length()), true, true));
 			} else {
-				quickColMeta.setColJavaName(StringUtil.toHumpStr(colMeta.getColName(), true));
+				quickColMeta.setColJavaName(StringUtil.toHumpStr(colMeta.getColName(), true, true));
 			}
 
 			quickColMeta.setJdbcType(jdbcType);
@@ -675,15 +677,15 @@ public class TaskController {
 					constractModel = (TableConstractModel) fks.get(x);
 					// 外键
 					if (colMeta.getColName().equalsIgnoreCase(constractModel.getFkColName())) {
-						quickColMeta
-								.setFkRefJavaTableName(StringUtil.toHumpStr(constractModel.getFkRefTableName(), true));
+						quickColMeta.setFkRefJavaTableName(
+								StringUtil.toHumpStr(constractModel.getFkRefTableName(), true, true));
 						if (StringUtil.isNotBlank(ridPrefix)
 								&& constractModel.getPkColName().toLowerCase().startsWith(ridPrefix)) {
-							quickColMeta.setFkRefTableColJavaName(StringUtil
-									.toHumpStr(constractModel.getPkColName().substring(ridPrefix.length()), true));
+							quickColMeta.setFkRefTableColJavaName(StringUtil.toHumpStr(
+									constractModel.getPkColName().substring(ridPrefix.length()), true, true));
 						} else {
 							quickColMeta.setFkRefTableColJavaName(
-									StringUtil.toHumpStr(constractModel.getPkColName(), true));
+									StringUtil.toHumpStr(constractModel.getPkColName(), true, true));
 						}
 						break;
 					}
@@ -769,20 +771,20 @@ public class TaskController {
 			String fieldPrefix = quickModel.getFieldRidPrefix();
 			for (TableConstractModel exportKey : exportKeys) {
 				refTable = exportKey.getPkRefTableName();
-				refJavaTable = StringUtil.toHumpStr(refTable, true);
+				refJavaTable = StringUtil.toHumpStr(refTable, true, true);
 				if (StringUtil.isNotBlank(fieldPrefix)
 						&& exportKey.getPkColName().toLowerCase().startsWith(fieldPrefix)) {
 					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName().substring(fieldPrefix.length()),
-							false);
+							false, true);
 				} else {
-					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName(), false);
+					pkColJavaName = StringUtil.toHumpStr(exportKey.getPkColName(), false, true);
 				}
 				if (StringUtil.isNotBlank(fieldPrefix)
 						&& exportKey.getPkRefColName().toLowerCase().startsWith(fieldPrefix)) {
 					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName().substring(fieldPrefix.length()),
-							false);
+							false, true);
 				} else {
-					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName(), false);
+					pkRefColJavaName = StringUtil.toHumpStr(exportKey.getPkRefColName(), false, true);
 				}
 				if (subTablesMap.containsKey(refTable)) {
 					subTable = subTablesMap.get(refTable);

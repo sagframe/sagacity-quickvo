@@ -189,7 +189,7 @@ public class StringUtil {
 	 * @param firstIsUpperCase
 	 * @return
 	 */
-	public static String toHumpStr(String source, boolean firstIsUpperCase) {
+	public static String toHumpStr(String source, boolean firstIsUpperCase, boolean removeDnderline) {
 		if (StringUtil.isBlank(source)) {
 			return source;
 		}
@@ -198,6 +198,9 @@ public class StringUtil {
 		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < humpAry.length; i++) {
 			cell = humpAry[i];
+			if (!removeDnderline && i > 0) {
+				result.append("_");
+			}
 			// 全大写或全小写
 			if (cell.toUpperCase().equals(cell)) {
 				result.append(firstToUpperOtherToLower(cell));
