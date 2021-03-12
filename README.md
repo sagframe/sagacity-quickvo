@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>4.18.6</version>
+    <version>4.18.7</version>
 </dependency>
 
 ```
@@ -84,6 +84,8 @@
 		<sql-type native-types="NUMBER,DECIMAL,NUMERIC"	precision="1..8" scale="0" jdbc-type="INTEGER" java-type="Integer" />
 		<!-- 增加雪花算法的演示 -->
 		<sql-type native-types="BIGINT" jdbc-type="BIGINT" java-type="java.math.BigInteger" />
+		<!-- 泛型注意xml转义符号，table-field指定具体表和字段; jdbc-type 可以直接填数字(jdbc.Types没有明显区分的类型)-->
+		<sql-type table-field="sqltoy_jsontype_showcae.staff_set" native-types="json" jdbc-type="1021" java-type="List&lt;StaffInfoVO&gt;" import-types="com.sqltoy.quickstart.vo.StaffInfoVO" />
 	</type-mapping>
 </quickvo>
 ```
