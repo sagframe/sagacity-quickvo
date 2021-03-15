@@ -9,6 +9,9 @@ import org.sagacity.sqltoy.config.annotation.SqlToyEntity;
 import ${import};
 </#list>
 </#if>
+<#if (quickVO.exportTables?exists)>
+import java.util.List;
+</#if>
 import ${quickVO.entityPackage}.${quickVO.abstractPath}.Abstract${quickVO.entityName};
 
 /**
