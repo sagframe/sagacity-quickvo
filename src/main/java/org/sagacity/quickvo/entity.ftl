@@ -32,7 +32,6 @@ import ${import};
 </#if>
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
-import java.util.ArrayList;
 <#list quickVO.exportTables as exportTable>
 import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>
@@ -87,7 +86,7 @@ public class ${quickVO.entityName} implements Serializable {
 	 * 主键关联子表信息
 	 */
 	@OneToMany(fields={${exportTable.pkColJavaName}},mappedFields={${exportTable.pkRefColJavaName}}<#if (exportTable.load?exists)>,load="${exportTable.load}"</#if><#if (exportTable.updateSql?exists)>,update="${exportTable.updateSql}"</#if><#if (exportTable.deleteRule==1)>,delete=true</#if><#if (exportTable.orderBy?exists)>,orderBy="${exportTable.orderBy}"</#if>)
-	private List<${exportTable.pkRefTableJavaName?cap_first}> ${exportTable.pkRefTableJavaName?uncap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s=new ArrayList<${exportTable.pkRefTableJavaName?cap_first}>();
+	private List<${exportTable.pkRefTableJavaName?cap_first}> ${exportTable.pkRefTableJavaName?uncap_first}<#if exportTable.pkRefTableJavaName?ends_with("s")>e</#if>s;
 
 </#list>
 </#if>
