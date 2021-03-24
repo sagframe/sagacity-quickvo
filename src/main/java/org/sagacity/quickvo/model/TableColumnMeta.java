@@ -45,6 +45,11 @@ public class TableColumnMeta implements java.io.Serializable {
 	private boolean nullable;
 
 	/**
+	 * 是否分区字段
+	 */
+	private boolean partitionKey;
+
+	/**
 	 * 字段注释
 	 */
 	private String colRemark;
@@ -238,6 +243,20 @@ public class TableColumnMeta implements java.io.Serializable {
 	 */
 	public void setAutoIncrement(boolean isAutoIncrement) {
 		this.isAutoIncrement = isAutoIncrement;
+	}
+
+	/**
+	 * @return the partitionKey
+	 */
+	public boolean getPartitionKey() {
+		return partitionKey;
+	}
+
+	/**
+	 * @param partitionKey the partitionKey to set
+	 */
+	public void setPartitionKey(boolean partitionKey) {
+		this.partitionKey = partitionKey;
 	}
 
 }

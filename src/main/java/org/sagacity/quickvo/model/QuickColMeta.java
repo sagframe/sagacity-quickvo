@@ -115,6 +115,11 @@ public class QuickColMeta implements Serializable {
 	private BusinessIdConfig businessIdConfig;
 
 	/**
+	 * 分区字段
+	 */
+	private Boolean partitionKey = false;
+
+	/**
 	 * default值
 	 */
 	private String defaultValue;
@@ -431,6 +436,20 @@ public class QuickColMeta implements Serializable {
 
 	public void setColType(String colType) {
 		this.colType = colType;
+	}
+
+	/**
+	 * @return the partitionKey
+	 */
+	public Boolean getPartitionKey() {
+		return partitionKey;
+	}
+
+	/**
+	 * @param partitionKey the partitionKey to set
+	 */
+	public void setPartitionKey(Boolean partitionKey) {
+		this.partitionKey = partitionKey;
 	}
 
 }

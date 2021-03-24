@@ -531,6 +531,7 @@ public class TaskController {
 		}
 		Set<String> colsSet = new HashSet<String>();
 		String tableField;
+		boolean hasPartitionKey = false;
 		for (int i = 0; i < cols.size(); i++) {
 			colMeta = (TableColumnMeta) cols.get(i);
 			tableField = tableName.concat(".").concat(colMeta.getColName()).toLowerCase();
@@ -556,6 +557,10 @@ public class TaskController {
 			jdbcType = Constants.getJdbcType(jdbcType, dbType);
 			quickColMeta.setDataType(jdbcType);
 			quickColMeta.setColName(colMeta.getColName());
+			if (colMeta.getPartitionKey()) {
+				quickColMeta.setPartitionKey(colMeta.getPartitionKey());
+				hasPartitionKey = true;
+			}
 			quickColMeta.setAutoIncrement(Boolean.toString(colMeta.isAutoIncrement()));
 			// 剔除字段统一前缀
 			if (StringUtil.isNotBlank(ridPrefix) && colMeta.getColName().toLowerCase().startsWith(ridPrefix)) {
@@ -728,6 +733,9 @@ public class TaskController {
 				}
 			}
 			quickColMetas.add(quickColMeta);
+		}
+		if (hasPartitionKey) {
+			impList.add("org.sagacity.sqltoy.config.annotation.PartitionKey");
 		}
 		return quickColMetas;
 	}

@@ -203,7 +203,8 @@ public class DBHelper {
 						TableMeta tableMeta = new TableMeta();
 						tableMeta.setTableName(tableName);
 						tableMeta.setSchema(dbConfig.getSchema());
-						// tableMeta.setSchema(rs.getString("TABLE_SCHEMA"));
+						// tableMeta.setSchema(rs.getString("TABLE_SCHEM"));
+						// tableMeta.setSchema(rs.getString("TABLE_CAT"));
 						type = rs.getString("TABLE_TYPE").toLowerCase();
 						if (type.contains("view")) {
 							tableMeta.setTableType("VIEW");
@@ -400,7 +401,7 @@ public class DBHelper {
 		if (dbType == DBType.CLICKHOUSE) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append(
-					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY from system.columns t where t.table=?");
+					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY,is_in_partition_key PARTITION_KEY from system.columns t where t.table=?");
 			pst = conn.prepareStatement(queryStr.toString());
 			pst.setString(1, tableName);
 			rs = pst.executeQuery();
@@ -416,6 +417,9 @@ public class DBHelper {
 								if (rs.getString("PRIMARY_KEY").equals("1")) {
 									colMeta.setIsPrimaryKey(true);
 								}
+								if (rs.getString("PARTITION_KEY").equals("1")) {
+									colMeta.setPartitionKey(true);
+								}
 								filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
 							}
 							this.setResult(filedHash);
@@ -426,7 +430,7 @@ public class DBHelper {
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
-		if (dbType == DBType.MYSQL) {
+		if (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, "%");
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
@@ -532,23 +536,28 @@ public class DBHelper {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static List getTableImpForeignKeys(String tableName) throws Exception {
-		ResultSet rs = conn.getMetaData().getImportedKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
-		return (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
-			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
-				List result = new ArrayList();
-				while (rs.next()) {
-					TableConstractModel constractModel = new TableConstractModel();
-					constractModel.setFkRefTableName(rs.getString("PKTABLE_NAME"));
-					constractModel.setFkColName(rs.getString("FKCOLUMN_NAME"));
-					constractModel.setPkColName(rs.getString("PKCOLUMN_NAME"));
-					constractModel.setUpdateRule(rs.getInt("UPDATE_RULE"));
-					constractModel.setDeleteRule(rs.getInt("DELETE_RULE"));
-					result.add(constractModel);
+	public static List getTableImpForeignKeys(String tableName) {
+		try {
+			ResultSet rs = conn.getMetaData().getImportedKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
+			List result = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+				public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+					List result = new ArrayList();
+					while (rs.next()) {
+						TableConstractModel constractModel = new TableConstractModel();
+						constractModel.setFkRefTableName(rs.getString("PKTABLE_NAME"));
+						constractModel.setFkColName(rs.getString("FKCOLUMN_NAME"));
+						constractModel.setPkColName(rs.getString("PKCOLUMN_NAME"));
+						constractModel.setUpdateRule(rs.getInt("UPDATE_RULE"));
+						constractModel.setDeleteRule(rs.getInt("DELETE_RULE"));
+						result.add(constractModel);
+					}
+					this.setResult(result);
 				}
-				this.setResult(result);
-			}
-		});
+			});
+			return result;
+		} catch (Exception e) {
+		}
+		return new ArrayList();
 	}
 
 	/**
@@ -557,24 +566,29 @@ public class DBHelper {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<TableConstractModel> getTableExportKeys(String tableName) throws Exception {
-		ResultSet rs = conn.getMetaData().getExportedKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
-		return (List<TableConstractModel>) DBUtil.preparedStatementProcess(null, null, rs,
-				new PreparedStatementResultHandler() {
-					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
-						List<TableConstractModel> result = new ArrayList<TableConstractModel>();
-						while (rs.next()) {
-							TableConstractModel constractModel = new TableConstractModel();
-							constractModel.setPkRefTableName(rs.getString("FKTABLE_NAME"));
-							constractModel.setPkColName(rs.getString("PKCOLUMN_NAME"));
-							constractModel.setPkRefColName(rs.getString("FKCOLUMN_NAME"));
-							constractModel.setUpdateRule(rs.getInt("UPDATE_RULE"));
-							constractModel.setDeleteRule(rs.getInt("DELETE_RULE"));
-							result.add(constractModel);
+	public static List<TableConstractModel> getTableExportKeys(String tableName) {
+		try {
+			ResultSet rs = conn.getMetaData().getExportedKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
+			List result = (List<TableConstractModel>) DBUtil.preparedStatementProcess(null, null, rs,
+					new PreparedStatementResultHandler() {
+						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+							List<TableConstractModel> result = new ArrayList<TableConstractModel>();
+							while (rs.next()) {
+								TableConstractModel constractModel = new TableConstractModel();
+								constractModel.setPkRefTableName(rs.getString("FKTABLE_NAME"));
+								constractModel.setPkColName(rs.getString("PKCOLUMN_NAME"));
+								constractModel.setPkRefColName(rs.getString("FKCOLUMN_NAME"));
+								constractModel.setUpdateRule(rs.getInt("UPDATE_RULE"));
+								constractModel.setDeleteRule(rs.getInt("DELETE_RULE"));
+								result.add(constractModel);
+							}
+							this.setResult(result);
 						}
-						this.setResult(result);
-					}
-				});
+					});
+			return result;
+		} catch (Exception e) {
+		}
+		return new ArrayList();
 	}
 
 	/**
@@ -583,27 +597,56 @@ public class DBHelper {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static List getTablePrimaryKeys(String tableName) throws Exception {
-		int dbType = DBUtil.getDbType(conn);
-		ResultSet rs;
-		if (dbType == DBType.CLICKHOUSE) {
-			rs = conn.createStatement().executeQuery("select t.name COLUMN_NAME from system.columns t where t.table='"
-					+ tableName + "' and t.is_in_primary_key=1");
-		} else {
-			rs = conn.getMetaData().getPrimaryKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
-		}
-		List pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
-			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
-				List result = new ArrayList();
-				while (rs.next()) {
-					result.add(rs.getString("COLUMN_NAME"));
+	public static List getTablePrimaryKeys(String tableName) {
+		try {
+			int dbType = DBUtil.getDbType(conn);
+			ResultSet rs = null;
+			List pkList = null;
+			if (dbType == DBType.CLICKHOUSE) {
+				rs = conn.createStatement()
+						.executeQuery("select t.name COLUMN_NAME from system.columns t where t.table='" + tableName
+								+ "' and t.is_in_primary_key=1");
+			} else {
+				try {
+					rs = conn.getMetaData().getPrimaryKeys(dbConfig.getCatalog(), dbConfig.getSchema(), tableName);
+				} catch (Exception e) {
+
 				}
-				this.setResult(result);
 			}
-		});
-		// 排除重复主键约束
-		HashSet hashSet = new HashSet(pkList);
-		return new ArrayList(hashSet);
+			// 针对dorisdb场景
+			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57)) {
+				rs = conn.createStatement().executeQuery("desc " + tableName);
+				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+						List result = new ArrayList();
+						String field;
+						while (rs.next()) {
+							field = rs.getString("FIELD");
+							if (rs.getBoolean("KEY")) {
+								result.add(field);
+							}
+						}
+						this.setResult(result);
+					}
+				});
+			} else {
+				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+						List result = new ArrayList();
+						while (rs.next()) {
+							result.add(rs.getString("COLUMN_NAME"));
+						}
+						this.setResult(result);
+					}
+				});
+			}
+			// 排除重复主键约束
+			HashSet hashSet = new HashSet(pkList);
+			return new ArrayList(hashSet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return new ArrayList();
 	}
 
 	/**
