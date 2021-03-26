@@ -254,25 +254,12 @@ public class TaskController {
 			}
 			quickVO.setEntityPackage(quickModel.getEntityPackage());
 			// 截取VO前面的模块标识名称(一般数据库表名前缀为特定的模块名称)
-			if (quickModel.getEntitySubstr() != null) {
-				quickVO.setEntityName(StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
-						"#{subName}", StringUtil.replaceStr(entityName, quickModel.getEntitySubstr(), ""))));
-			} else {
-				quickVO.setEntityName(StringUtil
-						.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(), "#{subName}", entityName)));
-			}
-			// quickVO.setEntityName(entityName);
-
+			quickVO.setEntityName(StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
+					"#{subName}", StringUtil.subStart(entityName, quickModel.getEntitySubstr()))));
 			quickVO.setVoPackage(quickModel.getVoPackage());
 			// 截取VO前面的模块标识名称(一般数据库表名前缀为特定的模块名称)
-			if (quickModel.getVoSubstr() != null) {
-				quickVO.setVoName(StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
-						"#{subName}", StringUtil.replaceStr(entityName, quickModel.getVoSubstr(), ""))));
-			} else {
-				quickVO.setVoName(StringUtil
-						.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(), "#{subName}", entityName)));
-			}
-
+			quickVO.setVoName(StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(), "#{subName}",
+					StringUtil.subStart(entityName, quickModel.getVoSubstr()))));
 			isTable = true;
 			// 判断是"表还是视图"
 			if (quickVO.getType().equals("VIEW")) {
@@ -807,15 +794,10 @@ public class TaskController {
 					subTablesMap.put(refTable, exportKey);
 					if (quickModel.isHasEntity()) {
 						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
-								"#{subName}", StringUtil.replaceStr(refJavaTable, quickModel.getEntitySubstr(), "")));
+								"#{subName}", StringUtil.subStart(refJavaTable, quickModel.getEntitySubstr())));
 					} else {
-						if (quickModel.getVoSubstr() != null) {
-							refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
-									"#{subName}", StringUtil.replaceStr(refJavaTable, quickModel.getVoSubstr(), "")));
-						} else {
-							refJavaTable = StringUtil.firstToUpperCase(
-									StringUtil.replaceStr(quickModel.getVoName(), "#{subName}", refJavaTable));
-						}
+						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
+								"#{subName}", StringUtil.subStart(refJavaTable, quickModel.getVoSubstr())));
 					}
 					exportKey.setPkRefTableJavaName(refJavaTable);
 
