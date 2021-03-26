@@ -214,4 +214,14 @@ public class StringUtil {
 		}
 		return firstToLowerCase(result.toString());
 	}
+
+	public static String subStart(String source, String start) {
+		if (isBlank(start)) {
+			return source;
+		}
+		if (source.toLowerCase().startsWith(start.toLowerCase())) {
+			return source.substring(start.length());
+		}
+		return source;
+	}
 }
