@@ -135,6 +135,8 @@ public class QuickVO implements Serializable {
 	 * 
 	 */
 	private String voExtends;
+	
+	private int columnSize=0;
 
 	/**
 	 * @return the singlePk
@@ -667,4 +669,14 @@ public class QuickVO implements Serializable {
 	public void setVoAbstractSerialUID(String voAbstractSerialUID) {
 		this.voAbstractSerialUID = voAbstractSerialUID;
 	}
+
+	public int getColumnSize() {
+		return columnSize;
+	}
+
+	public void setColumnSize(int columnSize) {
+		this.columnSize = columnSize;
+	}
+	
+	
 }
