@@ -114,7 +114,6 @@ public class ${quickVO.entityName} implements Serializable {
 		</#list>
 	}
 </#if>
-
 </#if>
 <#list quickVO.columns as column>
 	
@@ -139,7 +138,6 @@ public class ${quickVO.entityName} implements Serializable {
 	    return this.${column.colJavaName?uncap_first};
 	}
 </#list>
-
 
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
