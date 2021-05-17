@@ -453,6 +453,9 @@ public class TaskController {
 				}
 			}
 			quickVO.setColumns(colList);
+			if (colList != null) {
+				quickVO.setColumnSize(colList.size());
+			}
 			quickVO.setImports(impList);
 			// 创建entity文件
 			if (quickModel.isHasEntity()) {

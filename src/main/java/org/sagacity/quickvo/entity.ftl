@@ -83,7 +83,10 @@ public class ${quickVO.entityName} implements Serializable {
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
-
+<#if (quickVO.columnSize==0)>
+   // 未能获得表字段信息,请检查quickvo.xml 中dataSource的schema 和 catalog配置，可尝试先去除schema\catalog
+   // 内部原理: conn.getMetaData().getColumns(catalog, schema, tableName, null);
+</#if>
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
 	/**
@@ -111,7 +114,6 @@ public class ${quickVO.entityName} implements Serializable {
 		</#list>
 	}
 </#if>
-
 </#if>
 <#list quickVO.columns as column>
 	
@@ -136,7 +138,6 @@ public class ${quickVO.entityName} implements Serializable {
 	    return this.${column.colJavaName?uncap_first};
 	}
 </#list>
-
 
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
@@ -184,7 +185,7 @@ public class ${quickVO.entityName} implements Serializable {
 		}
 		
 <#list quickVO.columns as column>
-	    public SelectFieldsImpl ${column.colJavaName?uncap_first}() {
+	    public SelectFieldsImpl ${column.colJavaName?uncap_first}<#if (column.colJavaName?uncap_first=='notify')>_</#if><#if (column.colJavaName?uncap_first=='finalize')>_</#if><#if (column.colJavaName?uncap_first=='wait')>_</#if><#if (column.colJavaName?uncap_first=='notifyAll')>_</#if>() {
 	    	if (!fields.contains("${column.colJavaName?uncap_first}")) {
 				fields.add("${column.colJavaName?uncap_first}");
 			}
