@@ -130,8 +130,8 @@ public class QuickVO implements Serializable {
 	private boolean lombokChain = false;
 
 	private String entityExtends;
-	
-	private int columnSize=0;
+
+	private int columnSize = 0;
 	/**
 	 * 
 	 */
@@ -682,4 +682,5 @@ public class QuickVO implements Serializable {
 	public void setColumnSize(int columnSize) {
 		this.columnSize = columnSize;
 	}
+
 }

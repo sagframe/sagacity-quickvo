@@ -190,7 +190,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 		}
 		
 <#list quickVO.columns as column>
-	    public SelectFieldsImpl ${column.colJavaName?uncap_first}() {
+	    public SelectFieldsImpl ${column.colJavaName?uncap_first}<#if (column.colJavaName?uncap_first=='notify')>_</#if><#if (column.colJavaName?uncap_first=='finalize')>_</#if><#if (column.colJavaName?uncap_first=='wait')>_</#if><#if (column.colJavaName?uncap_first=='notifyAll')>_</#if>() {
 	    	if (!fields.contains("${column.colJavaName?uncap_first}")) {
 				fields.add("${column.colJavaName?uncap_first}");
 			}

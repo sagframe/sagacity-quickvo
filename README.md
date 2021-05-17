@@ -5,13 +5,15 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>4.18.9</version>
+    <version>4.18.10</version>
 </dependency>
 
 ```
-# 使用方式:
-* 请参见 https://github.com/sagframe/sqltoy-quickstart 项目
+# 使用方式
+* 请参见 https://github.com/sagframe/sqltoy-quickstart
+
 * 在tools/quickvo 目录下面，配置quickvo.xml 设置相关任务信息，点击quickvo.bat 生成POJO
+* 参照下面的例子：注意根据项目实际情况决定是否要严格分entity和dto(vo)两层
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -84,7 +86,7 @@
 		<sql-type native-types="NUMBER,DECIMAL,NUMERIC"	precision="1..8" scale="0" jdbc-type="INTEGER" java-type="Integer" />
 		<!-- 增加雪花算法的演示 -->
 		<sql-type native-types="BIGINT" jdbc-type="BIGINT" java-type="java.math.BigInteger" />
-		<!-- 泛型注意xml转义符号，table-field指定具体表和字段; jdbc-type 可以直接填数字(jdbc.Types没有明显区分的类型)-->
+<!-- 泛型注意xml转义符号，table-field指定具体表和字段; jdbc-type 可以直接填数字(jdbc.Types没有明显区分的类型)-->
 		<sql-type table-field="sqltoy_jsontype_showcae.staff_set" native-types="json" jdbc-type="1021" java-type="List&lt;StaffInfoVO&gt;" import-types="com.sqltoy.quickstart.vo.StaffInfoVO" />
 	</type-mapping>
 </quickvo>
