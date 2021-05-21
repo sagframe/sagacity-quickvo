@@ -48,7 +48,10 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String clearMistyChars(String source, String target) {
-		return source.replaceAll("\r", target).replaceAll("\t", target).replaceAll("\n", target);
+		if (isNotBlank(source)) {
+			return source.replaceAll("\r", target).replaceAll("\t", target).replaceAll("\n", target);
+		}
+		return source;
 	}
 
 	/**
