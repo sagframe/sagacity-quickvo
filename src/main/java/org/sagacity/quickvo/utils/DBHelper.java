@@ -211,7 +211,7 @@ public class DBHelper {
 						} else {
 							tableMeta.setTableType("TABLE");
 						}
-						tableMeta.setTableRemark(rs.getString(obj.toString()));
+						tableMeta.setTableRemark(StringUtil.clearMistyChars(rs.getString(obj.toString()), " "));
 						tables.add(tableMeta);
 					}
 				}
@@ -389,7 +389,7 @@ public class DBHelper {
 							while (rs.next()) {
 								TableColumnMeta colMeta = new TableColumnMeta();
 								colMeta.setColName(rs.getString("COLUMN_NAME"));
-								colMeta.setColRemark(rs.getString("COMMENTS"));
+								colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS")," "));
 								colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
 								filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
 							}
@@ -412,7 +412,7 @@ public class DBHelper {
 							while (rs.next()) {
 								TableColumnMeta colMeta = new TableColumnMeta();
 								colMeta.setColName(rs.getString("COLUMN_NAME"));
-								colMeta.setColRemark(rs.getString("COMMENTS"));
+								colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS")," "));
 								// 是否主键
 								if (rs.getString("PRIMARY_KEY").equals("1")) {
 									colMeta.setIsPrimaryKey(true);
@@ -448,7 +448,7 @@ public class DBHelper {
 						colMeta = new TableColumnMeta();
 						colMeta.setColName(colName);
 						colMeta.setColDefault(clearDefaultValue(StringUtil.trim(rs.getString("COLUMN_DEF"))));
-						colMeta.setColRemark(rs.getString("REMARKS"));
+						colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("REMARKS")," "));
 					} else {
 						colMeta = (TableColumnMeta) metaMap.get(colName);
 						if (colMeta != null && colMeta.getColDefault() == null) {
