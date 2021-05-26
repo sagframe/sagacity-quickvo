@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.sagacity.quickvo.dialect.DefaultConstants;
+import org.sagacity.quickvo.dialect.OracleConstants;
 import org.sagacity.quickvo.dialect.PostgresConstants;
 import org.sagacity.quickvo.model.ColumnTypeMapping;
 import org.sagacity.quickvo.utils.DBUtil;
@@ -303,6 +304,11 @@ public class Constants implements Serializable {
 		case DBType.POSTGRESQL:
 		case DBType.GAUSSDB: {
 			jdbcArray = PostgresConstants.jdbcAry;
+			break;
+		}
+		case DBType.ORACLE11:
+		case DBType.ORACLE: {
+			jdbcArray = OracleConstants.jdbcAry;
 			break;
 		}
 		default:
