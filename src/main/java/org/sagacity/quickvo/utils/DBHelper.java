@@ -140,9 +140,10 @@ public class DBHelper {
 		ResultSet rs = null;
 		// 数据库表注释，默认为remarks，不同数据库其名称不一样
 		String commentName = "REMARKS";
+		boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 		boolean skipGetTables = false;
 		// oracle数据库
-		if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
+		if ((dbType == DBType.ORACLE || dbType == DBType.ORACLE11) && !isPolardb) {
 			try {
 				pst = conn.prepareStatement("select * from user_tab_comments");
 				rs = pst.executeQuery();
@@ -152,7 +153,7 @@ public class DBHelper {
 				logger.info("表:user_tab_comments 不存在,如当前非oracle数据库(如:polardb等),此错误请忽略!");
 			}
 		} // mysql数据库
-		if (dbType == DBType.MYSQL) {
+		if (dbType == DBType.MYSQL && !isPolardb) {
 			try {
 				StringBuilder queryStr = new StringBuilder("SELECT TABLE_NAME,TABLE_SCHEMA,TABLE_TYPE,TABLE_COMMENT ");
 				queryStr.append(" FROM INFORMATION_SCHEMA.TABLES where 1=1 ");
@@ -277,8 +278,9 @@ public class DBHelper {
 		PreparedStatement pst = null;
 		ResultSet rs;
 		HashMap filedsComments = null;
+		boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 		// sybase or sqlserver
-		if (dbType == DBType.SQLSERVER) {
+		if (dbType == DBType.SQLSERVER && !isPolardb) {
 			if (dbType == DBType.SQLSERVER) {
 				StringBuilder queryStr = new StringBuilder();
 				queryStr.append("SELECT a.name COLUMN_NAME,");
@@ -381,7 +383,7 @@ public class DBHelper {
 		}
 		try {
 			// oracle 数据库
-			if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
+			if ((dbType == DBType.ORACLE || dbType == DBType.ORACLE11) && !isPolardb) {
 				StringBuilder queryStr = new StringBuilder();
 				queryStr.append("SELECT t1.*,t2.DATA_DEFAULT FROM (SELECT COLUMN_NAME,COMMENTS");
 				queryStr.append("  FROM user_col_comments");
@@ -413,7 +415,7 @@ public class DBHelper {
 			logger.info("如果当前数据库非oracle(如polardb)，请忽视错误信息:" + e.getMessage());
 		}
 		// clickhouse 数据库
-		if (dbType == DBType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE && !isPolardb) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append(
 					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY,is_in_partition_key PARTITION_KEY from system.columns t where t.table=?");
@@ -446,7 +448,7 @@ public class DBHelper {
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
-		if (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) {
+		if ((dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, "%");
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
@@ -616,6 +618,7 @@ public class DBHelper {
 	public static List getTablePrimaryKeys(String tableName) {
 		try {
 			int dbType = DBUtil.getDbType(conn);
+			boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 			ResultSet rs = null;
 			List pkList = null;
 			if (dbType == DBType.CLICKHOUSE) {
@@ -630,7 +633,7 @@ public class DBHelper {
 				}
 			}
 			// 针对dorisdb场景
-			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57)) {
+			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 				rs = conn.createStatement().executeQuery("desc " + tableName);
 				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
 					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
