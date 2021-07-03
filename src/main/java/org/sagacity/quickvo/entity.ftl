@@ -15,12 +15,14 @@ import org.sagacity.sqltoy.callback.SelectFields;
 import org.sagacity.sqltoy.config.annotation.Id;
 </#if>
 import org.sagacity.sqltoy.config.annotation.Column;
+<#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.swaggerModel=="v2")>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
 <#if (quickVO.swaggerModel=="v3")>
 import io.swagger.v3.oas.annotations.media.Schema;
+</#if>
 </#if>
 <#if (quickVO.hasBusinessId==true)>
 import org.sagacity.sqltoy.config.annotation.BusinessId;
@@ -43,11 +45,13 @@ import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
  * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
  * Table: ${quickVO.tableName}<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
  */
+<#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.swaggerModel=="v2")>
 @ApiModel(value="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
 </#if>
 <#if (quickVO.swaggerModel=="v3")>
 @Schema(name="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
+</#if>
 </#if>
 @SqlToyEntity
 @Entity(tableName="${quickVO.tableName}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
@@ -63,11 +67,13 @@ public class ${quickVO.entityName} implements Serializable {
 	 * jdbcType:${column.colType!""}
 	 * ${column.colRemark!""}
 	 */
+	<#if (quickVO.hasVoEntity==false)>
 	<#if (quickVO.swaggerModel=="v2")>
 	@ApiModelProperty(name="${column.colName}",value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
 	</#if>
 	<#if (quickVO.swaggerModel=="v3")>
 	@Schema(name="${column.colName}",description="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
+	</#if>
 	</#if>
 	<#if (column.pkFlag?exists && column.pkFlag=='1')>
 	@Id<#if (column.businessIdConfig?exists)><#else><#if (quickVO.singlePk=='1')>(strategy="${column.strategy}"<#if (column.sequence?exists && column.sequence!='')>,sequence="${column.sequence}"</#if><#if (column.generator?exists && column.generator!='')>,generator="${column.generator}"</#if>)</#if></#if>

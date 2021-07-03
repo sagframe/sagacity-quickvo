@@ -128,6 +128,11 @@ public class QuickVO implements Serializable {
 	 * 支持链式赋值
 	 */
 	private boolean lombokChain = false;
+	
+	/**
+	 * 同時存在vo和entity
+	 */
+	private boolean hasVoEntity=false;
 
 	private String entityExtends;
 
@@ -683,4 +688,11 @@ public class QuickVO implements Serializable {
 		this.columnSize = columnSize;
 	}
 
+	public boolean isHasVoEntity() {
+		return hasVoEntity;
+	}
+
+	public void setHasVoEntity(boolean hasVoEntity) {
+		this.hasVoEntity = hasVoEntity;
+	}
 }
