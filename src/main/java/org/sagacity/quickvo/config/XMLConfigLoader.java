@@ -134,11 +134,17 @@ public class XMLConfigLoader {
 					// *表示全部,等同于没有include配置
 					if (!quickvo.getAttribute("include").equals("*")) {
 						quickModel.setIncludeTables(Constants.replaceConstants(quickvo.getAttribute("include")));
+						if (!quickModel.getIncludeTables().startsWith("(?i)")) {
+							quickModel.setIncludeTables("(?i)".concat(quickModel.getIncludeTables()));
+						}
 					}
 				}
 				// 排除的表
 				if (quickvo.hasAttribute("exclude")) {
 					quickModel.setExcludeTables(Constants.replaceConstants(quickvo.getAttribute("exclude")));
+					if (!quickModel.getExcludeTables().startsWith("(?i)")) {
+						quickModel.setExcludeTables("(?i)".concat(quickModel.getExcludeTables()));
+					}
 				}
 
 				// 实体bean

@@ -128,9 +128,15 @@ public class QuickVO implements Serializable {
 	 * 支持链式赋值
 	 */
 	private boolean lombokChain = false;
+	
+	/**
+	 * 同時存在vo和entity
+	 */
+	private boolean hasVoEntity=false;
 
 	private String entityExtends;
 
+	private int columnSize = 0;
 	/**
 	 * 
 	 */
@@ -666,5 +672,27 @@ public class QuickVO implements Serializable {
 	 */
 	public void setVoAbstractSerialUID(String voAbstractSerialUID) {
 		this.voAbstractSerialUID = voAbstractSerialUID;
+	}
+
+	/**
+	 * @return the columnSize
+	 */
+	public int getColumnSize() {
+		return columnSize;
+	}
+
+	/**
+	 * @param columnSize the columnSize to set
+	 */
+	public void setColumnSize(int columnSize) {
+		this.columnSize = columnSize;
+	}
+
+	public boolean isHasVoEntity() {
+		return hasVoEntity;
+	}
+
+	public void setHasVoEntity(boolean hasVoEntity) {
+		this.hasVoEntity = hasVoEntity;
 	}
 }

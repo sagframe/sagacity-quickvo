@@ -140,34 +140,47 @@ public class DBHelper {
 		ResultSet rs = null;
 		// 数据库表注释，默认为remarks，不同数据库其名称不一样
 		String commentName = "REMARKS";
+		boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
+		boolean skipGetTables = false;
 		// oracle数据库
-		if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
-			pst = conn.prepareStatement("select * from user_tab_comments");
-			rs = pst.executeQuery();
-			commentName = "COMMENTS";
+		if ((dbType == DBType.ORACLE || dbType == DBType.ORACLE11) && !isPolardb) {
+			try {
+				pst = conn.prepareStatement("select * from user_tab_comments");
+				rs = pst.executeQuery();
+				commentName = "COMMENTS";
+				skipGetTables = true;
+			} catch (Exception e) {
+				logger.info("表:user_tab_comments 不存在,如当前非oracle数据库(如:polardb等),此错误请忽略!");
+			}
 		} // mysql数据库
-		else if (dbType == DBType.MYSQL) {
-			StringBuilder queryStr = new StringBuilder("SELECT TABLE_NAME,TABLE_SCHEMA,TABLE_TYPE,TABLE_COMMENT ");
-			queryStr.append(" FROM INFORMATION_SCHEMA.TABLES where 1=1 ");
-			if (schema != null) {
-				queryStr.append(" and TABLE_SCHEMA='").append(schema).append("'");
-			} else if (catalog != null) {
-				queryStr.append(" and TABLE_SCHEMA='").append(catalog).append("'");
-			}
-			if (types != null) {
-				queryStr.append(" and (");
-				for (int i = 0; i < types.length; i++) {
-					if (i > 0) {
-						queryStr.append(" or ");
-					}
-					queryStr.append(" TABLE_TYPE like '%").append(types[i]).append("'");
+		if (dbType == DBType.MYSQL && !isPolardb) {
+			try {
+				StringBuilder queryStr = new StringBuilder("SELECT TABLE_NAME,TABLE_SCHEMA,TABLE_TYPE,TABLE_COMMENT ");
+				queryStr.append(" FROM INFORMATION_SCHEMA.TABLES where 1=1 ");
+				if (schema != null) {
+					queryStr.append(" and TABLE_SCHEMA='").append(schema).append("'");
+				} else if (catalog != null) {
+					queryStr.append(" and TABLE_SCHEMA='").append(catalog).append("'");
 				}
-				queryStr.append(")");
+				if (types != null) {
+					queryStr.append(" and (");
+					for (int i = 0; i < types.length; i++) {
+						if (i > 0) {
+							queryStr.append(" or ");
+						}
+						queryStr.append(" TABLE_TYPE like '%").append(types[i]).append("'");
+					}
+					queryStr.append(")");
+				}
+				pst = conn.prepareStatement(queryStr.toString());
+				rs = pst.executeQuery();
+				commentName = "TABLE_COMMENT";
+				skipGetTables = true;
+			} catch (Exception e) {
+				logger.info("表:INFORMATION_SCHEMA.TABLES 不存在,如当前非mysql数据库(如:polardb、dorisdb等),此错误请忽略!");
 			}
-			pst = conn.prepareStatement(queryStr.toString());
-			rs = pst.executeQuery();
-			commentName = "TABLE_COMMENT";
-		} else {
+		}
+		if (!skipGetTables) {
 			// 获取当前数据库的全部表名信息
 			rs = conn.getMetaData().getTables(catalog, schema, null, types);
 		}
@@ -211,7 +224,7 @@ public class DBHelper {
 						} else {
 							tableMeta.setTableType("TABLE");
 						}
-						tableMeta.setTableRemark(rs.getString(obj.toString()));
+						tableMeta.setTableRemark(StringUtil.clearMistyChars(rs.getString(obj.toString()), " "));
 						tables.add(tableMeta);
 					}
 				}
@@ -265,8 +278,9 @@ public class DBHelper {
 		PreparedStatement pst = null;
 		ResultSet rs;
 		HashMap filedsComments = null;
+		boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 		// sybase or sqlserver
-		if (dbType == DBType.SQLSERVER) {
+		if (dbType == DBType.SQLSERVER && !isPolardb) {
 			if (dbType == DBType.SQLSERVER) {
 				StringBuilder queryStr = new StringBuilder();
 				queryStr.append("SELECT a.name COLUMN_NAME,");
@@ -367,38 +381,41 @@ public class DBHelper {
 				}
 			});
 		}
-
-		// oracle 数据库
-		if (dbType == DBType.ORACLE || dbType == DBType.ORACLE11) {
-			StringBuilder queryStr = new StringBuilder();
-			queryStr.append("SELECT t1.*,t2.DATA_DEFAULT FROM (SELECT COLUMN_NAME,COMMENTS");
-			queryStr.append("  FROM user_col_comments");
-			queryStr.append("  WHERE table_name =?) t1");
-			queryStr.append("  LEFT JOIN(SELECT COLUMN_NAME,DATA_DEFAULT");
-			queryStr.append("            FROM user_tab_cols");
-			queryStr.append("            WHERE table_name =?) t2");
-			queryStr.append("  on t1.COLUMN_NAME=t2.COLUMN_NAME");
-			pst = conn.prepareStatement(queryStr.toString());
-			pst.setString(1, tableName);
-			pst.setString(2, tableName);
-			rs = pst.executeQuery();
-			filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
-					new PreparedStatementResultHandler() {
-						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
-							HashMap filedHash = new HashMap();
-							while (rs.next()) {
-								TableColumnMeta colMeta = new TableColumnMeta();
-								colMeta.setColName(rs.getString("COLUMN_NAME"));
-								colMeta.setColRemark(rs.getString("COMMENTS"));
-								colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
-								filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
+		try {
+			// oracle 数据库
+			if ((dbType == DBType.ORACLE || dbType == DBType.ORACLE11) && !isPolardb) {
+				StringBuilder queryStr = new StringBuilder();
+				queryStr.append("SELECT t1.*,t2.DATA_DEFAULT FROM (SELECT COLUMN_NAME,COMMENTS");
+				queryStr.append("  FROM user_col_comments");
+				queryStr.append("  WHERE table_name =?) t1");
+				queryStr.append("  LEFT JOIN(SELECT COLUMN_NAME,DATA_DEFAULT");
+				queryStr.append("            FROM user_tab_cols");
+				queryStr.append("            WHERE table_name =?) t2");
+				queryStr.append("  on t1.COLUMN_NAME=t2.COLUMN_NAME");
+				pst = conn.prepareStatement(queryStr.toString());
+				pst.setString(1, tableName);
+				pst.setString(2, tableName);
+				rs = pst.executeQuery();
+				filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
+						new PreparedStatementResultHandler() {
+							public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+								HashMap filedHash = new HashMap();
+								while (rs.next()) {
+									TableColumnMeta colMeta = new TableColumnMeta();
+									colMeta.setColName(rs.getString("COLUMN_NAME"));
+									colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS"), " "));
+									colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
+									filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
+								}
+								this.setResult(filedHash);
 							}
-							this.setResult(filedHash);
-						}
-					});
+						});
+			}
+		} catch (Exception e) {
+			logger.info("如果当前数据库非oracle(如polardb)，请忽视错误信息:" + e.getMessage());
 		}
 		// clickhouse 数据库
-		if (dbType == DBType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE && !isPolardb) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append(
 					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY,is_in_partition_key PARTITION_KEY from system.columns t where t.table=?");
@@ -412,7 +429,7 @@ public class DBHelper {
 							while (rs.next()) {
 								TableColumnMeta colMeta = new TableColumnMeta();
 								colMeta.setColName(rs.getString("COLUMN_NAME"));
-								colMeta.setColRemark(rs.getString("COMMENTS"));
+								colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS"), " "));
 								// 是否主键
 								if (rs.getString("PRIMARY_KEY").equals("1")) {
 									colMeta.setIsPrimaryKey(true);
@@ -426,11 +443,12 @@ public class DBHelper {
 						}
 					});
 		}
+
 		final HashMap metaMap = filedsComments;
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
 		// 获取具体表对应的列字段信息
-		if (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) {
+		if ((dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, "%");
 		} else {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
@@ -448,7 +466,7 @@ public class DBHelper {
 						colMeta = new TableColumnMeta();
 						colMeta.setColName(colName);
 						colMeta.setColDefault(clearDefaultValue(StringUtil.trim(rs.getString("COLUMN_DEF"))));
-						colMeta.setColRemark(rs.getString("REMARKS"));
+						colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("REMARKS"), " "));
 					} else {
 						colMeta = (TableColumnMeta) metaMap.get(colName);
 						if (colMeta != null && colMeta.getColDefault() == null) {
@@ -600,6 +618,7 @@ public class DBHelper {
 	public static List getTablePrimaryKeys(String tableName) {
 		try {
 			int dbType = DBUtil.getDbType(conn);
+			boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 			ResultSet rs = null;
 			List pkList = null;
 			if (dbType == DBType.CLICKHOUSE) {
@@ -614,7 +633,7 @@ public class DBHelper {
 				}
 			}
 			// 针对dorisdb场景
-			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57)) {
+			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 				rs = conn.createStatement().executeQuery("desc " + tableName);
 				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
 					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {

@@ -60,6 +60,10 @@ public class Abstract${quickVO.voName} implements Serializable {
 	protected ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
+<#if (quickVO.columnSize==0)>
+   // 未能获得表字段信息,请检查quickvo.xml 中dataSource的schema 和 catalog配置，可尝试先去除schema\catalog
+   // 内部原理: conn.getMetaData().getColumns(catalog, schema, tableName, null);
+</#if>
 <#if (quickVO.lombok==false)>
 <#list quickVO.columns as column>
 	

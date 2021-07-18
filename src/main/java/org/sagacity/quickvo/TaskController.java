@@ -453,7 +453,13 @@ public class TaskController {
 				}
 			}
 			quickVO.setColumns(colList);
+			if (colList != null) {
+				quickVO.setColumnSize(colList.size());
+			}
 			quickVO.setImports(impList);
+			if (quickModel.isHasEntity() && quickModel.isHasVO()) {
+				quickVO.setHasVoEntity(true);
+			}
 			// 创建entity文件
 			if (quickModel.isHasEntity()) {
 				if (quickModel.isHasAbstractEntity()) {
@@ -796,13 +802,8 @@ public class TaskController {
 						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getEntityName(),
 								"#{subName}", StringUtil.subStart(refJavaTable, quickModel.getEntitySubstr())));
 					} else {
-						if (quickModel.getVoSubstr() != null) {
-							refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
-									"#{subName}", StringUtil.subStart(refJavaTable, quickModel.getVoSubstr())));
-						} else {
-							refJavaTable = StringUtil.firstToUpperCase(
-									StringUtil.replaceStr(quickModel.getVoName(), "#{subName}", refJavaTable));
-						}
+						refJavaTable = StringUtil.firstToUpperCase(StringUtil.replaceStr(quickModel.getVoName(),
+								"#{subName}", StringUtil.subStart(refJavaTable, quickModel.getVoSubstr())));
 					}
 					exportKey.setPkRefTableJavaName(refJavaTable);
 

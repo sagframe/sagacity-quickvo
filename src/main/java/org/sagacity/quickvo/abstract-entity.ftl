@@ -14,12 +14,14 @@ import org.sagacity.sqltoy.callback.SelectFields;
 import org.sagacity.sqltoy.config.annotation.Id;
 </#if>
 import org.sagacity.sqltoy.config.annotation.Column;
+<#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.swaggerModel=="v2")>
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 </#if>
 <#if (quickVO.swaggerModel=="v3")>
 import io.swagger.v3.oas.annotations.media.Schema;
+</#if>
 </#if>
 <#if (quickVO.hasBusinessId==true)>
 import org.sagacity.sqltoy.config.annotation.BusinessId;
@@ -45,11 +47,13 @@ import ${quickVO.entityExtends};
  * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
  * Table: ${quickVO.tableName}<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
  */
+<#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.swaggerModel=="v2")>
 @ApiModel(value="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
 </#if>
 <#if (quickVO.swaggerModel=="v3")>
 @Schema(name="${quickVO.entityName}"<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,description="${quickVO.tableRemark}"</#if>)
+</#if>
 </#if>
 @Entity(tableName="${quickVO.tableName}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
 <#if (quickVO.entityExtends?exists)>
@@ -68,11 +72,13 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	 * jdbcType:${column.colType!""}
 	 * ${column.colRemark!""}
 	 */
+	<#if (quickVO.hasVoEntity==false)>
 	<#if (quickVO.swaggerModel=="v2")>
 	@ApiModelProperty(name="${column.colName}",value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
 	</#if>
 	<#if (quickVO.swaggerModel=="v3")>
 	@Schema(name="${column.colName}",description="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
+	</#if>
 	</#if>
 	<#if (column.pkFlag?exists && column.pkFlag=='1')>
 	@Id<#if (column.businessIdConfig?exists)><#else><#if (quickVO.singlePk=='1')>(strategy="${column.strategy}"<#if (column.sequence?exists && column.sequence!='')>,sequence="${column.sequence}"</#if><#if (column.generator?exists && column.generator!='')>,generator="${column.generator}"</#if>)</#if></#if>
@@ -88,7 +94,10 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	protected ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
-
+<#if (quickVO.columnSize==0)>
+   // 未能获得表字段信息,请检查quickvo.xml 中dataSource的schema 和 catalog配置，可尝试先去除schema\catalog
+   // 内部原理: conn.getMetaData().getColumns(catalog, schema, tableName, null);
+</#if>
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
 	/**
@@ -116,7 +125,6 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 		</#list>
 	}
 </#if>
-
 </#if>
 <#list quickVO.columns as column>
 	
@@ -141,7 +149,6 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	    return this.${column.colJavaName?uncap_first};
 	}
 </#list>
-
 
 <#if (quickVO.exportTables?exists)>
 <#list quickVO.exportTables as exportTable>
@@ -189,7 +196,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 		}
 		
 <#list quickVO.columns as column>
-	    public SelectFieldsImpl ${column.colJavaName?uncap_first}() {
+	    public SelectFieldsImpl ${column.colJavaName?uncap_first}<#if (column.colJavaName?uncap_first=='notify')>_</#if><#if (column.colJavaName?uncap_first=='finalize')>_</#if><#if (column.colJavaName?uncap_first=='wait')>_</#if><#if (column.colJavaName?uncap_first=='notifyAll')>_</#if>() {
 	    	if (!fields.contains("${column.colJavaName?uncap_first}")) {
 				fields.add("${column.colJavaName?uncap_first}");
 			}
