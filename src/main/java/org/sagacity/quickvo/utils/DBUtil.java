@@ -78,6 +78,7 @@ public class DBUtil {
 
 		// 以15.4为基准起始版(基本目前没有用户)
 		public final static String SYBASE_IQ = "sybase_iq";
+		public final static String IMPALA = "impala";
 
 		public final static String UNDEFINE = "UNDEFINE";
 	}
@@ -120,7 +121,7 @@ public class DBUtil {
 		public final static int KINGBASE = 120;
 		public final static int MONGO = 130;
 		public final static int ES = 140;
-
+		public final static int IMPALA = 160;
 		// 下面将逐步淘汰
 		public final static int SYBASE_IQ = 150;
 	}
@@ -152,7 +153,7 @@ public class DBUtil {
 		DBNameTypeMap.put(Dialect.KINGBASE, DBType.KINGBASE);
 		// 2020-6-7 启动增加对tidb的支持
 		DBNameTypeMap.put(Dialect.TIDB, DBType.TIDB);
-
+		DBNameTypeMap.put(Dialect.IMPALA, DBType.IMPALA);
 		DBNameTypeMap.put(Dialect.UNDEFINE, DBType.UNDEFINE);
 		// 纳入将不再支持范围
 		DBNameTypeMap.put(Dialect.SYBASE_IQ, DBType.SYBASE_IQ);
@@ -221,6 +222,10 @@ public class DBUtil {
 			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.KINGBASE) != -1) {
 				return Dialect.KINGBASE;
 			}
+			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.IMPALA) != -1) {
+				return Dialect.IMPALA;
+			}
+
 			// sybase iq
 			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SYBASE_IQ) != -1
 					|| StringUtil.indexOfIgnoreCase(dbDialect, "sybaseiq") != -1
@@ -318,6 +323,8 @@ public class DBUtil {
 			} // sybase IQ
 			else if (dbDialect.equals(Dialect.SYBASE_IQ)) {
 				dbType = DBType.SYBASE_IQ;
+			} else if (dbDialect.equals(Dialect.IMPALA)) {
+				dbType = DBType.IMPALA;
 			}
 			DBNameTypeMap.put(dbKey, dbType);
 		}

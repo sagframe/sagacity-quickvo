@@ -443,7 +443,6 @@ public class DBHelper {
 						}
 					});
 		}
-
 		final HashMap metaMap = filedsComments;
 		String catalog = dbConfig.getCatalog();
 		String schema = dbConfig.getSchema();
@@ -648,6 +647,21 @@ public class DBHelper {
 						this.setResult(result);
 					}
 				});
+			} else if (dbType == DBType.IMPALA) {
+				rs = conn.createStatement().executeQuery("DESCRIBE " + tableName);
+				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+						List result = new ArrayList();
+						String field;
+						while (rs.next()) {
+							field = rs.getString("NAME");
+							if (rs.getBoolean("PRIMARY_KEY")) {
+								result.add(field);
+							}
+						}
+						this.setResult(result);
+					}
+				});
 			} else {
 				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
 					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
@@ -677,7 +691,7 @@ public class DBHelper {
 	public static String getTablePKConstraint(String tableName) throws Exception {
 		String pkName = null;
 		int dbType = DBUtil.getDbType(conn);
-		if (dbType == DBType.CLICKHOUSE) {
+		if (dbType == DBType.CLICKHOUSE || dbType == DBType.IMPALA) {
 			return pkName;
 		}
 		try {
