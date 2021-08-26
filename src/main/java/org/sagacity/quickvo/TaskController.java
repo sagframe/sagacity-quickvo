@@ -566,7 +566,7 @@ public class TaskController {
 			quickColMeta.setJdbcType(jdbcType);
 			quickColMeta.setPrecision(colMeta.getPrecision());
 			quickColMeta.setScale(colMeta.getScale());
-			quickColMeta.setDefaultValue(StringUtil.trim(colMeta.getColDefault()));
+			quickColMeta.setDefaultValue(colMeta.getColDefault());
 			// 避免部分数据库整数类型，默认值小数位后面还有好几个0,如：1.000000
 			if (quickColMeta.getDefaultValue() != null && isNumber(quickColMeta.getDefaultValue())) {
 				if (colMeta.getLength() == colMeta.getPrecision()) {
