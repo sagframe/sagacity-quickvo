@@ -464,12 +464,12 @@ public class DBHelper {
 					if (metaMap == null) {
 						colMeta = new TableColumnMeta();
 						colMeta.setColName(colName);
-						colMeta.setColDefault(clearDefaultValue(StringUtil.trim(rs.getString("COLUMN_DEF"))));
+						colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
 						colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("REMARKS"), " "));
 					} else {
 						colMeta = (TableColumnMeta) metaMap.get(colName);
 						if (colMeta != null && colMeta.getColDefault() == null) {
-							colMeta.setColDefault(clearDefaultValue(StringUtil.trim(rs.getString("COLUMN_DEF"))));
+							colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
 						}
 					}
 					if (colMeta != null) {
@@ -522,6 +522,9 @@ public class DBHelper {
 	private static String clearDefaultValue(String defaultValue) {
 		if (defaultValue == null) {
 			return null;
+		}
+		if (defaultValue.trim().equals("")) {
+			return defaultValue;
 		}
 		String result = defaultValue;
 		// 针对postgresql
