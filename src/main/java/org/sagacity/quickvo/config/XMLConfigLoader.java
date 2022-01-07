@@ -118,11 +118,16 @@ public class XMLConfigLoader {
 					quickModel.setDataSource(quickvo.getAttribute("dataSource"));
 				}
 				if (quickvo.hasAttribute("swagger-model")) {
-					quickModel.setSwaggerApi(quickvo.getAttribute("swagger-model").toLowerCase());
-					if (!quickModel.getSwaggerApi().equalsIgnoreCase("false")
-							&& !quickModel.getSwaggerApi().equalsIgnoreCase("v3")) {
-						quickModel.setSwaggerApi("v2");
+					quickModel.setApiDoc(quickvo.getAttribute("swagger-model").toLowerCase());
+					if (quickModel.getApiDoc().equalsIgnoreCase("v3")) {
+						quickModel.setApiDoc("swagger-v3");
 					}
+					if (quickModel.getApiDoc().equalsIgnoreCase("v2")) {
+						quickModel.setApiDoc("swagger-v2");
+					}
+				}
+				if (quickvo.hasAttribute("api-doc")) {
+					quickModel.setApiDoc(quickvo.getAttribute("api-doc").toLowerCase());
 				}
 
 				// 字段统一剔除的前缀
@@ -159,6 +164,16 @@ public class XMLConfigLoader {
 					if (entity.hasAttribute("has-abstract")) {
 						quickModel.setHasAbstractEntity(Boolean.parseBoolean(entity.getAttribute("has-abstract")));
 					}
+					// 是否支持lombok
+					if (entity.hasAttribute("lombok")) {
+						quickModel.setEntityLombok(Boolean.parseBoolean(entity.getAttribute("lombok")));
+						if (quickModel.isEntityLombok()) {
+							quickModel.setHasAbstractEntity(false);
+						}
+					}
+					if (entity.hasAttribute("lombok-chain")) {
+						quickModel.setEntityLombokChain(Boolean.parseBoolean(entity.getAttribute("lombok-chain")));
+					}
 					if (entity.hasAttribute("name")) {
 						quickModel.setEntityName(Constants.replaceConstants(entity.getAttribute("name")));
 					} else {
@@ -186,10 +201,9 @@ public class XMLConfigLoader {
 					if (vo.hasAttribute("substr")) {
 						quickModel.setVoSubstr(Constants.replaceConstants(vo.getAttribute("substr")));
 					}
-
-					// 是否支持lombok
-					if (vo.hasAttribute("lombok")) {
-						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+					// 是否包含抽象类
+					if (vo.hasAttribute("has-abstract")) {
+						quickModel.setHasAbstractVO(Boolean.parseBoolean(vo.getAttribute("has-abstract")));
 					}
 
 					// 存放路径
@@ -198,7 +212,13 @@ public class XMLConfigLoader {
 					} else {
 						quickModel.setVoPath(configModel.getTargetDir());
 					}
-
+					// 是否支持lombok
+					if (vo.hasAttribute("lombok")) {
+						quickModel.setLombok(Boolean.parseBoolean(vo.getAttribute("lombok")));
+						if (quickModel.isLombok()) {
+							quickModel.setHasAbstractVO(false);
+						}
+					}
 					if (vo.hasAttribute("lombok-chain")) {
 						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
 					}
@@ -206,10 +226,6 @@ public class XMLConfigLoader {
 						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
 					} else {
 						quickModel.setVoName("#{subName}");
-					}
-					// 是否包含抽象类
-					if (vo.hasAttribute("has-abstract")) {
-						quickModel.setHasAbstractVO(Boolean.parseBoolean(vo.getAttribute("has-abstract")));
 					}
 					// 是否有父类
 					if (vo.hasAttribute("extends")) {
@@ -428,6 +444,51 @@ public class XMLConfigLoader {
 					bizIdConfig.setSequenceSize(Integer.parseInt(tableElt.getAttribute("sequence-size")));
 				}
 				configModel.addBusinessId(bizIdConfig);
+			}
+		}
+
+		// api-doc
+		nodeList = root.getElementsByTagName("api-doc");
+		Element apiDocElt;
+		if (nodeList.getLength() > 0) {
+			apiDocElt = (Element) nodeList.item(0);
+			NodeList importElts = apiDocElt.getElementsByTagName("imports");
+			if (importElts.getLength() > 0) {
+				Element impElt = ((Element) importElts.item(0));
+				String importsClass;
+				if (impElt.hasAttribute("value")) {
+					importsClass = impElt.getAttribute("value");
+				} else {
+					importsClass = impElt.getTextContent();
+				}
+				if (StringUtil.isNotBlank(importsClass)) {
+					String[] imps = importsClass.split("\\;");
+					String imp;
+					for (int i = 0; i < imps.length; i++) {
+						imp = imps[i].trim();
+						// 剔除掉import
+						if (StringUtil.matches(imp, "(?i)import\\s+")) {
+							imps[i] = imp.substring(6).trim();
+						} else {
+							imps[i] = imp;
+						}
+					}
+					configModel.setDocApiImports(imps);
+				}
+			}
+			NodeList fieldTempElt = apiDocElt.getElementsByTagName("doc-field-template");
+			if (fieldTempElt.getLength() > 0) {
+				String docTemplate = ((Element) fieldTempElt.item(0)).getTextContent();
+				if (StringUtil.isNotBlank(docTemplate)) {
+					configModel.setDocApiFieldTemplate(docTemplate.trim());
+				}
+			}
+			NodeList classTempElt = apiDocElt.getElementsByTagName("doc-class-template");
+			if (classTempElt.getLength() > 0) {
+				String docTemplate = ((Element) classTempElt.item(0)).getTextContent();
+				if (StringUtil.isNotBlank(docTemplate)) {
+					configModel.setDocApiClassTemplate(docTemplate.trim());
+				}
 			}
 		}
 		return configModel;

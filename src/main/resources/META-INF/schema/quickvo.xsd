@@ -24,6 +24,32 @@
 						<xsd:attribute name="value" type="xsd:string" />
 					</xsd:complexType>
 				</xsd:element>
+				<xsd:element name="api-doc" maxOccurs="1" minOccurs="0">
+					<xsd:complexType mixed="true">
+						<xsd:sequence>
+							<xsd:element name="imports" form="unqualified">
+								<xsd:annotation>
+									<xsd:documentation><![CDATA[类似:import io.swagger.v3.oas.annotations.media.Schema;]]></xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:attribute name="value" type="xsd:string" />
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="doc-class-template"
+								form="unqualified">
+								<xsd:annotation>
+									<xsd:documentation><![CDATA[freemarker语法,类似@Schema(name="${className}",description="${tableRemark}",tableName="${tableName}") 注意其中的关键词]]></xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="doc-field-template"
+								form="unqualified">
+								<xsd:annotation>
+									<xsd:documentation><![CDATA[freemarker语法,类似@Schema(name="${colName}",description="${colRemark}",nullable=${nullable},type="${filedType}<#if (defaultValue?exists)>default="${defaultValue}"</#if>") 注意其中的关键词]]></xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
 				<xsd:element name="datasource" minOccurs="1"
 					maxOccurs="unbounded">
 					<xsd:complexType>
@@ -110,6 +136,18 @@
 														<xsd:documentation><![CDATA[实体对象是否需要分抽象类和实体类两个,抽象类字段跟数据库表完全一致,非抽象类中可以扩展一些属性]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
+												<xsd:attribute name="lombok"
+													type="xsd:boolean">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[使用google的lombok无需体现get/set]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="lombok-chain"
+													type="xsd:boolean">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[针对set是否返回对象自身]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 												<xsd:attribute name="substr" type="xsd:string"
 													use="required">
 													<xsd:annotation>
@@ -135,10 +173,26 @@
 									<xsd:attribute name="active" type="xsd:boolean"
 										use="required" />
 									<xsd:attribute name="swagger-model">
+										<xsd:annotation>
+											<xsd:documentation><![CDATA[推进使用api-doc属性]]></xsd:documentation>
+										</xsd:annotation>
 										<xsd:simpleType>
 											<xsd:restriction base="xsd:string">
 												<xsd:enumeration value="v3" />
 												<xsd:enumeration value="v2" />
+												<xsd:enumeration value="false" />
+											</xsd:restriction>
+										</xsd:simpleType>
+									</xsd:attribute>
+									<xsd:attribute name="api-doc">
+										<xsd:annotation>
+											<xsd:documentation><![CDATA[指定生成文档的框架,custom表示引用:api-doc 定义的模板]]></xsd:documentation>
+										</xsd:annotation>
+										<xsd:simpleType>
+											<xsd:restriction base="xsd:string">
+												<xsd:enumeration value="swagger-v3" />
+												<xsd:enumeration value="swagger-v2" />
+												<xsd:enumeration value="custom" />
 												<xsd:enumeration value="false" />
 											</xsd:restriction>
 										</xsd:simpleType>
