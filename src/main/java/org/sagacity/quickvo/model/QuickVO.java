@@ -141,6 +141,10 @@ public class QuickVO implements Serializable {
 	 * 
 	 */
 	private String voExtends;
+	
+	private String apiDoc;
+	
+	private String apiDocContent;
 
 	/**
 	 * @return the singlePk
@@ -186,11 +190,8 @@ public class QuickVO implements Serializable {
 	 * 需要导入的类
 	 */
 	private List imports;
-
-	/**
-	 * 支持swaggerApi
-	 */
-	private String swaggerModel = "false";
+	
+	private String[] apiDocImports;
 
 	/**
 	 * @return the tableRemark
@@ -564,20 +565,6 @@ public class QuickVO implements Serializable {
 		this.hasBusinessId = hasBusinessId;
 	}
 
-	/**
-	 * @return the swaggerModel
-	 */
-	public String getSwaggerModel() {
-		return swaggerModel;
-	}
-
-	/**
-	 * @param swaggerModel the swaggerModel to set
-	 */
-	public void setSwaggerModel(String swaggerModel) {
-		this.swaggerModel = swaggerModel;
-	}
-
 	public boolean isReturnSelf() {
 		return returnSelf;
 	}
@@ -695,4 +682,29 @@ public class QuickVO implements Serializable {
 	public void setHasVoEntity(boolean hasVoEntity) {
 		this.hasVoEntity = hasVoEntity;
 	}
+
+	public String getApiDoc() {
+		return apiDoc;
+	}
+
+	public void setApiDoc(String apiDoc) {
+		this.apiDoc = apiDoc;
+	}
+
+	public String getApiDocContent() {
+		return apiDocContent;
+	}
+
+	public void setApiDocContent(String apiDocContent) {
+		this.apiDocContent = apiDocContent;
+	}
+
+	public String[] getApiDocImports() {
+		return apiDocImports;
+	}
+
+	public void setApiDocImports(String[] apiDocImports) {
+		this.apiDocImports = apiDocImports;
+	}
+	
 }

@@ -50,15 +50,10 @@ public class Constants implements Serializable {
 	 * entity实体对象类freemarker模板
 	 */
 	public static String entityTemplate = "org/sagacity/quickvo/entity.ftl";
-
-	/**
-	 * vo中构造函数模板，用于当数据库表发生改变后修改vo中的构造函数
-	 */
-	public static String dtoFieldsTemplate = "org/sagacity/quickvo/dto-fields.ftl";
+	public static String entityLombokTemplate = "org/sagacity/quickvo/entity-lombok.ftl";
 
 	public static String abstractEntity = "org/sagacity/quickvo/abstract-entity.ftl";
 	public static String parentEntity = "org/sagacity/quickvo/parent-entity.ftl";
-	public static String entityConstructor = "org/sagacity/quickvo/entity-constructor.ftl";
 
 	/**
 	 * 主键默认生成策略

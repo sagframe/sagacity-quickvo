@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>4.18.18</version>
+    <version>5.0.1</version>
 </dependency>
 
 ```
@@ -27,18 +27,31 @@
 	<property name="project.package" value="com.strict.modules" />
 	<property name="include.schema" value="false" />
 	<!-- set method 是否支持返回对象自身(默认是true),即: public VO setName(String name){this.name=name;return this;} -->
-	<property name="field.support.linked.set" value="true" />
+	<property name="field.support.linked.set" value="false" />
 	<!-- 是否在抽象类中生成SelectFieldImpl内部类,默认值为false	-->
-	<property name="generate.selectFields.class" value="true" />
-	
+	<property name="generate.selectFields.class" value="false" />
+	<!-- 演示自定义类似swagger api文档注释实现,配合task定义中的api-doc="custom" 使用
+	     当然这里是演示，正常task中的api-doc 有swagger-v3、swagger-v2默认选项
+	 -->
+	<api-doc>
+		<imports value="io.swagger.v3.oas.annotations.media.Schema" />
+		<doc-class-template>
+		<![CDATA[@Schema(name="${className}",description="${tableRemark}")]]>
+		</doc-class-template>
+		<doc-field-template>
+		<![CDATA[@Schema(name="${fieldName}",description="${colRemark}",nullable=${nullable})]]>
+		</doc-field-template>
+	</api-doc>
 	<!-- schema 对照关系:mysql 对应 db 名称; oracle 对应 用户名称，如出现字段重复等情况，请结合schema和catalog进行配置过滤 -->
 	<!-- 注意:当在多schema或tablespace场景下,在POJO中会出现重复字段，是因为schema和catalog 配置不正确，没有完成隔离 -->
 	<datasource name="strict" url="${db.url}" driver="${db.driver_class}" 
 		schema="${db.schema}" catalog="${db.schema}" username="${db.username}" password="${db.password}" />
 	
 	<tasks dist="../../src/main/java" encoding="UTF-8">
-		<task active="true" author="zhongxuchen" include="^SAG_\w+" datasource="strict" swagger-model="true">
-		    <!-- entity 配置中存在has-abstract:默认为true,可以设置为false表示pojo不需要抽象类， 可以设置extends="package.parentClass"指定父类 -->
+		<task active="true" author="zhongxuchen" include="^SAG_\w+" datasource="strict" api-doc="swagger-v3|swagger-v2|custom|false">
+		    <!-- entity 配置中存在has-abstract:默认为true,可以设置为false表示pojo不需要抽象类，
+		     可以设置extends="package.parentClass"指定父类 
+		    5.0开始支持 lombok="true" lombok-chain="true" -->
 			<entity package="${project.package}.sagacity.entity" substr="Sag" name="#{subName}"/>
 			<!-- 在pojo和vo严格分层情况下，VO支持 lombok="true" lombok-chain="true" 避免生成get/set，to-dir: 支持 extends指定父类 -->
 			<vo package="${project.package}.sagacity.vo" substr="Sag" name="#{subName}VO" />

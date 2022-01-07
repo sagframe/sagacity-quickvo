@@ -55,6 +55,10 @@ public class QuickModel implements Serializable {
 	 */
 	private boolean lombokChain = false;
 
+	private boolean entityLombok = false;
+
+	private boolean entityLombokChain = false;
+
 	private String dataSource;
 
 	/**
@@ -71,6 +75,11 @@ public class QuickModel implements Serializable {
 	 * 是否支持swagger 注解
 	 */
 	private String swaggerApi = "false";
+
+	/**
+	 * 生成api注释的标准
+	 */
+	private String apiDoc = "false";
 
 	/**
 	 * 作者，主要针对Dao层提供任务责任人
@@ -356,4 +365,29 @@ public class QuickModel implements Serializable {
 	public void setHasAbstractVO(boolean hasAbstractVO) {
 		this.hasAbstractVO = hasAbstractVO;
 	}
+
+	public boolean isEntityLombok() {
+		return entityLombok;
+	}
+
+	public void setEntityLombok(boolean entityLombok) {
+		this.entityLombok = entityLombok;
+	}
+
+	public boolean isEntityLombokChain() {
+		return entityLombokChain;
+	}
+
+	public void setEntityLombokChain(boolean entityLombokChain) {
+		this.entityLombokChain = entityLombokChain;
+	}
+
+	public String getApiDoc() {
+		return apiDoc;
+	}
+
+	public void setApiDoc(String apiDoc) {
+		this.apiDoc = apiDoc;
+	}
+
 }

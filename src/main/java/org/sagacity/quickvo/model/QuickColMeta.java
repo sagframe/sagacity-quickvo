@@ -114,6 +114,8 @@ public class QuickColMeta implements Serializable {
 
 	private BusinessIdConfig businessIdConfig;
 
+	private String apiDocContent;
+	
 	/**
 	 * 分区字段
 	 */
@@ -450,6 +452,14 @@ public class QuickColMeta implements Serializable {
 	 */
 	public void setPartitionKey(Boolean partitionKey) {
 		this.partitionKey = partitionKey;
+	}
+
+	public String getApiDocContent() {
+		return apiDocContent;
+	}
+
+	public void setApiDocContent(String apiDocContent) {
+		this.apiDocContent = apiDocContent;
 	}
 
 }

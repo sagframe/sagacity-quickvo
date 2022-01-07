@@ -55,7 +55,14 @@ public class ConfigModel implements Serializable {
 	 * 排除的表
 	 */
 	private String[] tableExcludes;
+	
+	
+	private String[] docApiImports;
+	
+	private String docApiFieldTemplate;
 
+	private String docApiClassTemplate;
+	
 	/**
 	 * 级联设置
 	 */
@@ -202,5 +209,29 @@ public class ConfigModel implements Serializable {
 
 	public BusinessIdConfig getBusinessId(String tableName) {
 		return this.buisnessIdsMap.get(tableName.toLowerCase());
+	}
+
+	public String[] getDocApiImports() {
+		return docApiImports;
+	}
+
+	public void setDocApiImports(String[] docApiImports) {
+		this.docApiImports = docApiImports;
+	}
+
+	public String getDocApiFieldTemplate() {
+		return docApiFieldTemplate;
+	}
+
+	public void setDocApiFieldTemplate(String docApiFieldTemplate) {
+		this.docApiFieldTemplate = docApiFieldTemplate;
+	}
+
+	public String getDocApiClassTemplate() {
+		return docApiClassTemplate;
+	}
+
+	public void setDocApiClassTemplate(String docApiClassTemplate) {
+		this.docApiClassTemplate = docApiClassTemplate;
 	}
 }

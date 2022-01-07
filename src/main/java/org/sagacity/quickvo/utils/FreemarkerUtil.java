@@ -133,15 +133,12 @@ public class FreemarkerUtil {
 			for (int i = 0; i < keys.length; i++) {
 				root.put(keys[i], templateData[i]);
 			}
-
 			out = new FileOutputStream(distFile);
-
 			if (StringUtil.isNotBlank(this.encoding)) {
 				writer = new BufferedWriter(new OutputStreamWriter(out, this.encoding));
 			} else {
 				writer = new BufferedWriter(new OutputStreamWriter(out));
 			}
-			logger.info("generate file " + distFile);
 			template.process(root, writer);
 			writer.flush();
 		} catch (Exception e) {
