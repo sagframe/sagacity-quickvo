@@ -779,7 +779,7 @@ public class TaskController {
 					}
 				}
 			}
-			
+
 			if (hasApiDoc && StringUtil.isNotBlank(configModel.getDocApiFieldTemplate())) {
 				// @Schema(name="${colName}",description="${colRemark}",nullable=${nullable},type="${filedType}")
 				apiDoc = FreemarkerUtil.getInstance().create(
@@ -1077,7 +1077,7 @@ public class TaskController {
 		}
 	}
 
-	private static ChangeModel mergeResult(String newContent, String oldContent, boolean isFields) {
+	private static ChangeModel mergeResult(String newContent, String oldContent, boolean isFields) throws Exception {
 		ChangeModel result = new ChangeModel();
 		String start = isFields ? Constants.fieldsBegin : Constants.constructorBegin;
 		String end = isFields ? Constants.fieldsEnd : Constants.constructorEnd;
@@ -1085,6 +1085,9 @@ public class TaskController {
 		int oldEnd = oldContent.indexOf(end);
 		int newBegin = newContent.indexOf(start);
 		int newEnd = newContent.indexOf(end);
+		if (oldBegin == -1 || oldEnd == -1 || newBegin == -1 || newEnd == -1) {
+			throw new Exception("文件内容中不存在规定的开始和截止区域标记:\n" + start + "\n" + end);
+		}
 		String newTableGenStr = newContent.substring(newBegin, newEnd + end.length());
 		String oldTableGenStr = oldContent.substring(oldBegin, oldEnd + end.length());
 		// 内容相同，表示表结构没有发生变化

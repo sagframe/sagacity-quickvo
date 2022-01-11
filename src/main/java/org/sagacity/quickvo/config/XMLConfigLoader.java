@@ -173,6 +173,10 @@ public class XMLConfigLoader {
 					}
 					if (entity.hasAttribute("lombok-chain")) {
 						quickModel.setEntityLombokChain(Boolean.parseBoolean(entity.getAttribute("lombok-chain")));
+						if (quickModel.isEntityLombokChain() && !quickModel.isEntityLombok()) {
+							quickModel.setEntityLombok(true);
+							quickModel.setHasAbstractEntity(false);
+						}
 					}
 					if (entity.hasAttribute("name")) {
 						quickModel.setEntityName(Constants.replaceConstants(entity.getAttribute("name")));
@@ -221,6 +225,11 @@ public class XMLConfigLoader {
 					}
 					if (vo.hasAttribute("lombok-chain")) {
 						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
+						//设置lombok-chain默认设置了isLombok
+						if (quickModel.isLombokChain() && !quickModel.isLombok()) {
+							quickModel.setLombok(true);
+							quickModel.setHasAbstractVO(false);
+						}
 					}
 					if (vo.hasAttribute("name")) {
 						quickModel.setVoName(Constants.replaceConstants(vo.getAttribute("name")));
