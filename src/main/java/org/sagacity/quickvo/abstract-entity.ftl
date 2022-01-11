@@ -22,17 +22,17 @@ import io.swagger.annotations.ApiModelProperty;
 <#if (quickVO.apiDoc=="swagger-v3")>
 import io.swagger.v3.oas.annotations.media.Schema;
 </#if>
+<#if (quickVO.apiDocImports?exists && quickVO.apiDocImports?size>0)>
+<#list quickVO.apiDocImports as import>
+import ${import};
+</#list>
+</#if>
 </#if>
 <#if (quickVO.hasBusinessId==true)>
 import org.sagacity.sqltoy.config.annotation.BusinessId;
 </#if>
 <#if (quickVO.imports?exists && quickVO.imports?size>0)>
 <#list quickVO.imports as import>
-import ${import};
-</#list>
-</#if>
-<#if (quickVO.apiDocImports?exists && quickVO.apiDocImports?size>0)>
-<#list quickVO.apiDocImports as import>
 import ${import};
 </#list>
 </#if>
