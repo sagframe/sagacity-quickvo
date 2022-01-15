@@ -12,9 +12,9 @@ import ${import};
 import ${quickVO.entityPackage}.${quickVO.abstractPath}.Abstract${quickVO.entityName};
 
 /**
- * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
- * @author <#if (quickVO.author?exists)>${quickVO.author}</#if>
- * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
+<#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
+<#if (quickVO.author?exists)> * @author ${quickVO.author}</#if>
+<#if (quickVO.version?exists)> * @version ${quickVO.version}</#if>
  * Table: ${quickVO.tableName}<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if> 	
  */
 @SqlToyEntity
