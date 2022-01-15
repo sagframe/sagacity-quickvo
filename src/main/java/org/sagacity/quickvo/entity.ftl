@@ -46,8 +46,9 @@ import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#if>
 
 /**
- * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
- * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
+<#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
+<#if (quickVO.author?exists)> * @author ${quickVO.author}</#if>
+<#if (quickVO.version?exists)> * @version ${quickVO.version}</#if>
  * Table: ${quickVO.tableName}<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
  */
 <#if (quickVO.hasVoEntity==false)>

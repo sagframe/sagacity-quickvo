@@ -32,8 +32,9 @@ import ${quickVO.voExtends};
 </#if>
 
 /**
- * @project <#if (quickVO.projectName?exists)>${quickVO.projectName}</#if>
- * @version <#if (quickVO.version?exists)>${quickVO.version}</#if>
+<#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
+<#if (quickVO.author?exists)> * @author ${quickVO.author}</#if>
+<#if (quickVO.version?exists)> * @version ${quickVO.version}</#if>
  * <#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>@description ${quickVO.tableName},${quickVO.tableRemark}</#if>  
  */
 <#if (quickVO.apiDoc=="swagger-v2")>
