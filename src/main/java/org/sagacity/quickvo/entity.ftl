@@ -4,11 +4,15 @@
 package ${quickVO.entityPackage};
 
 import java.io.Serializable;
+<#if (quickVO.selectFields==true||quickVO.exportTables?exists)>
+<#if (quickVO.hasListType==false)>
 import java.util.List;
+</#if>
+import java.util.ArrayList;
+</#if>
 import org.sagacity.sqltoy.config.annotation.Entity;
 import org.sagacity.sqltoy.config.annotation.SqlToyEntity;
 <#if (quickVO.selectFields==true)>
-import java.util.ArrayList;
 import org.sagacity.sqltoy.callback.SelectFields;
 </#if>
 <#if (quickVO.type=="TABLE")>
@@ -39,7 +43,6 @@ import ${import};
 </#if>
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
-import java.util.ArrayList;
 <#list quickVO.exportTables as exportTable>
 import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>

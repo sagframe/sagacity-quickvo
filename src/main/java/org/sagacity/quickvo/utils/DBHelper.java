@@ -618,8 +618,9 @@ public class DBHelper {
 	 * @throws SQLException
 	 */
 	public static List getTablePrimaryKeys(String tableName) {
+		int dbType = -1;
 		try {
-			int dbType = DBUtil.getDbType(conn);
+			dbType = DBUtil.getDbType(conn);
 			boolean isPolardb = dbConfig.getUrl().toLowerCase().contains("polardb");
 			ResultSet rs = null;
 			List pkList = null;
@@ -634,7 +635,7 @@ public class DBHelper {
 
 				}
 			}
-			// 针对dorisdb场景
+			// 针对StarRocks场景
 			if (rs == null && (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 				rs = conn.createStatement().executeQuery("desc " + tableName);
 				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
@@ -680,7 +681,9 @@ public class DBHelper {
 			HashSet hashSet = new HashSet(pkList);
 			return new ArrayList(hashSet);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (!(dbType == DBType.MYSQL || dbType == DBType.MYSQL57)) {
+				e.printStackTrace();
+			}
 		}
 		return new ArrayList();
 	}
@@ -706,7 +709,9 @@ public class DBHelper {
 				}
 			});
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (!(dbType == DBType.MYSQL || dbType == DBType.MYSQL57)) {
+				e.printStackTrace();
+			}
 		}
 		return pkName;
 	}
