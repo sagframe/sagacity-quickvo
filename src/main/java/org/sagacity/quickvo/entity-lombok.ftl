@@ -39,8 +39,10 @@ import ${import};
 </#if>
 <#if (quickVO.exportTables?exists)>
 import org.sagacity.sqltoy.config.annotation.OneToMany;
-import java.util.ArrayList;
+<#if (quickVO.hasListType==false)>
 import java.util.List;
+</#if>
+import java.util.ArrayList;
 </#if>
 
 /**

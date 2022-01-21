@@ -22,7 +22,11 @@ public class LoggerUtil {
 			logger = Logger.getLogger("sagacity.quickvo");
 			logger.setLevel(Level.ALL);
 			try {
-				Handler handler = new FileHandler(FileUtil.linkPath(Constants.BASE_LOCATE, "quickvo.log"));
+				String baseDir = Constants.BASE_LOCATE;
+				if (baseDir == null) {
+					baseDir = System.getProperty("user.dir");
+				}
+				Handler handler = new FileHandler(FileUtil.linkPath(baseDir, "quickvo.log"));
 				handler.setFormatter(new SimpleFormatter());
 				logger.addHandler(handler);
 			} catch (Exception e) {
