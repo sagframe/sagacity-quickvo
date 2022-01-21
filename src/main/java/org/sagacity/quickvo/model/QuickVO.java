@@ -192,6 +192,8 @@ public class QuickVO implements Serializable {
 	private List imports;
 	
 	private String[] apiDocImports;
+	
+	private boolean hasListType=false;
 
 	/**
 	 * @return the tableRemark
@@ -705,6 +707,14 @@ public class QuickVO implements Serializable {
 
 	public void setApiDocImports(String[] apiDocImports) {
 		this.apiDocImports = apiDocImports;
+	}
+
+	public boolean isHasListType() {
+		return hasListType;
+	}
+
+	public void setHasListType(boolean hasListType) {
+		this.hasListType = hasListType;
 	}
 	
 }

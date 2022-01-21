@@ -456,6 +456,9 @@ public class TaskController {
 							configModel.getDocApiClassTemplate()));
 				}
 			}
+			if (impList.contains("java.util.List")) {
+				quickVO.setHasListType(true);
+			}
 			quickVO.setImports(impList);
 			if (quickModel.isHasEntity() && quickModel.isHasVO()) {
 				quickVO.setHasVoEntity(true);

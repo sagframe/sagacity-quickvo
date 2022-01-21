@@ -16,7 +16,7 @@ import org.sagacity.quickvo.utils.LoggerUtil;
  * @version v2.0,Date:2009-04-15
  */
 public class QuickVOStart {
-	private static Logger logger = LoggerUtil.getLogger();
+	private static Logger logger = null;
 
 	/**
 	 * 开始生成文件
@@ -24,8 +24,9 @@ public class QuickVOStart {
 	 * @throws Exception
 	 */
 	public void doStart() {
+		logger = LoggerUtil.getLogger();
 		try {
-			out.println("\n\n=========    welcome use sagacity-quickvo-5.0.3     ==========");
+			out.println("\n\n=========    welcome use sagacity-quickvo-5.0.4     ==========");
 			out.println("/*----友情提示: 遇到问题请关注日志提示，最常见错误有3个:     -----------------------*/\n"
 					+ "/*-1、没有匹配到表: 检查 include 正则表达式配置是否正确        \n"
 					+ "/*-2、没有匹配到表: 检查 schema和catalog配置是否正确(含大小写)，可尝试去除schema、catalog配置项     \n"
