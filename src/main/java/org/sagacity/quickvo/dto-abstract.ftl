@@ -58,10 +58,10 @@ public class Abstract${quickVO.voName} implements Serializable {
 	 * ${column.colRemark!""}
 	 */
 	<#if (quickVO.apiDoc=="swagger-v2")>
-	@ApiModelProperty(name="${column.colJavaName?uncap_first}",value="${column.colRemark}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
+	@ApiModelProperty(name="${column.colJavaName?uncap_first}",value="${column.colRemark!""}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
 	</#if>
 	<#if (quickVO.apiDoc=="swagger-v3")>
-	@Schema(name="${column.colJavaName?uncap_first}",description="${column.colRemark}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
+	@Schema(name="${column.colJavaName?uncap_first}",description="${column.colRemark!""}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
 	</#if>
 	<#if (column.apiDocContent?exists)>
 	${column.apiDocContent}
