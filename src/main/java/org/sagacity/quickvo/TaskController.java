@@ -26,6 +26,7 @@ import org.sagacity.quickvo.model.TableConstractModel;
 import org.sagacity.quickvo.model.TableMeta;
 import org.sagacity.quickvo.utils.CommonUtils;
 import org.sagacity.quickvo.utils.DBHelper;
+import org.sagacity.quickvo.utils.DBUtil.DBType;
 import org.sagacity.quickvo.utils.FileUtil;
 import org.sagacity.quickvo.utils.FreemarkerUtil;
 import org.sagacity.quickvo.utils.LoggerUtil;
@@ -205,6 +206,7 @@ public class TaskController {
 		BusinessIdConfig businessIdConfig;
 		boolean includeSchema = Constants.includeSchema();
 		boolean hasApiDoc = quickModel.getApiDoc().equalsIgnoreCase("custom");
+		boolean toUpperCase = false;
 		for (int i = 0; i < tables.size(); i++) {
 			tableMeta = (TableMeta) tables.get(i);
 			tableName = tableMeta.getTableName();
@@ -253,12 +255,20 @@ public class TaskController {
 			if (quickVO.getType().equals("VIEW")) {
 				isTable = false;
 			}
-
+			List tableCols = DBHelper.getTableColumnMeta(tableName, toUpperCase);
+			// oracle 存在schema大小写问题，通过转大写进行重试
+			if ((tableCols == null || tableCols.isEmpty()) && (dbType == DBType.ORACLE || dbType == DBType.ORACLE11)
+					&& toUpperCase == false) {
+				tableCols = DBHelper.getTableColumnMeta(tableName, true);
+				if (tableCols != null && tableCols.size() > 0) {
+					toUpperCase = true;
+				}
+			}
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
-			List<QuickColMeta> colList = processTableCols(configModel, tableName,
-					DBHelper.getTableColumnMeta(tableName), isTable ? DBHelper.getTableImpForeignKeys(tableName) : null,
-					impList, quickModel.getFieldRidPrefix(), dbType, dialect, hasApiDoc);
+			List<QuickColMeta> colList = processTableCols(configModel, tableName, tableCols,
+					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList,
+					quickModel.getFieldRidPrefix(), dbType, dialect, hasApiDoc);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
 			// 处理主键被其它表作为外键关联
 			processExportTables(quickVO, exportKeys, quickModel);
