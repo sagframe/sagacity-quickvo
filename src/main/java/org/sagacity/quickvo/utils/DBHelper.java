@@ -270,10 +270,11 @@ public class DBHelper {
 	/**
 	 * @todo 获取表的字段信息
 	 * @param tableName
+	 * @param toUpperCase
 	 * @return
 	 * @throws Exception
 	 */
-	public static List getTableColumnMeta(final String tableName) throws Exception {
+	public static List getTableColumnMeta(final String tableName, boolean toUpperCase) throws Exception {
 		final int dbType = DBUtil.getDbType(conn);
 		PreparedStatement pst = null;
 		ResultSet rs;
@@ -450,7 +451,13 @@ public class DBHelper {
 		if ((dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 			rs = conn.getMetaData().getColumns(catalog, schema, tableName, "%");
 		} else {
-			rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
+			// oracle 场景存在大小写问题
+			if (toUpperCase) {
+				rs = conn.getMetaData().getColumns((catalog == null) ? null : catalog.toUpperCase(),
+						(schema == null) ? null : schema.toUpperCase(), tableName, null);
+			} else {
+				rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
+			}
 		}
 
 		return (List) DBUtil.preparedStatementProcess(metaMap, null, rs, new PreparedStatementResultHandler() {
