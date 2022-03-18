@@ -44,6 +44,9 @@ import java.util.List;
 </#if>
 import java.util.ArrayList;
 </#if>
+<#if (quickVO.entityExtends?exists)>
+import ${quickVO.entityExtends};
+</#if>
 
 /**
 <#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>

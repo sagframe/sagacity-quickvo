@@ -47,6 +47,9 @@ import org.sagacity.sqltoy.config.annotation.OneToMany;
 import ${quickVO.entityPackage}.${exportTable.pkRefTableJavaName?cap_first};
 </#list>
 </#if>
+<#if (quickVO.entityExtends?exists)>
+import ${quickVO.entityExtends};
+</#if>
 
 /**
 <#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
