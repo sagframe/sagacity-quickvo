@@ -54,7 +54,6 @@ import ${quickVO.entityExtends};
 <#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
 <#if (quickVO.author?exists)> * @author ${quickVO.author}</#if>
 <#if (quickVO.version?exists)> * @version ${quickVO.version}</#if>
- * Table: ${quickVO.tableName}<#if (quickVO.tableRemark?exists && quickVO.tableRemark!='')>,Remark:${quickVO.tableRemark}</#if>  
  */
 <#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.apiDoc=="swagger-v2")>
@@ -67,7 +66,7 @@ import ${quickVO.entityExtends};
 ${quickVO.apiDocContent}
 </#if>
 </#if>
-@Entity(tableName="${quickVO.tableName}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
+@Entity(tableName="${quickVO.tableName}",comment="${quickVO.tableRemark!""}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
 <#if (quickVO.entityExtends?exists)>
 public abstract class Abstract${quickVO.entityName} extends ${quickVO.entityExtends?substring(quickVO.entityExtends?last_index_of(".")+1)} implements Serializable {
 <#else>
@@ -82,7 +81,6 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 <#list quickVO.columns as column>
 	/**
 	 * jdbcType:${column.colType!""}
-	 * ${column.colRemark!""}
 	 */
 	<#if (quickVO.hasVoEntity==false)>
 	<#if (quickVO.apiDoc=="swagger-v2")>
@@ -105,7 +103,7 @@ public abstract class Abstract${quickVO.entityName} implements Serializable {
 	<#if (column.partitionKey==true)>
 	@PartitionKey
 	</#if>
-	@Column(name="${column.colName}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
+	@Column(name="${column.colName}",comment="${column.colRemark!""}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
 	protected ${column.resultType} ${column.colJavaName?uncap_first};
 	
 </#list>
