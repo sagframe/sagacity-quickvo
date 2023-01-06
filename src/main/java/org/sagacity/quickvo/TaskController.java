@@ -429,7 +429,6 @@ public class TaskController {
 							}
 						}
 					}
-
 					if (pkList.size() > 1) {
 						quickVO.setPkList(pkList);
 						quickVO.setSinglePk("0");
@@ -915,7 +914,8 @@ public class TaskController {
 
 	private static void generateAbstractDTO(String file, QuickVO quickVO, String charset) throws Exception {
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getVoPackage() + "." + quickVO.getAbstractPath() + ".Abstract" + quickVO.getVoName();
+		String hashStr = quickVO.getVoPackage().concat(".").concat(quickVO.getAbstractPath()).concat(".Abstract")
+				.concat(quickVO.getVoName());
 		quickVO.setVoAbstractSerialUID(Long.toString(StringUtil.hash(hashStr)));
 		boolean needGen = true;
 		File voFile = new File(file);
@@ -945,7 +945,7 @@ public class TaskController {
 
 	private static void generateParentDTO(String file, QuickVO quickVO, String charset) throws Exception {
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getVoPackage() + "." + quickVO.getVoName();
+		String hashStr = quickVO.getVoPackage().concat(".").concat(quickVO.getVoName());
 		quickVO.setVoSerialUID(Long.toString(StringUtil.hash(hashStr)));
 		File voFile = new File(file);
 		// 文件不存在
@@ -1014,7 +1014,7 @@ public class TaskController {
 			throws Exception {
 		File generateFile = new File(file);
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
+		String hashStr = quickVO.getEntityPackage().concat(".").concat(quickVO.getEntityName());
 		quickVO.setEntitySerialUID(Long.toString(StringUtil.hash(hashStr)));
 		// 文件存在判断是否相等，不相等则生成
 		if (generateFile.exists()) {
@@ -1039,8 +1039,8 @@ public class TaskController {
 		File generateFile = new File(file);
 		boolean needGen = true;
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getAbstractPath() + ".Abstract"
-				+ quickVO.getEntityName();
+		String hashStr = quickVO.getEntityPackage().concat(".").concat(quickVO.getAbstractPath()).concat(".Abstract")
+				.concat(quickVO.getEntityName());
 		quickVO.setAbstractEntitySerialUID(Long.toString(StringUtil.hash(hashStr)));
 		// 文件存在判断是否相等，不相等则生成
 		if (generateFile.exists()) {
@@ -1068,7 +1068,7 @@ public class TaskController {
 
 	private static void generateParentEntity(String file, QuickVO quickVO, String charset) throws Exception {
 		// 根据包名和类名称产生hash值
-		String hashStr = quickVO.getEntityPackage() + "." + quickVO.getEntityName();
+		String hashStr = quickVO.getEntityPackage().concat(".").concat(quickVO.getEntityName());
 		quickVO.setEntitySerialUID(Long.toString(StringUtil.hash(hashStr)));
 		File entityFile = new File(file);
 		// 文件存在判断是否相等，不相等则生成
@@ -1104,8 +1104,7 @@ public class TaskController {
 		String newTableGenStr = newContent.substring(newBegin, newEnd + end.length());
 		String oldTableGenStr = oldContent.substring(oldBegin, oldEnd + end.length());
 		// 内容相同，表示表结构没有发生变化
-		if (StringUtil.clearMistyChars(newTableGenStr, "").replaceAll("\\s+", "")
-				.equals(StringUtil.clearMistyChars(oldTableGenStr, "").replaceAll("\\s+", ""))) {
+		if (newTableGenStr.replaceAll("\\s|\t|\n|\r", "").equals(oldTableGenStr.replaceAll("\\s|\t|\n|\r", ""))) {
 			return result;
 		}
 		result.setResult(oldContent.substring(0, oldBegin).concat(newTableGenStr)

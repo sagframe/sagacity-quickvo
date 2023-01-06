@@ -62,10 +62,8 @@ public class XMLConfigLoader {
 		Element root = doc.getDocumentElement();
 		// 加载常量信息
 		Constants.loadProperties(root.getElementsByTagName("property"));
-
 		// 任务设置
 		Element tasks = (Element) root.getElementsByTagName("tasks").item(0);
-
 		// 输出路径
 		if (tasks.hasAttribute("dist")) {
 			configModel.setTargetDir(Constants.replaceConstants(tasks.getAttribute("dist")));
@@ -134,7 +132,6 @@ public class XMLConfigLoader {
 				if (quickvo.hasAttribute("fields-rid-prefix")) {
 					quickModel.setFieldRidPrefix(quickvo.getAttribute("fields-rid-prefix").toLowerCase());
 				}
-
 				if (quickvo.hasAttribute("include")) {
 					// *表示全部,等同于没有include配置
 					if (!quickvo.getAttribute("include").equals("*")) {
@@ -225,7 +222,7 @@ public class XMLConfigLoader {
 					}
 					if (vo.hasAttribute("lombok-chain")) {
 						quickModel.setLombokChain(Boolean.parseBoolean(vo.getAttribute("lombok-chain")));
-						//设置lombok-chain默认设置了isLombok
+						// 设置lombok-chain默认设置了isLombok
 						if (quickModel.isLombokChain() && !quickModel.isLombok()) {
 							quickModel.setLombok(true);
 							quickModel.setHasAbstractVO(false);
@@ -273,7 +270,6 @@ public class XMLConfigLoader {
 					sequence = table.getAttribute("sequence");
 					strategy = "sequence";
 				}
-
 				// 生成器模式优先
 				if (table.hasAttribute("generator")) {
 					generator = table.getAttribute("generator");
@@ -283,7 +279,6 @@ public class XMLConfigLoader {
 						generator = Constants.PK_DEFAULT_GENERATOR;
 					}
 				}
-
 				PrimaryKeyStrategy primaryKeyStrategy = new PrimaryKeyStrategy(name, strategy, sequence, generator);
 				// force没有必要
 				if (table.hasAttribute("force")) {
@@ -308,19 +303,15 @@ public class XMLConfigLoader {
 					ColumnTypeMapping colTypeMapping = new ColumnTypeMapping();
 					// 兼容老版本
 					colTypeMapping.putNativeTypes(type.getAttribute("native-types").split("\\,"));
-
 					if (type.hasAttribute("table-field")) {
 						colTypeMapping.setTableField(type.getAttribute("table-field").toLowerCase());
 					}
-
 					if (type.hasAttribute("jdbc-type")) {
 						colTypeMapping.setJdbcType(type.getAttribute("jdbc-type"));
 					}
-
 					if (type.hasAttribute("import-types")) {
 						colTypeMapping.setImportTypes(type.getAttribute("import-types"));
 					}
-
 					if (type.hasAttribute("precision")) {
 						if (StringUtil.isNotBlank(type.getAttribute("precision"))) {
 							precision = type.getAttribute("precision").split("\\..");
@@ -379,12 +370,9 @@ public class XMLConfigLoader {
 		// 级联操作设置
 		if (nodeList.getLength() > 0) {
 			NodeList mainCascades = nodeList;
-			// String mainTable;
 			Element mainCasade;
 			for (int m = 0; m < mainCascades.getLength(); m++) {
 				mainCasade = (Element) mainCascades.item(m);
-				// if (mainCasade.hasAttribute("main-table")) {
-				// mainTable = mainCasade.getAttribute("main-table");
 				NodeList cascades = mainCasade.getElementsByTagName("table");
 				Element cascadeElt;
 				List cascadeModelList = new ArrayList<CascadeModel>();
@@ -412,7 +400,6 @@ public class XMLConfigLoader {
 					cascadeModelList.add(cascade);
 				}
 				configModel.addCascadeConfig(cascadeModelList);
-				// }
 			}
 		}
 

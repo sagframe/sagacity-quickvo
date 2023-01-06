@@ -37,7 +37,7 @@ public class StringUtil {
 	}
 
 	public static String trim(String str) {
-		if (str == null) {
+		if (null == str) {
 			return null;
 		}
 		return str.trim();
@@ -50,10 +50,10 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String clearMistyChars(String source, String target) {
-		if (isNotBlank(source)) {
-			return source.replaceAll("\r", target).replaceAll("\t", target).replaceAll("\n", target);
+		if (null == source) {
+			return null;
 		}
-		return source;
+		return source.replaceAll("\t|\r|\n", target);
 	}
 
 	/**
@@ -108,7 +108,7 @@ public class StringUtil {
 	 * @return
 	 */
 	public static int indexOfIgnoreCase(String source, String pattern) {
-		if (source == null || pattern == null) {
+		if (null == source || null == pattern) {
 			return -1;
 		}
 		return source.toLowerCase().indexOf(pattern.toLowerCase());
@@ -126,10 +126,10 @@ public class StringUtil {
 	}
 
 	public static String replaceStr(String source, String template, String target, int fromIndex) {
-		if (source == null) {
+		if (null == source) {
 			return null;
 		}
-		if (template == null) {
+		if (null == template) {
 			return source;
 		}
 		if (fromIndex >= source.length() - 1) {
