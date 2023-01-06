@@ -153,7 +153,7 @@ public class DBHelper {
 				logger.info("表:user_tab_comments 不存在,如当前非oracle数据库(如:polardb等),此错误请忽略!");
 			}
 		} // mysql数据库
-		if (dbType == DBType.MYSQL && !isPolardb) {
+		if ((dbType == DBType.MYSQL || dbType == DBType.MYSQL57) && !isPolardb) {
 			try {
 				StringBuilder queryStr = new StringBuilder("SELECT TABLE_NAME,TABLE_SCHEMA,TABLE_TYPE,TABLE_COMMENT ");
 				queryStr.append(" FROM INFORMATION_SCHEMA.TABLES where 1=1 ");

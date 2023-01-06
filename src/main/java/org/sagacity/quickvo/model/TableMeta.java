@@ -85,7 +85,9 @@ public class TableMeta implements Serializable {
 	}
 
 	public void setTableRemark(String tableRemark) {
-		this.tableRemark = tableRemark;
+		if (tableRemark != null) {
+			this.tableRemark = tableRemark.replaceAll("\"", "'");
+		}
 	}
 
 	public String getSchema() {

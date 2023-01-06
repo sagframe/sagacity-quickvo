@@ -115,7 +115,7 @@ public class QuickColMeta implements Serializable {
 	private BusinessIdConfig businessIdConfig;
 
 	private String apiDocContent;
-	
+
 	/**
 	 * 分区字段
 	 */
@@ -299,7 +299,10 @@ public class QuickColMeta implements Serializable {
 	 * @param colRemark the colRemark to set
 	 */
 	public void setColRemark(String colRemark) {
-		this.colRemark = colRemark;
+		if (colRemark != null) {
+			// 双引号替换成单引号
+			this.colRemark = colRemark.replaceAll("\"", "'");
+		}
 	}
 
 	/**
