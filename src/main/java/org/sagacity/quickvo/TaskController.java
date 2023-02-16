@@ -353,8 +353,9 @@ public class TaskController {
 														.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
 											}
 											if (strategy.equalsIgnoreCase("generator")) {
-												if (StringUtil.isNotBlank(generator))
+												if (StringUtil.isNotBlank(generator)) {
 													quickColMeta.setGenerator(generator);
+												}
 												// 设置default generator
 												if (StringUtil.isBlank(generator)
 														|| generator.equalsIgnoreCase("default")) {
@@ -422,6 +423,22 @@ public class TaskController {
 											quickColMeta.setStrategy("generator");
 											quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
 										}
+									}
+								}
+								// 当主键是雪花算法、默认的22位、26位数字类型，将java类型改成BigInteger类型
+								String generate = (quickColMeta.getGenerator() == null) ? ""
+										: quickColMeta.getGenerator();
+								String resultType = (quickColMeta.getResultType() == null)
+										? ""
+										: quickColMeta.getResultType().toLowerCase();
+								if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR)
+										|| generate.equals(Constants.PK_DEFAULT_GENERATOR)
+										|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR)
+												&& (resultType.equals("int") || resultType.equals("integer")
+														|| resultType.equals("short") || resultType.equals("long"))) {
+									quickColMeta.setResultType("BigInteger");
+									if (!impList.contains("java.math.BigInteger")) {
+										impList.add("java.math.BigInteger");
 									}
 								}
 								pkList.add(quickColMeta);
@@ -701,8 +718,9 @@ public class TaskController {
 							if (colTypeMapping.getScaleMax() == -1 && colTypeMapping.getPrecisionMax() != -1) {
 								if (colTypeMapping.getPrecisionMax() >= precision
 										&& colTypeMapping.getPrecisionMin() <= precision) {
-									if (null != colTypeMapping.getJdbcType())
+									if (null != colTypeMapping.getJdbcType()) {
 										quickColMeta.setDataType(colTypeMapping.getJdbcType());
+									}
 									quickColMeta.setResultType(colTypeMapping.getResultType());
 									mapped = true;
 								}

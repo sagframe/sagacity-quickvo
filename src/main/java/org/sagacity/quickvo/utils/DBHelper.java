@@ -419,7 +419,7 @@ public class DBHelper {
 		if (dbType == DBType.CLICKHOUSE && !isPolardb) {
 			StringBuilder queryStr = new StringBuilder();
 			queryStr.append(
-					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY,is_in_partition_key PARTITION_KEY from system.columns t where t.table=?");
+					"select name COLUMN_NAME,comment COMMENTS,is_in_primary_key PRIMARY_KEY,is_in_partition_key PARTITION_KEY,type TYPE,default_expression DEFAULT_EXPRESSION from system.columns t where t.table=?");
 			pst = conn.prepareStatement(queryStr.toString());
 			pst.setString(1, tableName);
 			rs = pst.executeQuery();
@@ -437,6 +437,15 @@ public class DBHelper {
 								}
 								if (rs.getString("PARTITION_KEY").equals("1")) {
 									colMeta.setPartitionKey(true);
+								}
+								String typeName = rs.getString("TYPE");
+								colMeta.setTypeName(typeName);
+								colMeta.setColDefault(rs.getString("DEFAULT_EXPRESSION"));
+								if (colMeta.getColDefault() != null && colMeta.getColDefault().equals("")) {
+									if (typeName.toLowerCase().startsWith("nullable(")
+											|| !colMeta.getTypeName().toLowerCase().equalsIgnoreCase("string")) {
+										colMeta.setColDefault(null);
+									}
 								}
 								filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
 							}
@@ -475,13 +484,17 @@ public class DBHelper {
 						colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("REMARKS"), " "));
 					} else {
 						colMeta = (TableColumnMeta) metaMap.get(colName);
-						if (colMeta != null && colMeta.getColDefault() == null) {
-							colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
+						if (dbType != DBType.CLICKHOUSE) {
+							if (colMeta != null && colMeta.getColDefault() == null) {
+								colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
+							}
 						}
 					}
 					if (colMeta != null) {
 						colMeta.setDataType(rs.getInt("DATA_TYPE"));
-						colMeta.setTypeName(rs.getString("TYPE_NAME"));
+						if (dbType != DBType.CLICKHOUSE) {
+							colMeta.setTypeName(rs.getString("TYPE_NAME"));
+						}
 						colMeta.setLength(rs.getInt("COLUMN_SIZE"));
 						colMeta.setPrecision(colMeta.getLength());
 						colMeta.setScale(rs.getInt("DECIMAL_DIGITS"));
