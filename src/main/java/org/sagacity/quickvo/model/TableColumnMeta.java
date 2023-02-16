@@ -124,6 +124,12 @@ public class TableColumnMeta implements java.io.Serializable {
 	}
 
 	public void setTypeName(String typeName) {
+		if (typeName.toLowerCase().startsWith("nullable(") && typeName.endsWith(")")) {
+			typeName = typeName.substring(9, typeName.length() - 1).trim();
+		}
+		if (typeName.contains("(") && typeName.endsWith(")")) {
+			typeName = typeName.substring(0, typeName.indexOf("(")).trim();
+		}
 		this.typeName = typeName;
 	}
 
