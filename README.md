@@ -57,14 +57,15 @@
 		     skip-extends-fields="${commonFilelds}"   lombok="true" lombok-chain="true"
                     -->
 		    <entity package="${project.package}.sagacity.entity" substr="Sag" name="#{subName}"/>
-		    <!-- 在pojo和vo严格分层情况下，VO支持 lombok="true" lombok-chain="true" 避免生成get/set，to-dir: 支持 extends指定父类
+		    <!-- 在pojo和vo严格分层情况下，VO支持 lombok="true" lombok-chain="true" 避免生成get/set，
+                         to-dir: 支持 extends指定父类
 			 skip-extends-fields="${commonFilelds}" 
 		     -->
 		     <vo package="${project.package}.sagacity.vo" substr="Sag" name="#{subName}VO" />
 		</task>
 		<task active="true" author="zhongxuchen" include="^SYS_\w+" datasource="strict" swagger-model="true">
-			<entity package="${project.package}.system.entity" substr="Sys" name="#{subName}"/>
-			<vo package="${project.package}.system.vo" substr="Sys" name="#{subName}VO" />
+		     <entity package="${project.package}.system.entity" substr="Sys" name="#{subName}"/>
+		     <vo package="${project.package}.system.vo" substr="Sys" name="#{subName}VO" />
 		</task>
 	</tasks>
 	<!-- 主键策略配置: identity类型的会自动产生主键策略，其他场景sqltoy根据主键类型和长度自动分配相应的策略方式. 
