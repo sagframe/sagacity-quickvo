@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>5.0.12</version>
+    <version>5.0.13</version>
 </dependency>
 
 ```
@@ -30,6 +30,8 @@
 	<property name="field.support.linked.set" value="false" />
 	<!-- 是否在抽象类中生成SelectFieldImpl内部类,默认值为false	-->
 	<property name="generate.selectFields.class" value="false" />
+	<!-- 定义公共字段属性 -->	
+	<property name="commonFields" value="createBy,createTime,updateBy,updateTime"/>
 	<!-- 演示自定义类似swagger api文档注释实现,配合task定义中的api-doc="custom" 使用
 	     当然这里是演示，正常task中的api-doc 有swagger-v3、swagger-v2默认选项
 	 -->
@@ -51,9 +53,12 @@
 		<task active="true" author="zhongxuchen" include="^SAG_\w+" datasource="strict" api-doc="swagger-v3|swagger-v2|custom|false">
 		    <!-- entity 配置中存在has-abstract:默认为true,可以设置为false表示pojo不需要抽象类，
 		     可以设置extends="package.parentClass"指定父类 
+		     可设置 skip-extends-fields="${commonFilelds}"
 		    5.0开始支持 lombok="true" lombok-chain="true" -->
 			<entity package="${project.package}.sagacity.entity" substr="Sag" name="#{subName}"/>
-			<!-- 在pojo和vo严格分层情况下，VO支持 lombok="true" lombok-chain="true" 避免生成get/set，to-dir: 支持 extends指定父类 -->
+			<!-- 在pojo和vo严格分层情况下，VO支持 lombok="true" lombok-chain="true" 避免生成get/set，to-dir: 支持 extends指定父类
+			 支持 skip-extends-fields="${commonFilelds}" 跳过父类中的属性
+			-->
 			<vo package="${project.package}.sagacity.vo" substr="Sag" name="#{subName}VO" />
 		</task>
 		<task active="true" author="zhongxuchen" include="^SYS_\w+" datasource="strict" swagger-model="true">
