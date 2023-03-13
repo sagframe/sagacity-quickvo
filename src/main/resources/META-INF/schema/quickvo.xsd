@@ -117,6 +117,12 @@
 														<xsd:documentation><![CDATA[指定生成VO extends的父类]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
+												<xsd:attribute name="skip-extends-fields"
+													type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[跳过父类中的公共属性:createBy,createTime,updateBy,updateTime 等，用逗号分割]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
 												<xsd:attribute name="to-dir" type="xsd:string">
 													<xsd:annotation>
 														<xsd:documentation><![CDATA[将vo或dto生成到具体路径,可以是绝对路径,也可以是当前路径的相对路径]]></xsd:documentation>
@@ -158,6 +164,12 @@
 													type="xsd:string">
 													<xsd:annotation>
 														<xsd:documentation><![CDATA[指定生成POJO extends的父类]]></xsd:documentation>
+													</xsd:annotation>
+												</xsd:attribute>
+												<xsd:attribute name="skip-extends-fields"
+													type="xsd:string">
+													<xsd:annotation>
+														<xsd:documentation><![CDATA[跳过父类中的公共属性:createBy,createTime,updateBy,updateTime 等，用逗号分割]]></xsd:documentation>
 													</xsd:annotation>
 												</xsd:attribute>
 												<xsd:attribute name="to-dir" type="xsd:string">

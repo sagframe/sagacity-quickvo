@@ -182,14 +182,19 @@ public class XMLConfigLoader {
 					}
 					// 存放路径
 					if (entity.hasAttribute("to-dir")) {
-						quickModel
-								.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE, entity.getAttribute("to-dir")));
+						quickModel.setEntityPath(FileUtil.skipPath(Constants.BASE_LOCATE,
+								Constants.replaceConstants(entity.getAttribute("to-dir"))));
 					} else {
 						quickModel.setEntityPath(configModel.getTargetDir());
 					}
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
-						quickModel.setEntityExtends(entity.getAttribute("extends"));
+						quickModel.setEntityExtends(Constants.replaceConstants(entity.getAttribute("extends")));
+						if (entity.hasAttribute("skip-extends-fields")) {
+							quickModel.setSkipEntityExtendsFields(
+									Constants.replaceConstants(entity.getAttribute("skip-extends-fields")).toLowerCase()
+											.replaceAll("\\s+", "").split("\\,"));
+						}
 					}
 					quickModel.setHasEntity(true);
 				}
@@ -209,7 +214,8 @@ public class XMLConfigLoader {
 
 					// 存放路径
 					if (vo.hasAttribute("to-dir")) {
-						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE, vo.getAttribute("to-dir")));
+						quickModel.setVoPath(FileUtil.skipPath(Constants.BASE_LOCATE,
+								Constants.replaceConstants(vo.getAttribute("to-dir"))));
 					} else {
 						quickModel.setVoPath(configModel.getTargetDir());
 					}
@@ -235,7 +241,12 @@ public class XMLConfigLoader {
 					}
 					// 是否有父类
 					if (vo.hasAttribute("extends")) {
-						quickModel.setVoExtends(vo.getAttribute("extends"));
+						quickModel.setVoExtends(Constants.replaceConstants(vo.getAttribute("extends")));
+						if (vo.hasAttribute("skip-extends-fields")) {
+							quickModel.setSkipVOExtendsFields(
+									Constants.replaceConstants(vo.getAttribute("skip-extends-fields")).toLowerCase()
+											.replaceAll("\\s+", "").split("\\,"));
+						}
 					}
 					quickModel.setHasVO(true);
 				}

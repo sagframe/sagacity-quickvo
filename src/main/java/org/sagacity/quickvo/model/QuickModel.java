@@ -82,6 +82,13 @@ public class QuickModel implements Serializable {
 	private String apiDoc = "false";
 
 	/**
+	 * 跳过父类中的属性
+	 */
+	private String[] skipEntityExtendsFields;
+
+	private String[] skipVOExtendsFields;
+
+	/**
 	 * 作者，主要针对Dao层提供任务责任人
 	 */
 	private String author;
@@ -388,6 +395,22 @@ public class QuickModel implements Serializable {
 
 	public void setApiDoc(String apiDoc) {
 		this.apiDoc = apiDoc;
+	}
+
+	public String[] getSkipEntityExtendsFields() {
+		return skipEntityExtendsFields;
+	}
+
+	public void setSkipEntityExtendsFields(String[] skipEntityExtendsFields) {
+		this.skipEntityExtendsFields = skipEntityExtendsFields;
+	}
+
+	public String[] getSkipVOExtendsFields() {
+		return skipVOExtendsFields;
+	}
+
+	public void setSkipVOExtendsFields(String[] skipVOExtendsFields) {
+		this.skipVOExtendsFields = skipVOExtendsFields;
 	}
 
 }

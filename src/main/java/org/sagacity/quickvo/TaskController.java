@@ -266,7 +266,7 @@ public class TaskController {
 			}
 			// vo中需要import的数据类型
 			List impList = new ArrayList();
-			List<QuickColMeta> colList = processTableCols(configModel, tableName, tableCols,
+			List<QuickColMeta> colList = processTableCols(configModel, quickModel, tableName, tableCols,
 					isTable ? DBHelper.getTableImpForeignKeys(tableName) : null, impList,
 					quickModel.getFieldRidPrefix(), dbType, dialect, hasApiDoc);
 			List exportKeys = DBHelper.getTableExportKeys(tableName);
@@ -428,8 +428,7 @@ public class TaskController {
 								// 当主键是雪花算法、默认的22位、26位数字类型，将java类型改成BigInteger类型
 								String generate = (quickColMeta.getGenerator() == null) ? ""
 										: quickColMeta.getGenerator();
-								String resultType = (quickColMeta.getResultType() == null)
-										? ""
+								String resultType = (quickColMeta.getResultType() == null) ? ""
 										: quickColMeta.getResultType().toLowerCase();
 								if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR)
 										|| generate.equals(Constants.PK_DEFAULT_GENERATOR)
@@ -579,6 +578,7 @@ public class TaskController {
 	/**
 	 * @todo 处理表的列信息
 	 * @param configModel
+	 * @param quickModel
 	 * @param tableName
 	 * @param cols
 	 * @param fks
@@ -590,8 +590,8 @@ public class TaskController {
 	 * @return
 	 * @throws Exception
 	 */
-	private static List processTableCols(ConfigModel configModel, String tableName, List cols, List fks, List impList,
-			String ridPrefix, int dbType, String dialect, boolean hasApiDoc) throws Exception {
+	private static List processTableCols(ConfigModel configModel, QuickModel quickModel, String tableName, List cols,
+			List fks, List impList, String ridPrefix, int dbType, String dialect, boolean hasApiDoc) throws Exception {
 		List quickColMetas = new ArrayList();
 		TableColumnMeta colMeta;
 		String sqlType = "";
@@ -821,12 +821,30 @@ public class TaskController {
 						configModel.getDocApiFieldTemplate());
 				quickColMeta.setApiDocContent(apiDoc);
 			}
+			if (isSkipField(quickModel.getSkipEntityExtendsFields(), quickColMeta.getColJavaName().toLowerCase())) {
+				quickColMeta.setSkipEntity(true);
+			}
+			if (isSkipField(quickModel.getSkipVOExtendsFields(), quickColMeta.getColJavaName().toLowerCase())) {
+				quickColMeta.setSkipVO(true);
+			}
 			quickColMetas.add(quickColMeta);
 		}
 		if (hasPartitionKey) {
 			impList.add("org.sagacity.sqltoy.config.annotation.PartitionKey");
 		}
 		return quickColMetas;
+	}
+
+	private static boolean isSkipField(String[] skipFields, String fieldName) {
+		if (skipFields == null || skipFields.length == 0) {
+			return false;
+		}
+		for (String skipField : skipFields) {
+			if (skipField.equals(fieldName)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
