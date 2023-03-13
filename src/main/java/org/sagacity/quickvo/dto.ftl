@@ -65,6 +65,7 @@ public class ${quickVO.voName} implements Serializable {
 	
 /*---begin-auto-generate-don't-update-this-area--*/	
 <#list quickVO.columns as column>
+<#if (column.skipVO==false)>
 	/**
 	 * ${column.colRemark!""}
 	 */
@@ -78,7 +79,7 @@ public class ${quickVO.voName} implements Serializable {
 	${column.apiDocContent}
 	</#if>
 	private ${column.resultType} ${column.colJavaName?uncap_first};
-	
+</#if>
 </#list>
 <#if (quickVO.columnSize==0)>
    // 未能获得表字段信息,请检查quickvo.xml 中dataSource的schema 和 catalog配置，可尝试先去除schema\catalog
@@ -86,6 +87,7 @@ public class ${quickVO.voName} implements Serializable {
 </#if>
 <#if (quickVO.lombok==false)>
 <#list quickVO.columns as column>
+<#if (column.skipVO==false)>
 	
 	/**
 	 *@param ${column.colJavaName?uncap_first} the ${column.colJavaName?uncap_first} to set
@@ -107,6 +109,7 @@ public class ${quickVO.voName} implements Serializable {
 	public ${column.resultType} get${column.colJavaName?cap_first}() {
 	    return this.${column.colJavaName?uncap_first};
 	}
+</#if>
 </#list>
 </#if>
 /*---end-auto-generate-don't-update-this-area--*/	

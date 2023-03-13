@@ -190,6 +190,10 @@ public class XMLConfigLoader {
 					// 是否有父类
 					if (entity.hasAttribute("extends")) {
 						quickModel.setEntityExtends(entity.getAttribute("extends"));
+						if (entity.hasAttribute("skip-extends-fields")) {
+							quickModel.setSkipEntityExtendsFields(entity.getAttribute("skip-extends-fields")
+									.toLowerCase().replaceAll("\\s+", "").split("\\,"));
+						}
 					}
 					quickModel.setHasEntity(true);
 				}
@@ -236,6 +240,10 @@ public class XMLConfigLoader {
 					// 是否有父类
 					if (vo.hasAttribute("extends")) {
 						quickModel.setVoExtends(vo.getAttribute("extends"));
+						if (vo.hasAttribute("skip-extends-fields")) {
+							quickModel.setSkipVOExtendsFields(vo.getAttribute("skip-extends-fields").toLowerCase()
+									.replaceAll("\\s+", "").split("\\,"));
+						}
 					}
 					quickModel.setHasVO(true);
 				}

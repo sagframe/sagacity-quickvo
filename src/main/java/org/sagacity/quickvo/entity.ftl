@@ -79,6 +79,7 @@ public class ${quickVO.entityName} implements Serializable {
 	private static final long serialVersionUID = ${quickVO.entitySerialUID}L;
 	
 <#list quickVO.columns as column>
+<#if (column.skipEntity==false)>
 	/**
 	 * jdbcType:${column.colType!""}
 	 */
@@ -105,7 +106,7 @@ public class ${quickVO.entityName} implements Serializable {
 	</#if>
 	@Column(name="${column.colName}",comment="${column.colRemark!""}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
 	private ${column.resultType} ${column.colJavaName?uncap_first};
-	
+</#if>
 </#list>
 <#if (quickVO.columnSize==0)>
    // 未能获得表字段信息,请检查quickvo.xml 中dataSource的schema 和 catalog配置，可尝试先去除schema\catalog
@@ -140,7 +141,7 @@ public class ${quickVO.entityName} implements Serializable {
 </#if>
 </#if>
 <#list quickVO.columns as column>
-	
+<#if (column.skipEntity==false)>
 	/**
 	 *@param ${column.colJavaName?uncap_first} the ${column.colJavaName?uncap_first} to set
 	 */
@@ -161,6 +162,7 @@ public class ${quickVO.entityName} implements Serializable {
 	public ${column.resultType} get${column.colJavaName?cap_first}() {
 	    return this.${column.colJavaName?uncap_first};
 	}
+</#if>
 </#list>
 
 <#if (quickVO.exportTables?exists)>

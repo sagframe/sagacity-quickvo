@@ -19,6 +19,10 @@ public class QuickColMeta implements Serializable {
 	 */
 	private static final long serialVersionUID = 3913303659891945911L;
 
+	private boolean skipEntity = false;
+
+	private boolean skipVO = false;
+	
 	/**
 	 * 字段名称
 	 */
@@ -463,6 +467,22 @@ public class QuickColMeta implements Serializable {
 
 	public void setApiDocContent(String apiDocContent) {
 		this.apiDocContent = apiDocContent;
+	}
+
+	public boolean isSkipEntity() {
+		return skipEntity;
+	}
+
+	public void setSkipEntity(boolean skipEntity) {
+		this.skipEntity = skipEntity;
+	}
+
+	public boolean isSkipVO() {
+		return skipVO;
+	}
+
+	public void setSkipVO(boolean skipVO) {
+		this.skipVO = skipVO;
 	}
 
 }
