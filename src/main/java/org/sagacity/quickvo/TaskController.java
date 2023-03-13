@@ -821,10 +821,10 @@ public class TaskController {
 						configModel.getDocApiFieldTemplate());
 				quickColMeta.setApiDocContent(apiDoc);
 			}
-			if (isSkipField(quickModel.getSkipEntityExtendsFields(), quickColMeta.getColJavaName())) {
+			if (isSkipField(quickModel.getSkipEntityExtendsFields(), quickColMeta.getColJavaName().toLowerCase())) {
 				quickColMeta.setSkipEntity(true);
 			}
-			if (isSkipField(quickModel.getSkipVOExtendsFields(), quickColMeta.getColJavaName())) {
+			if (isSkipField(quickModel.getSkipVOExtendsFields(), quickColMeta.getColJavaName().toLowerCase())) {
 				quickColMeta.setSkipVO(true);
 			}
 			quickColMetas.add(quickColMeta);
