@@ -6,6 +6,7 @@ package org.sagacity.quickvo.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 /**
  * @project sagacity-quickvo
@@ -306,6 +307,7 @@ public class QuickColMeta implements Serializable {
 		if (colRemark != null) {
 			// 双引号替换成单引号
 			this.colRemark = colRemark.replaceAll("\"", "'");
+			this.colRemark=Matcher.quoteReplacement(this.colRemark);
 		}
 	}
 
