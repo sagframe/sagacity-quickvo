@@ -430,11 +430,11 @@ public class TaskController {
 										: quickColMeta.getGenerator();
 								String resultType = (quickColMeta.getResultType() == null) ? ""
 										: quickColMeta.getResultType().toLowerCase();
-								if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR)
+								if ((generate.equals(Constants.PK_SNOWFLAKE_GENERATOR)
 										|| generate.equals(Constants.PK_DEFAULT_GENERATOR)
-										|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR)
-												&& (resultType.equals("int") || resultType.equals("integer")
-														|| resultType.equals("short") || resultType.equals("long"))) {
+										|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR))
+										&& (resultType.equals("int") || resultType.equals("integer")
+												|| resultType.equals("short") || resultType.equals("long"))) {
 									quickColMeta.setResultType("BigInteger");
 									if (!impList.contains("java.math.BigInteger")) {
 										impList.add("java.math.BigInteger");
