@@ -66,17 +66,24 @@ public class ${quickVO.voName} implements Serializable {
 /*---begin-auto-generate-don't-update-this-area--*/	
 <#list quickVO.columns as column>
 <#if (column.skipVO==false)>
-	/**
-	 * ${column.colRemark!""}
-	 */
+
+	<#assign hasRemark=true>
 	<#if (quickVO.apiDoc=="swagger-v2")>
+	<#assign hasRemark=false>
 	@ApiModelProperty(name="${column.colJavaName?uncap_first}",value="${column.colRemark!""}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
 	</#if>
 	<#if (quickVO.apiDoc=="swagger-v3")>
+	<#assign hasRemark=false>
 	@Schema(name="${column.colJavaName?uncap_first}",description="${column.colRemark!""}"<#if (column.nullable=='0')>,nullable=false<#else>,nullable=true</#if>)
 	</#if>
 	<#if (column.apiDocContent?exists)>
+	<#assign hasRemark=false>
 	${column.apiDocContent}
+	</#if>
+	<#if (hasRemark==true)>
+	/**
+	 * ${column.colRemark!""}
+	 */
 	</#if>
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 </#if>

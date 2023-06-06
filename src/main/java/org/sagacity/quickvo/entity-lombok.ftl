@@ -84,9 +84,7 @@ public class ${quickVO.entityName} implements Serializable {
 /*---begin-auto-generate-don't-update-this-area--*/	
 <#list quickVO.columns as column>
 <#if (column.skipEntity==false)>
-	/**
-	 * jdbcType:${column.colType!""}
-	 */
+
 	<#if (quickVO.hasVoEntity==false)>
 	<#if (quickVO.apiDoc=="swagger-v2")>
 	@ApiModelProperty(name="${column.colJavaName?uncap_first}",value="${column.colRemark!""}"<#if (column.nullable=='0')>,allowEmptyValue=false<#else>,allowEmptyValue=true</#if>)
