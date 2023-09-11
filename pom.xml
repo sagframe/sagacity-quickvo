@@ -5,14 +5,14 @@
 	<groupId>com.sagframe</groupId>
 	<name>sqltoy-quickvo</name>
 	<artifactId>sqltoy-quickvo</artifactId>
-	<version>5.0.19</version>
+	<version>5.0.20</version>
 	<description>sqltoy vo generate tools</description>
 	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<freemarker.version>2.3.32</freemarker.version>
-		<jackson-dataformat.version>2.15.0</jackson-dataformat.version>
-	    <!-- <mysql.version>8.0.32</mysql.version>-->
+		<jackson-dataformat.version>2.15.2</jackson-dataformat.version>
+	    <!-- <mysql.version>8.0.33</mysql.version>-->
 	</properties>
 	<licenses>
 		<license>

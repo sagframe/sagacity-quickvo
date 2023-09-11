@@ -430,8 +430,14 @@ public class TaskController {
 										: quickColMeta.getGenerator();
 								String resultType = (quickColMeta.getResultType() == null) ? ""
 										: quickColMeta.getResultType().toLowerCase();
-								if ((generate.equals(Constants.PK_SNOWFLAKE_GENERATOR)
-										|| generate.equals(Constants.PK_DEFAULT_GENERATOR)
+								// 雪花算法非法类型统一转BigInteger
+								if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR) && (resultType.equals("int")
+										|| resultType.equals("integer") || resultType.equals("short"))) {
+									quickColMeta.setResultType("BigInteger");
+									if (!impList.contains("java.math.BigInteger")) {
+										impList.add("java.math.BigInteger");
+									}
+								} else if ((generate.equals(Constants.PK_DEFAULT_GENERATOR)
 										|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR))
 										&& (resultType.equals("int") || resultType.equals("integer")
 												|| resultType.equals("short") || resultType.equals("long"))) {
