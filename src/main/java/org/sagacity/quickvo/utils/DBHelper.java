@@ -516,6 +516,10 @@ public class DBHelper {
 								colMeta.setAutoIncrement(true);
 								colMeta.setColDefault(colMeta.getColDefault().replaceAll("\"", "\\\\\""));
 							}
+						} else if (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) {
+							if (colMeta.getColDefault() != null && colMeta.getColDefault().equalsIgnoreCase("NULL")) {
+								colMeta.setColDefault(null);
+							}
 						}
 						if (rs.getInt("NULLABLE") == 1) {
 							colMeta.setNullable(true);
