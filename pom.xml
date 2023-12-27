@@ -11,7 +11,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<freemarker.version>2.3.32</freemarker.version>
-		<jackson-dataformat.version>2.15.2</jackson-dataformat.version>
+		<jackson-dataformat.version>2.16.1</jackson-dataformat.version>
 	    <!-- <mysql.version>8.0.33</mysql.version>-->
 	</properties>
 	<licenses>
