@@ -9,6 +9,10 @@ import org.sagacity.sqltoy.config.annotation.Entity;
 import org.sagacity.sqltoy.config.annotation.Id;
 </#if>
 import org.sagacity.sqltoy.config.annotation.Column;
+<#if (quickVO.indexModels?exists && quickVO.indexModels?size>0)>
+import org.sagacity.sqltoy.config.annotation.Indexes;
+import org.sagacity.sqltoy.config.annotation.Index;
+</#if>
 <#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.apiDoc=="swagger-v2")>
 import io.swagger.annotations.ApiModel;
@@ -71,6 +75,12 @@ ${quickVO.apiDocContent}
 </#if>
 </#if>
 @Entity(tableName="${quickVO.tableName}",comment="${quickVO.tableRemark!""}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
+<#if (quickVO.indexModels?exists && quickVO.indexModels?size>0)>
+<#assign paramCnt=0/>
+@Indexes(indexes={<#list quickVO.indexModels as indexModel>@Index(name="${indexModel.indexName}",columns={${indexModel.columnsAry}},sortTypes={${indexModel.sortTypesAry}}<#if (indexModel.isUnique)>,isUnique=true</#if>)<#if (paramCnt==0)>,</#if>
+<#assign paramCnt=paramCnt+1/>
+</#list>})
+</#if>
 <#if (quickVO.entityExtends?exists)>
 public class ${quickVO.entityName} extends ${quickVO.entityExtends?substring(quickVO.entityExtends?last_index_of(".")+1)} implements Serializable {
 <#else>
@@ -105,6 +115,9 @@ public class ${quickVO.entityName} implements Serializable {
 	</#if>
 	<#if (column.partitionKey==true)>
 	@PartitionKey
+	</#if>
+	<#if (column.fkRefTableName?exists)>
+	@Foreign(table="${column.fkRefTableName}",field="${column.fkRefTableColName}",deleteRestict=${column.deleteRestict},updateRestict=${column.updateRestict}<#if (column.fkName?exists)>,constraintName="${column.fkName}"</#if>)
 	</#if>
 	@Column(name="${column.colName}",comment="${column.colRemark!""}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.scale?exists && column.scale>0)>,scale=${column.scale?c}</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nativeType="${column.colType!""}",nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
 	private ${column.resultType} ${column.colJavaName?uncap_first};

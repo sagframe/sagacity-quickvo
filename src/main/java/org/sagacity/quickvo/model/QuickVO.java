@@ -145,6 +145,8 @@ public class QuickVO implements Serializable {
 	private String apiDoc;
 	
 	private String apiDocContent;
+	
+	private List<IndexModel> indexModels;
 
 	/**
 	 * @return the singlePk
@@ -715,6 +717,14 @@ public class QuickVO implements Serializable {
 
 	public void setHasListType(boolean hasListType) {
 		this.hasListType = hasListType;
+	}
+
+	public List<IndexModel> getIndexModels() {
+		return indexModels;
+	}
+
+	public void setIndexModels(List<IndexModel> indexModels) {
+		this.indexModels = indexModels;
 	}
 	
 }

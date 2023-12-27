@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.sagacity.quickvo.Constants;
 import org.sagacity.quickvo.model.DataSourceModel;
+import org.sagacity.quickvo.model.IndexModel;
 import org.sagacity.quickvo.model.TableColumnMeta;
 import org.sagacity.quickvo.model.TableConstractModel;
 import org.sagacity.quickvo.model.TableMeta;
@@ -317,6 +319,7 @@ public class DBHelper {
 			rs = pst.executeQuery();
 			final HashMap metaMap = filedsComments;
 			return (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+
 				public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 					List result = new ArrayList();
 					String isAutoIncrement;
@@ -425,6 +428,7 @@ public class DBHelper {
 			rs = pst.executeQuery();
 			filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
 					new PreparedStatementResultHandler() {
+
 						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 							HashMap filedHash = new HashMap();
 							while (rs.next()) {
@@ -587,6 +591,7 @@ public class DBHelper {
 					List result = new ArrayList();
 					while (rs.next()) {
 						TableConstractModel constractModel = new TableConstractModel();
+						constractModel.setFkName(rs.getString("FK_NAME"));
 						constractModel.setFkRefTableName(rs.getString("PKTABLE_NAME"));
 						constractModel.setFkColName(rs.getString("FKCOLUMN_NAME"));
 						constractModel.setPkColName(rs.getString("PKCOLUMN_NAME"));
@@ -677,6 +682,7 @@ public class DBHelper {
 			} else if (dbType == DBType.IMPALA) {
 				rs = conn.createStatement().executeQuery("DESCRIBE " + tableName);
 				pkList = (List) DBUtil.preparedStatementProcess(null, null, rs, new PreparedStatementResultHandler() {
+
 					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 						List result = new ArrayList();
 						String field;
@@ -700,6 +706,7 @@ public class DBHelper {
 					}
 				});
 			}
+
 			// 排除重复主键约束
 			HashSet hashSet = new HashSet(pkList);
 			return new ArrayList(hashSet);
@@ -745,5 +752,62 @@ public class DBHelper {
 
 	public static String getDBDialect() throws Exception {
 		return DBUtil.getCurrentDBDialect(conn);
+	}
+
+	public static List<IndexModel> getIndexInfo(String tableName, String pkName) {
+		try {
+			ResultSet rs = conn.getMetaData().getIndexInfo(dbConfig.getCatalog(), dbConfig.getSchema(), tableName,
+					false, true);
+			List result = (List<IndexModel>) DBUtil.preparedStatementProcess(null, null, rs,
+					new PreparedStatementResultHandler() {
+						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+							List<IndexModel> result = new ArrayList<IndexModel>();
+							Map<String, IndexModel> indexMap = new HashMap<>();
+							String indexName;
+							String columnName;
+							String sortType;
+							while (rs.next()) {
+								indexName = rs.getString("INDEX_NAME");
+								if (!indexName.equalsIgnoreCase("PRIMARY")
+										&& (pkName != null && !indexName.equalsIgnoreCase(pkName))) {
+									columnName = rs.getString("COLUMN_NAME");
+									sortType = rs.getString("ASC_OR_DESC");
+									if (sortType != null) {
+										if (sortType.equalsIgnoreCase("A")) {
+											sortType = "ASC";
+										} else {
+											sortType = "DESC";
+										}
+									}
+									IndexModel indexModel = indexMap.get(indexName);
+									if (indexModel == null) {
+										indexModel = new IndexModel();
+										indexModel.setIndexName(indexName);
+										indexModel.setSortTypes(new String[] { sortType });
+										indexModel.setColumns(new String[] { columnName });
+										indexModel.setIsUnique(rs.getBoolean("NON_UNIQUE"));
+										indexModel.setTableName(tableName);
+										result.add(indexModel);
+									} else {
+										int len = indexModel.getColumns().length;
+										String[] columns = new String[len + 1];
+										String[] sortTypes = new String[len + 1];
+										System.arraycopy(indexModel.getColumns(), 0, columns, 0, len);
+										System.arraycopy(indexModel.getSortTypes(), 0, sortTypes, 0, len);
+										columns[len] = columnName;
+										sortTypes[len] = sortType;
+										indexModel.setColumns(columns);
+										indexModel.setSortTypes(sortTypes);
+									}
+									indexMap.put(indexName, indexModel);
+								}
+							}
+							this.setResult(result);
+						}
+					});
+			return result;
+		} catch (Exception e) {
+		}
+		return new ArrayList();
 	}
 }

@@ -78,6 +78,11 @@ public class QuickColMeta implements Serializable {
 	 * 是否为数字类型标识
 	 */
 	private String colTypeFlag = "0";
+	
+	/**
+	 * 外键名称
+	 */
+	private String fkName;
 
 	/**
 	 * 外键对应的表名称
@@ -130,6 +135,10 @@ public class QuickColMeta implements Serializable {
 	 * default值
 	 */
 	private String defaultValue;
+	
+	private int deleteRestict;
+	
+	private int updateRestict;
 
 	public String getPkFlag() {
 		return pkFlag;
@@ -485,6 +494,30 @@ public class QuickColMeta implements Serializable {
 
 	public void setSkipVO(boolean skipVO) {
 		this.skipVO = skipVO;
+	}
+
+	public String getFkName() {
+		return fkName;
+	}
+
+	public void setFkName(String fkName) {
+		this.fkName = fkName;
+	}
+
+	public int getDeleteRestict() {
+		return deleteRestict;
+	}
+
+	public void setDeleteRestict(int deleteRestict) {
+		this.deleteRestict = deleteRestict;
+	}
+
+	public int getUpdateRestict() {
+		return updateRestict;
+	}
+
+	public void setUpdateRestict(int updateRestict) {
+		this.updateRestict = updateRestict;
 	}
 
 }

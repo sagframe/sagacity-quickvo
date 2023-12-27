@@ -233,6 +233,10 @@ public class TaskController {
 			quickVO.setDateTime(CommonUtils.formatDate(CommonUtils.getNowTime(), "yyyy-MM-dd HH:mm:ss"));
 			quickVO.setTableName(tableName);
 			quickVO.setType(tableMeta.getTableType());
+
+			if (quickVO.getIndexModels() != null && !quickVO.getIndexModels().isEmpty()) {
+				logger.info("表:" + tableName + " 存在索引!");
+			}
 			if (includeSchema) {
 				quickVO.setSchema(tableMeta.getSchema());
 			}
@@ -457,7 +461,8 @@ public class TaskController {
 					}
 				}
 			}
-
+			// 索引信息
+			quickVO.setIndexModels(DBHelper.getIndexInfo(tableName, quickVO.getPkConstraint()));
 			// 针对数据库表中字段存在reciveTime 和recive_time 这种形态优化
 			Set<String> fieldNames = new HashSet<String>();
 			for (QuickColMeta colMeta : colList) {
@@ -765,8 +770,13 @@ public class TaskController {
 					constractModel = (TableConstractModel) fks.get(x);
 					// 外键
 					if (colMeta.getColName().equalsIgnoreCase(constractModel.getFkColName())) {
+						quickColMeta.setFkName(constractModel.getFkName());
 						quickColMeta.setFkRefJavaTableName(
 								StringUtil.toHumpStr(constractModel.getFkRefTableName(), true, true));
+						quickColMeta.setFkRefTableName(constractModel.getFkRefTableName());
+						quickColMeta.setFkRefTableColName(constractModel.getPkColName());
+						quickColMeta.setDeleteRestict(constractModel.getDeleteRule());
+						quickColMeta.setUpdateRestict(constractModel.getUpdateRule());
 						if (StringUtil.isNotBlank(ridPrefix)
 								&& constractModel.getPkColName().toLowerCase().startsWith(ridPrefix)) {
 							quickColMeta.setFkRefTableColJavaName(StringUtil.toHumpStr(
@@ -774,6 +784,10 @@ public class TaskController {
 						} else {
 							quickColMeta.setFkRefTableColJavaName(
 									StringUtil.toHumpStr(constractModel.getPkColName(), true, true));
+						}
+						// 外键
+						if (!impList.contains("org.sagacity.sqltoy.config.annotation.Foreign")) {
+							impList.add("org.sagacity.sqltoy.config.annotation.Foreign");
 						}
 						break;
 					}
