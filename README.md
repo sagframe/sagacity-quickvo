@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>5.0.21</version>
+    <version>5.2.0</version>
 </dependency>
 
 ```
