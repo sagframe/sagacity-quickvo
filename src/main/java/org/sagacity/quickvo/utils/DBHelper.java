@@ -768,7 +768,7 @@ public class DBHelper {
 							String sortType;
 							while (rs.next()) {
 								indexName = rs.getString("INDEX_NAME");
-								if (!indexName.equalsIgnoreCase("PRIMARY")
+								if (indexName != null && !indexName.equalsIgnoreCase("PRIMARY")
 										&& (pkName != null && !indexName.equalsIgnoreCase(pkName))) {
 									columnName = rs.getString("COLUMN_NAME");
 									sortType = rs.getString("ASC_OR_DESC");
@@ -778,6 +778,8 @@ public class DBHelper {
 										} else {
 											sortType = "DESC";
 										}
+									} else {
+										sortType = "";
 									}
 									IndexModel indexModel = indexMap.get(indexName);
 									if (indexModel == null) {
