@@ -18,6 +18,11 @@ public class TableConstractModel implements Serializable {
 	private static final long serialVersionUID = -5297814770562062800L;
 
 	/**
+	 * 外键名称
+	 */
+	private String fkName;
+
+	/**
 	 * 关联主键表名称
 	 */
 	private String fkRefTableName;
@@ -338,5 +343,13 @@ public class TableConstractModel implements Serializable {
 	 */
 	public void setOrderBy(String orderBy) {
 		this.orderBy = orderBy;
+	}
+
+	public String getFkName() {
+		return fkName;
+	}
+
+	public void setFkName(String fkName) {
+		this.fkName = fkName;
 	}
 }
