@@ -74,7 +74,7 @@ ${quickVO.apiDocContent}
 @Entity(tableName="${quickVO.tableName}",comment="${quickVO.tableRemark!""}"<#if (quickVO.pkConstraint?exists)>,pk_constraint="${quickVO.pkConstraint}"</#if><#if (quickVO.schema?exists && quickVO.schema!='')>,schema="${quickVO.schema}"</#if>)
 <#if (quickVO.indexModels?exists && quickVO.indexModels?size>0)>
 <#assign paramCnt=0/>
-@Indexes(indexes={<#list quickVO.indexModels as indexModel>@Index(name="${indexModel.indexName}",columns={${indexModel.columnsAry}},sortTypes={${indexModel.sortTypesAry}}<#if (indexModel.isUnique)>,isUnique=true</#if>)<#if (paramCnt==0)>,</#if>
+@Indexes(indexes={<#list quickVO.indexModels as indexModel>@Index(name="${indexModel.indexName}",columns={${indexModel.columnsAry}},sortTypes={${indexModel.sortTypesAry}}<#if (indexModel.isUnique)>,isUnique=true</#if>)<#if (paramCnt>0)>,</#if>
 <#assign paramCnt=paramCnt+1/>
 </#list>})
 </#if>
