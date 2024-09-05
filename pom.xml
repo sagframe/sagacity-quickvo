@@ -10,7 +10,7 @@
 	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<freemarker.version>2.3.33</freemarker.version>
+		<freemarker.version>2.3.32</freemarker.version>
 		<jackson-dataformat.version>2.17.2</jackson-dataformat.version>
 		<!--<mysql.version>8.0.33</mysql.version>-->
 	</properties>
