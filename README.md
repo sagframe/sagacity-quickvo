@@ -40,6 +40,7 @@
 		<doc-class-template>
 		<![CDATA[@Schema(name="${className}",description="${tableRemark}")]]>
 		</doc-class-template>
+                <!-- 固化属性: colName, colRemark, nullable, fieldType, fieldName, defaultValue  -->
 		<doc-field-template>
 		<![CDATA[@Schema(name="${fieldName}",description="${colRemark}",nullable=${nullable})]]>
 		</doc-field-template>
