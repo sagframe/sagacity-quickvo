@@ -762,6 +762,7 @@ public class DBHelper {
 		if (uniqueIndexes != null && !uniqueIndexes.isEmpty()) {
 			for (IndexModel indexModel : uniqueIndexes) {
 				if (!indexNames.contains(indexModel.getIndexName())) {
+					indexModel.setIsUnique(true);
 					result.add(indexModel);
 					indexNames.add(indexModel.getIndexName());
 				}
@@ -771,6 +772,7 @@ public class DBHelper {
 		if (otherIndexes != null && !otherIndexes.isEmpty()) {
 			for (IndexModel indexModel : otherIndexes) {
 				if (!indexNames.contains(indexModel.getIndexName())) {
+					indexModel.setIsUnique(false);
 					result.add(indexModel);
 					indexNames.add(indexModel.getIndexName());
 				}
