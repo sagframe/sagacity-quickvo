@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>5.2.1</version>
+    <version>5.2.2</version>
 </dependency>
 
 ```
@@ -40,6 +40,7 @@
 		<doc-class-template>
 		<![CDATA[@Schema(name="${className}",description="${tableRemark}")]]>
 		</doc-class-template>
+                <!-- 固化属性: colName, colRemark, nullable, fieldType, fieldName, defaultValue  -->
 		<doc-field-template>
 		<![CDATA[@Schema(name="${fieldName}",description="${colRemark}",nullable=${nullable})]]>
 		</doc-field-template>
