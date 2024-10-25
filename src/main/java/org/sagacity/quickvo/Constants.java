@@ -91,6 +91,8 @@ public class Constants implements Serializable {
 	 */
 	public static String BASE_LOCATE;
 
+	public static String LOG_FILE_ENCODING = "UTF-8";
+
 	public static String QUICK_CONFIG_FILE = "quickvo.xml";
 
 	private static final String GLOBA_IDENTITY_NAME = "globa.identity";

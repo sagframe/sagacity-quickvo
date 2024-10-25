@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 
 import org.sagacity.quickvo.Constants;
@@ -755,9 +756,35 @@ public class DBHelper {
 	}
 
 	public static List<IndexModel> getIndexInfo(String tableName, String pkName) {
+		List result = new ArrayList();
+		List<IndexModel> uniqueIndexes = getIndexInfo(tableName, pkName, true);
+		Set<String> indexNames = new HashSet<>();
+		if (uniqueIndexes != null && !uniqueIndexes.isEmpty()) {
+			for (IndexModel indexModel : uniqueIndexes) {
+				if (!indexNames.contains(indexModel.getIndexName())) {
+					indexModel.setIsUnique(true);
+					result.add(indexModel);
+					indexNames.add(indexModel.getIndexName());
+				}
+			}
+		}
+		List<IndexModel> otherIndexes = getIndexInfo(tableName, pkName, false);
+		if (otherIndexes != null && !otherIndexes.isEmpty()) {
+			for (IndexModel indexModel : otherIndexes) {
+				if (!indexNames.contains(indexModel.getIndexName())) {
+					indexModel.setIsUnique(false);
+					result.add(indexModel);
+					indexNames.add(indexModel.getIndexName());
+				}
+			}
+		}
+		return result;
+	}
+
+	public static List<IndexModel> getIndexInfo(String tableName, String pkName, boolean isUnique) {
 		try {
 			ResultSet rs = conn.getMetaData().getIndexInfo(dbConfig.getCatalog(), dbConfig.getSchema(), tableName,
-					false, true);
+					isUnique, true);
 			List result = (List<IndexModel>) DBUtil.preparedStatementProcess(null, null, rs,
 					new PreparedStatementResultHandler() {
 						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
@@ -768,8 +795,8 @@ public class DBHelper {
 							String sortType;
 							while (rs.next()) {
 								indexName = rs.getString("INDEX_NAME");
-								if (indexName != null && !indexName.equalsIgnoreCase("PRIMARY")
-										&& (pkName != null && !indexName.equalsIgnoreCase(pkName))) {
+								if ((indexName != null && !indexName.equalsIgnoreCase("PRIMARY")) && (pkName == null
+										|| (pkName != null && !indexName.equalsIgnoreCase(pkName)))) {
 									columnName = rs.getString("COLUMN_NAME");
 									sortType = rs.getString("ASC_OR_DESC");
 									if (sortType != null) {

@@ -47,7 +47,10 @@ public class DBUtil {
 
 		// 9.5+ 开始
 		public final static String POSTGRESQL = "postgresql";
+		public final static String POSTGRESQL15 = "postgresql15";
 		public final static String GREENPLUM = "greenplum";
+		// 神通数据库
+		public final static String OSCAR = "oscar";
 
 		// 华为gaussdb(源于postgresql)未验证
 		public final static String GAUSSDB = "gaussdb";
@@ -67,7 +70,7 @@ public class DBUtil {
 		// 阿里 oceanbase(未验证)
 		public final static String OCEANBASE = "oceanbase";
 
-		// tidb(语法遵循mysql)未验证
+		// tidb(语法遵循mysql)
 		public final static String TIDB = "tidb";
 
 		// 达梦数据库(dm8验证)
@@ -75,10 +78,16 @@ public class DBUtil {
 
 		// 人大金仓数据库
 		public final static String KINGBASE = "kingbase";
-
-		// 以15.4为基准起始版(基本目前没有用户)
-		public final static String SYBASE_IQ = "sybase_iq";
 		public final static String IMPALA = "impala";
+		public final static String TDENGINE = "tdengine";
+
+		// h2
+		public final static String H2 = "h2";
+
+		// mogdb
+		public final static String MOGDB = "mogdb";
+		// 海量数据库(opengauss)
+		public final static String VASTBASE = "vastbase";
 
 		public final static String UNDEFINE = "UNDEFINE";
 	}
@@ -102,6 +111,7 @@ public class DBUtil {
 
 		// 默认9.5+版本
 		public final static int POSTGRESQL = 50;
+		public final static int POSTGRESQL15 = 51;
 
 		// clickhouse
 		public final static int CLICKHOUSE = 60;
@@ -121,9 +131,15 @@ public class DBUtil {
 		public final static int KINGBASE = 120;
 		public final static int MONGO = 130;
 		public final static int ES = 140;
+		public final static int TDENGINE = 150;
 		public final static int IMPALA = 160;
-		// 下面将逐步淘汰
-		public final static int SYBASE_IQ = 150;
+		// h2
+		public final static int H2 = 170;
+		public final static int OSCAR = 180;
+
+		// MOGDB 基于openGauss开发。
+		public final static int MOGDB = 190;
+		public final static int VASTBASE = 200;
 	}
 
 	public static HashMap<String, Integer> DBNameTypeMap = new HashMap<String, Integer>();
@@ -139,8 +155,11 @@ public class DBUtil {
 		DBNameTypeMap.put(Dialect.INNOSQL, DBType.MYSQL);
 
 		DBNameTypeMap.put(Dialect.POSTGRESQL, DBType.POSTGRESQL);
+		DBNameTypeMap.put(Dialect.POSTGRESQL15, DBType.POSTGRESQL15);
 		DBNameTypeMap.put(Dialect.GREENPLUM, DBType.POSTGRESQL);
 		DBNameTypeMap.put(Dialect.GAUSSDB, DBType.GAUSSDB);
+		// 20240702 增加对mogdb的支持
+		DBNameTypeMap.put(Dialect.MOGDB, DBType.MOGDB);
 
 		DBNameTypeMap.put(Dialect.MONGO, DBType.MONGO);
 		DBNameTypeMap.put(Dialect.ES, DBType.ES);
@@ -153,10 +172,13 @@ public class DBUtil {
 		DBNameTypeMap.put(Dialect.KINGBASE, DBType.KINGBASE);
 		// 2020-6-7 启动增加对tidb的支持
 		DBNameTypeMap.put(Dialect.TIDB, DBType.TIDB);
+		DBNameTypeMap.put(Dialect.TDENGINE, DBType.TDENGINE);
 		DBNameTypeMap.put(Dialect.IMPALA, DBType.IMPALA);
 		DBNameTypeMap.put(Dialect.UNDEFINE, DBType.UNDEFINE);
-		// 纳入将不再支持范围
-		DBNameTypeMap.put(Dialect.SYBASE_IQ, DBType.SYBASE_IQ);
+		// 20220829 增加对h2的支持
+		DBNameTypeMap.put(Dialect.H2, DBType.H2);
+		DBNameTypeMap.put(Dialect.OSCAR, DBType.OSCAR);
+		DBNameTypeMap.put(Dialect.VASTBASE, DBType.VASTBASE);
 	}
 
 	/**
@@ -166,75 +188,73 @@ public class DBUtil {
 	 * @throws SQLException
 	 */
 	public static String getCurrentDBDialect(final Connection conn) throws SQLException {
+		String dilectName = Dialect.UNDEFINE;
 		// 从hashMap中获取
 		if (null != conn) {
 			// 剔除空白
-			String dbDialect = conn.getMetaData().getDatabaseProductName().replaceAll("\\s*", "");
+			String dbDialect = conn.getMetaData().getDatabaseProductName().replaceAll("\\s+", "");
 			// oracle
 			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.ORACLE) != -1) {
-				return Dialect.ORACLE;
-			}
-			// mysql以及mysql的分支数据库
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.MYSQL) != -1
+				dilectName = Dialect.ORACLE;
+			} // mysql以及mysql的分支数据库
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.MYSQL) != -1
 					|| StringUtil.indexOfIgnoreCase(dbDialect, Dialect.MARIADB) != -1
 					|| StringUtil.indexOfIgnoreCase(dbDialect, Dialect.INNOSQL) != -1) {
-				return Dialect.MYSQL;
-			}
-			// postgresql
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.POSTGRESQL) != -1) {
-				return Dialect.POSTGRESQL;
-			}
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GREENPLUM) != -1) {
-				return Dialect.POSTGRESQL;
-			}
-			// sqlserver,只支持2012或以上版本
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SQLSERVER) != -1
+				dilectName = Dialect.MYSQL;
+			} // postgresql
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.POSTGRESQL) != -1) {
+				dilectName = Dialect.POSTGRESQL;
+			} // sqlserver,只支持2012或以上版本
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SQLSERVER) != -1
 					|| StringUtil.indexOfIgnoreCase(dbDialect, "mssql") != -1
 					|| StringUtil.indexOfIgnoreCase(dbDialect, "microsoftsqlserver") != -1) {
-				return Dialect.SQLSERVER;
-			}
-			// db2
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.DB2) != -1) {
-				return Dialect.DB2;
-			}
-			// clickhouse
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.CLICKHOUSE) != -1) {
-				return Dialect.CLICKHOUSE;
-			}
-			// OCEANBASE
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.OCEANBASE) != -1) {
-				return Dialect.OCEANBASE;
-			}
-			// GAUSSDB
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GAUSSDB) != -1) {
-				return Dialect.GAUSSDB;
-			}
-			// sqlite
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SQLITE) != -1) {
-				return Dialect.SQLITE;
+				dilectName = Dialect.SQLSERVER;
+			} // db2
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.DB2) != -1) {
+				dilectName = Dialect.DB2;
+			} // clickhouse
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.CLICKHOUSE) != -1) {
+				dilectName = Dialect.CLICKHOUSE;
+			} // OCEANBASE
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.OCEANBASE) != -1) {
+				dilectName = Dialect.OCEANBASE;
+			} // GAUSSDB
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GAUSSDB) != -1
+					|| "zenith".equalsIgnoreCase(dbDialect) || "opengauss".equalsIgnoreCase(dbDialect)) {
+				dilectName = Dialect.GAUSSDB;
+			} // MOGDB
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.MOGDB) != -1) {
+				dilectName = Dialect.MOGDB;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SQLITE) != -1) {
+				dilectName = Dialect.SQLITE;
 			} // dm
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.DM) != -1) {
-				return Dialect.DM;
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.DM) != -1) {
+				dilectName = Dialect.DM;
 			} // TIDB
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.TIDB) != -1) {
-				return Dialect.TIDB;
-			}
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.KINGBASE) != -1) {
-				return Dialect.KINGBASE;
-			}
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.IMPALA) != -1) {
-				return Dialect.IMPALA;
-			}
-
-			// sybase iq
-			if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SYBASE_IQ) != -1
-					|| StringUtil.indexOfIgnoreCase(dbDialect, "sybaseiq") != -1
-					|| (StringUtil.indexOfIgnoreCase(dbDialect, "sap") != -1
-							&& StringUtil.indexOfIgnoreCase(dbDialect, "iq") != -1)) {
-				return Dialect.SYBASE_IQ;
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.TIDB) != -1) {
+				dilectName = Dialect.TIDB;
+			} // 2022-12-14 验证
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.TDENGINE) != -1) {
+				dilectName = Dialect.TDENGINE;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.KINGBASE) != -1) {
+				dilectName = Dialect.KINGBASE;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GREENPLUM) != -1) {
+				dilectName = Dialect.POSTGRESQL;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.IMPALA) != -1) {
+				dilectName = Dialect.IMPALA;
+			} // elasticsearch
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.ES) != -1) {
+				dilectName = Dialect.ES;
+			} // 20220829 h2
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.H2) != -1) {
+				dilectName = Dialect.H2;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.OSCAR) != -1) {
+				dilectName = Dialect.OSCAR;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.VASTBASE) != -1) {
+				dilectName = Dialect.VASTBASE;
 			}
 		}
-		return Dialect.UNDEFINE;
+		return dilectName;
 	}
 
 	/**
@@ -268,63 +288,66 @@ public class DBUtil {
 		if (!DBNameTypeMap.containsKey(dbKey)) {
 			String dbDialect = getCurrentDBDialect(conn);
 			int dbType = DBType.UNDEFINE;
-			// oracle
+			// oracle12+
 			if (dbDialect.equals(Dialect.ORACLE)) {
 				dbType = DBType.ORACLE;
 				if (majorVersion <= 11) {
 					dbType = DBType.ORACLE11;
 				}
-			}
-			// mysql以及mysql的分支数据库
+			} else if (dbDialect.equals(Dialect.ORACLE11)) {
+				dbType = DBType.ORACLE11;
+			} // mysql以及mysql的分支数据库
 			else if (dbDialect.equals(Dialect.MYSQL)) {
 				dbType = DBType.MYSQL;
 				if (majorVersion <= 5) {
 					dbType = DBType.MYSQL57;
 				}
-			}
-			// 9.5以上为标准支持模式
+			} else if (dbDialect.equals(Dialect.MYSQL57)) {
+				dbType = DBType.MYSQL57;
+			} // 9.5以上为标准支持模式
 			else if (dbDialect.equals(Dialect.POSTGRESQL)) {
 				dbType = DBType.POSTGRESQL;
+				if (majorVersion >= 15) {
+					dbType = DBType.POSTGRESQL15;
+				}
+			} else if (dbDialect.equals(Dialect.POSTGRESQL15)) {
+				dbType = DBType.POSTGRESQL15;
 			} else if (dbDialect.equals(Dialect.GREENPLUM)) {
 				dbType = DBType.POSTGRESQL;
-			}
-			// sqlserver,只支持2012或以上版本
+			} // sqlserver,只支持2012或以上版本
 			else if (dbDialect.equals(Dialect.SQLSERVER)) {
-				// 2014+
 				dbType = DBType.SQLSERVER;
-			}
-			// db2 10+版本
+			} // db2 10+版本
 			else if (dbDialect.equals(Dialect.DB2)) {
 				dbType = DBType.DB2;
-			}
-			// CLICKHOUSE
-			else if (dbDialect.equals(Dialect.CLICKHOUSE)) {
+			} else if (dbDialect.equals(Dialect.CLICKHOUSE)) {
 				dbType = DBType.CLICKHOUSE;
-			}
-			// OCEANBASE
-			else if (dbDialect.equals(Dialect.OCEANBASE)) {
+			} else if (dbDialect.equals(Dialect.OCEANBASE)) {
 				dbType = DBType.OCEANBASE;
-			}
-			// GAUSSDB
-			else if (dbDialect.equals(Dialect.GAUSSDB)) {
+			} else if (dbDialect.equals(Dialect.GAUSSDB)) {
 				dbType = DBType.GAUSSDB;
-			}
-			// sqlite
-			else if (dbDialect.equals(Dialect.SQLITE)) {
+			} else if (dbDialect.equals(Dialect.MOGDB)) {
+				dbType = DBType.MOGDB;
+			} else if (dbDialect.equals(Dialect.SQLITE)) {
 				dbType = DBType.SQLITE;
-			} // dm
-			else if (dbDialect.equals(Dialect.DM)) {
+			} else if (dbDialect.equals(Dialect.DM)) {
 				dbType = DBType.DM;
-			} // TIDB
-			else if (dbDialect.equals(Dialect.TIDB)) {
+			} else if (dbDialect.equals(Dialect.TIDB)) {
 				dbType = DBType.TIDB;
-			} else if (dbDialect.equals(Dialect.KINGBASE)) {
-				dbType = DBType.KINGBASE;
-			} // sybase IQ
-			else if (dbDialect.equals(Dialect.SYBASE_IQ)) {
-				dbType = DBType.SYBASE_IQ;
 			} else if (dbDialect.equals(Dialect.IMPALA)) {
 				dbType = DBType.IMPALA;
+			} else if (dbDialect.equals(Dialect.TDENGINE)) {
+				dbType = DBType.TDENGINE;
+			} else if (dbDialect.equals(Dialect.KINGBASE)) {
+				dbType = DBType.KINGBASE;
+			} else if (dbDialect.equals(Dialect.ES)) {
+				dbType = DBType.ES;
+			} else if (dbDialect.equals(Dialect.H2)) {
+				dbType = DBType.H2;
+			} else if (dbDialect.equals(Dialect.OSCAR)) {
+				dbType = DBType.OSCAR;
+			} else if (dbDialect.equals(Dialect.VASTBASE)) {
+				dbType = DBType.VASTBASE;
 			}
 			DBNameTypeMap.put(dbKey, dbType);
 		}
@@ -363,5 +386,4 @@ public class DBUtil {
 		}
 		return preparedStatementResultHandler.getResult();
 	}
-
 }

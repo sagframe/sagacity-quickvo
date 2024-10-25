@@ -27,6 +27,11 @@ public class LoggerUtil {
 					baseDir = System.getProperty("user.dir");
 				}
 				Handler handler = new FileHandler(FileUtil.linkPath(baseDir, "quickvo.log"));
+				String encoding = System.getProperty("logger.file.encoding");
+				if (encoding == null) {
+					encoding = Constants.LOG_FILE_ENCODING;
+				}
+				handler.setEncoding(encoding == null ? "UTF-8" : encoding);
 				handler.setFormatter(new SimpleFormatter());
 				logger.addHandler(handler);
 			} catch (Exception e) {
