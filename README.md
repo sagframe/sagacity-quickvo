@@ -43,13 +43,17 @@ mvn quickvo:quickvo
 * 在tools/quickvo 目录下面，配置quickvo.xml 设置相关任务信息，点击quickvo.bat 生成POJO
 * 参照下面的例子：注意根据项目实际情况决定是否要严格分entity和dto(vo)两层
 
+# quickvo.xml 的配置说明
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <quickvo xmlns="http://www.sagframe.com/schema/quickvo"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.sagframe.com/schema/quickvo http://www.sagframe.com/schema/sqltoy/quickvo.xsd">
-	<!-- db配置文件 -->
-	<property file="db.properties" />
+	<!-- 下面两行是强调数据库的关键属性不一定要用 file="db.properties" 方式来引入 -->
+        <!--<property name="jdbc.username" value="mydb" />-->
+        <!--<property name="jdbc.password" value="mydbPassword" />-->
+        <!-- db配置文件,也可以是application.yml 文件 -->
+	<property file="src/resources/application.properties" />
 	<property name="project.version" value="1.0.0" />
 	<property name="project.name" value="sqltoy-strict" />
 	<property name="project.package" value="com.strict.modules" />
