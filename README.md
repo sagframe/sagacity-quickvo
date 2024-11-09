@@ -28,10 +28,6 @@
 	<property name="include.schema" value="false" />
 	<!-- set method 是否支持返回对象自身(默认是true),即: public VO setName(String name){this.name=name;return this;} -->
 	<property name="field.support.linked.set" value="false" />
-	<!-- 是否在抽象类中生成SelectFieldImpl内部类,默认值为false	-->
-	<property name="generate.selectFields.class" value="false" />
-	<!-- 定义公共字段属性 -->	
-	<property name="commonFields" value="createBy,createTime,updateBy,updateTime"/>
 	<!-- 演示自定义类似swagger api文档注释实现,配合task定义中的api-doc="custom" 使用
 	     当然这里是演示，正常task中的api-doc 有swagger-v3、swagger-v2默认选项
 	 -->
