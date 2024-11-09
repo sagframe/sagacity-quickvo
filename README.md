@@ -9,7 +9,35 @@
 </dependency>
 
 ```
-# 使用方式
+# maven插件使用方式
+sqltoy quickvo maven插件，最新版本：1.0.1
+* 在pom.xml 中加入quickvo的插件
+* 在项目根路径下编写mvn-quickvo.bat,便于快速执行
+```properties
+mvn quickvo:quickvo
+```
+
+```xml
+<plugins>
+    <plugin>
+        <groupId>com.sagframe</groupId>
+        <artifactId>quickvo-maven-plugin</artifactId>
+        <version>1.0.1</version>
+        <configuration>
+            <configFile>/src/main/resources/quickvo.xml</configFile>
+            <baseDir>${project.basedir}</baseDir>
+        </configuration>
+        <dependencies>
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>8.4.0</version>
+            </dependency>
+        </dependencies>
+    </plugin>
+</plugins>
+```
+# 工具类模式使用方式
 * 请参见 https://github.com/sagframe/sqltoy-quickstart
 
 * 在tools/quickvo 目录下面，配置quickvo.xml 设置相关任务信息，点击quickvo.bat 生成POJO
