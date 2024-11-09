@@ -9,7 +9,7 @@
 </dependency>
 
 ```
-# maven插件使用方式
+# maven插件使用方式(内嵌了quickvo)
 sqltoy quickvo maven插件，最新版本：1.0.1
 * 在pom.xml 中加入quickvo的插件
 * 在项目根路径下编写mvn-quickvo.bat,便于快速执行
