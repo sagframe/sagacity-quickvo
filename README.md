@@ -1,4 +1,4 @@
-<img width="772" alt="企业微信截图_17315011245570" src="https://github.com/user-attachments/assets/2c79c9b9-be15-42aa-9cda-848fe100ca62"># sagacity-quickvo 是sqltoy-orm配套的POJO生成工具
+# sagacity-quickvo 是sqltoy-orm配套的POJO生成工具
 # 当前版本
 ```xml
 <!-- https://mvnrepository.com/artifact/com.sagframe/sqltoy-quickvo -->
