@@ -1,4 +1,4 @@
-# sagacity-quickvo 是sqltoy-orm配套的POJO生成工具
+<img width="772" alt="企业微信截图_17315011245570" src="https://github.com/user-attachments/assets/2c79c9b9-be15-42aa-9cda-848fe100ca62"># sagacity-quickvo 是sqltoy-orm配套的POJO生成工具
 # 当前版本
 ```xml
 <!-- https://mvnrepository.com/artifact/com.sagframe/sqltoy-quickvo -->
@@ -10,7 +10,7 @@
 
 ```
 # maven插件使用方式(内嵌了quickvo)
-sqltoy quickvo maven插件，最新版本：1.0.1
+sqltoy quickvo maven插件，最新版本：1.0.2
 * 在pom.xml 中加入quickvo的插件
 * 在项目根路径下编写mvn-quickvo.bat,便于快速执行
 ```properties
@@ -22,7 +22,7 @@ mvn quickvo:quickvo
     <plugin>
         <groupId>com.sagframe</groupId>
         <artifactId>quickvo-maven-plugin</artifactId>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <configuration>
             <configFile>/src/main/resources/quickvo.xml</configFile>
             <baseDir>${project.basedir}</baseDir>
@@ -75,11 +75,11 @@ mvn quickvo:quickvo
 	</api-doc>
 	<!-- schema 对照关系:mysql 对应 db 名称; oracle 对应 用户名称，如出现字段重复等情况，请结合schema和catalog进行配置过滤 -->
 	<!-- 注意:当在多schema或tablespace场景下,在POJO中会出现重复字段，是因为schema和catalog 配置不正确，没有完成隔离 -->
-	<datasource name="strict" url="${db.url}" driver="${db.driver_class}" 
+	<datasource name="dataSource" url="${db.url}" driver="${db.driver_class}" 
 		schema="${db.schema}" catalog="${db.schema}" username="${db.username}" password="${db.password}" />
 	
-	<tasks dist="../../src/main/java" encoding="UTF-8">
-		<task active="true" author="zhongxuchen" include="^SAG_\w+" datasource="strict" api-doc="swagger-v3|swagger-v2|custom|false">
+	<tasks dist="src/main/java" encoding="UTF-8">
+		<task active="true" author="zhongxuchen" include="^SAG_\w+" datasource="dataSource" api-doc="swagger-v3|swagger-v2|custom|false">
 		    <!-- 
                      entity 配置中存在has-abstract:默认为true,可以设置为false表示pojo不需要抽象类，
 		     可以设置extends="package.parentClass"指定父类 
