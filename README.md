@@ -10,7 +10,7 @@
 
 ```
 # maven插件使用方式(内嵌了quickvo)
-sqltoy quickvo maven插件，最新版本：1.0.2
+sqltoy quickvo maven插件，最新版本：1.0.13
 * 在pom.xml 中加入quickvo的插件
 * 在项目根路径下编写mvn-quickvo.bat,便于快速执行
 ```properties
@@ -22,7 +22,7 @@ mvn quickvo:quickvo
     <plugin>
         <groupId>com.sagframe</groupId>
         <artifactId>quickvo-maven-plugin</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.13</version>
         <configuration>
             <configFile>/src/main/resources/quickvo.xml</configFile>
             <baseDir>${project.basedir}</baseDir>
