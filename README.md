@@ -22,7 +22,7 @@ mvn quickvo:quickvo
     <plugin>
         <groupId>com.sagframe</groupId>
         <artifactId>quickvo-maven-plugin</artifactId>
-        <version>1.0.13</version>
+        <version>1.0.14</version>
         <configuration>
             <configFile>/src/main/resources/quickvo.xml</configFile>
             <baseDir>${project.basedir}</baseDir>
