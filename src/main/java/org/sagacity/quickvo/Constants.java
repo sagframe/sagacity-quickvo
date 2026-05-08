@@ -106,6 +106,11 @@ public class Constants implements Serializable {
 	 */
 	public static String[][] getJdbcTypeMapping(int dbType) {
 		switch (dbType) {
+		case DBType.POSTGRESQL15:
+		case DBType.OPENGAUSS:
+		case DBType.MOGDB:
+		case DBType.VASTBASE:
+		case DBType.STARDB:
 		case DBType.POSTGRESQL:
 		case DBType.GAUSSDB: {
 			return PostgresConstants.jdbcTypeMapping;
@@ -298,6 +303,11 @@ public class Constants implements Serializable {
 		}
 		String[][] jdbcArray = null;
 		switch (dbType) {
+		case DBType.POSTGRESQL15:
+		case DBType.OPENGAUSS:
+		case DBType.MOGDB:
+		case DBType.VASTBASE:
+		case DBType.STARDB:
 		case DBType.POSTGRESQL:
 		case DBType.GAUSSDB: {
 			jdbcArray = PostgresConstants.jdbcAry;

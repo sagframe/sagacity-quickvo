@@ -59,6 +59,7 @@ import ${quickVO.entityExtends};
 <#if (quickVO.projectName?exists)> * @project ${quickVO.projectName}</#if>
 <#if (quickVO.author?exists)> * @author ${quickVO.author}</#if>
 <#if (quickVO.version?exists)> * @version ${quickVO.version}</#if>
+<#if (quickVO.hasVoEntity==true)>* @description ${quickVO.tableRemark!""}</#if>
  */
 <#if (quickVO.hasVoEntity==false)>
 <#if (quickVO.apiDoc=="swagger-v2")>
@@ -102,8 +103,13 @@ public class ${quickVO.entityName} implements Serializable {
 	${column.apiDocContent}
 	</#if>
 	</#if>
+	<#if (quickVO.hasVoEntity==true)>
+	/**
+	 * ${column.colRemark!""}
+	 */
+	</#if>
 	<#if (column.pkFlag?exists && column.pkFlag=='1')>
-	@Id<#if (column.businessIdConfig?exists)><#else><#if (quickVO.singlePk=='1')>(strategy="${column.strategy}"<#if (column.sequence?exists && column.sequence!='')>,sequence="${column.sequence}"</#if><#if (column.generator?exists && column.generator!='')>,generator="${column.generator}"</#if>)</#if></#if>
+	@Id<#if (column.businessIdConfig?exists)><#else><#if (quickVO.singlePk=='1')>(strategy="${column.strategy}"<#if (column.sequence?exists && column.sequence!='')>,sequence="${column.sequence}"</#if><#if (column.generator?exists && column.generator!='')>,generator="${column.generator}"</#if><#if (column.assistPartition==true)>,isAssist = true</#if>)</#if></#if>
 	</#if>
 	<#if (column.businessIdConfig?exists)>
 	<#assign businessId=column.businessIdConfig/>
@@ -115,7 +121,7 @@ public class ${quickVO.entityName} implements Serializable {
 	<#if (column.fkRefTableName?exists)>
 	@Foreign(table="${column.fkRefTableName}",field="${column.fkRefTableColName}",deleteRestict=${column.deleteRestict},updateRestict=${column.updateRestict}<#if (column.fkName?exists)>,constraintName="${column.fkName}"</#if>)
 	</#if>
-	@Column(name="${column.colName}",comment="${column.colRemark!""}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.scale?exists && column.scale>0)>,scale=${column.scale?c}</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nativeType="${column.colType!""}",nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if>)
+	@Column(name="${column.colName}",comment="${column.colRemark!""}"<#if (column.precision?exists)>,length=${column.precision?c}L</#if><#if (column.scale?exists && column.scale>0)>,scale=${column.scale?c}</#if><#if (column.defaultValue?exists)>,defaultValue="${column.defaultValue}"</#if>,type=<#if (column.dataType?matches("\\d+"))==false>java.sql.Types.</#if><#if (column.dataType?upper_case=='INT')>INTEGER<#else>${column.dataType?upper_case}</#if>,nativeType="${column.colType!""}",nullable=<#if (column.nullable=='0')>false<#else>true</#if><#if column.autoIncrement=='true'>,autoIncrement=true</#if><#if column.generatedType==1>,generatedType = GeneratedType.VIRTUAL</#if><#if column.generatedType==2>,generatedType = GeneratedType.STORED</#if>)
 	private ${column.resultType} ${column.colJavaName?uncap_first};
 </#if>
 </#list>

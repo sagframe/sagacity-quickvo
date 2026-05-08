@@ -5,14 +5,15 @@
 	<groupId>com.sagframe</groupId>
 	<name>sqltoy-quickvo</name>
 	<artifactId>sqltoy-quickvo</artifactId>
-	<version>5.2.4</version>
+	<version>5.2.6</version>
 	<description>sqltoy vo generate tools</description>
 	<url>https://github.com/sagframe/sagacity-sqltoy</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<freemarker.version>2.3.32</freemarker.version>
-		<jackson-dataformat.version>2.18.0</jackson-dataformat.version>
+		<freemarker.version>2.3.34</freemarker.version>
+		<jackson-dataformat.version>2.21.3</jackson-dataformat.version>
 		<!--<mysql.version>8.0.33</mysql.version>-->
+		<!--<postgresql.version>42.7.5</postgresql.version>-->
 	</properties>
 	<licenses>
 		<license>
@@ -85,13 +86,11 @@
 			<artifactId>mysql-connector-j</artifactId>
 			<version>${mysql.version}</version>
 		</dependency>-->
-		<!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
 		<!--<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.7.3</version>
+			<version>${postgresql.version}</version>
 		</dependency>-->
-
 	</dependencies>
 	<build>
 		<finalName>sqltoy-quickvo-${project.version}</finalName>
@@ -215,14 +214,14 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.sonatype.plugins</groupId>
-				<artifactId>nexus-staging-maven-plugin</artifactId>
-				<version>1.6.12</version>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.8.0</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>sonatype-nexus-staging</serverId>
-					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+					<publishingServerId>central</publishingServerId>
+					<autoPublish>true</autoPublish>
+					<waitUntil>published</waitUntil>
 				</configuration>
 			</plugin>
 		</plugins>

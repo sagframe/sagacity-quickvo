@@ -8,7 +8,6 @@ import java.util.Date;
 /**
  * @TODO 提供quickvo的一些工具类
  * @author zhongxuchen
- *
  */
 public class CommonUtils {
 	/**

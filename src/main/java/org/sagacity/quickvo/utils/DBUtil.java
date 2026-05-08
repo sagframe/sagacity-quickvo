@@ -88,7 +88,8 @@ public class DBUtil {
 		public final static String MOGDB = "mogdb";
 		// 海量数据库(opengauss)
 		public final static String VASTBASE = "vastbase";
-
+		public final static String OPENGAUSS = "opengauss";
+		public final static String STARDB = "stardb";
 		public final static String UNDEFINE = "UNDEFINE";
 	}
 
@@ -140,6 +141,8 @@ public class DBUtil {
 		// MOGDB 基于openGauss开发。
 		public final static int MOGDB = 190;
 		public final static int VASTBASE = 200;
+		public final static int OPENGAUSS = 210;
+		public final static int STARDB = 220;
 	}
 
 	public static HashMap<String, Integer> DBNameTypeMap = new HashMap<String, Integer>();
@@ -160,7 +163,8 @@ public class DBUtil {
 		DBNameTypeMap.put(Dialect.GAUSSDB, DBType.GAUSSDB);
 		// 20240702 增加对mogdb的支持
 		DBNameTypeMap.put(Dialect.MOGDB, DBType.MOGDB);
-
+		DBNameTypeMap.put(Dialect.OPENGAUSS, DBType.OPENGAUSS);
+		DBNameTypeMap.put(Dialect.STARDB, DBType.STARDB);
 		DBNameTypeMap.put(Dialect.MONGO, DBType.MONGO);
 		DBNameTypeMap.put(Dialect.ES, DBType.ES);
 		DBNameTypeMap.put(Dialect.SQLITE, DBType.SQLITE);
@@ -218,13 +222,19 @@ public class DBUtil {
 			} // OCEANBASE
 			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.OCEANBASE) != -1) {
 				dilectName = Dialect.OCEANBASE;
-			} // GAUSSDB
+			} // opengauss
+			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.OPENGAUSS) != -1) {
+				dilectName = Dialect.OPENGAUSS;
+			}
+			// GAUSSDB
 			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.GAUSSDB) != -1
-					|| "zenith".equalsIgnoreCase(dbDialect) || "opengauss".equalsIgnoreCase(dbDialect)) {
+					|| "zenith".equalsIgnoreCase(dbDialect)) {
 				dilectName = Dialect.GAUSSDB;
 			} // MOGDB
 			else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.MOGDB) != -1) {
 				dilectName = Dialect.MOGDB;
+			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.STARDB) != -1) {
+				dilectName = Dialect.STARDB;
 			} else if (StringUtil.indexOfIgnoreCase(dbDialect, Dialect.SQLITE) != -1) {
 				dilectName = Dialect.SQLITE;
 			} // dm
@@ -283,7 +293,7 @@ public class DBUtil {
 	public static int getDbType(final Connection conn) throws SQLException {
 		// 从hashMap中获取
 		String productName = conn.getMetaData().getDatabaseProductName();
-		int majorVersion = getCurrentDBVersion(conn);
+		int majorVersion = conn.getMetaData().getDatabaseMajorVersion();
 		String dbKey = productName + majorVersion;
 		if (!DBNameTypeMap.containsKey(dbKey)) {
 			String dbDialect = getCurrentDBDialect(conn);
@@ -324,10 +334,14 @@ public class DBUtil {
 				dbType = DBType.CLICKHOUSE;
 			} else if (dbDialect.equals(Dialect.OCEANBASE)) {
 				dbType = DBType.OCEANBASE;
+			} else if (dbDialect.equals(Dialect.OPENGAUSS)) {
+				dbType = DBType.OPENGAUSS;
 			} else if (dbDialect.equals(Dialect.GAUSSDB)) {
 				dbType = DBType.GAUSSDB;
 			} else if (dbDialect.equals(Dialect.MOGDB)) {
 				dbType = DBType.MOGDB;
+			} else if (dbDialect.equals(Dialect.STARDB)) {
+				dbType = DBType.STARDB;
 			} else if (dbDialect.equals(Dialect.SQLITE)) {
 				dbType = DBType.SQLITE;
 			} else if (dbDialect.equals(Dialect.DM)) {

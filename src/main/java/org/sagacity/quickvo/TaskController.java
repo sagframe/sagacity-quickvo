@@ -137,7 +137,12 @@ public class TaskController {
 				logger.info("数据库:[" + quickModel.getDataSource() + "]连接异常,请确认你的数据库配置信息或者数据库环境!");
 			} else {
 				logger.info("开始执行第:{" + i + "} 个任务,includes=:" + quickModel.getIncludeTables());
-				createTask(quickModel, isLinkSet, generateFieldsClass);
+				try {
+					createTask(quickModel, isLinkSet, generateFieldsClass);
+				} catch (Exception e) {
+					e.printStackTrace();
+					logger.info(e.getMessage());
+				}
 				// 销毁数据库连接
 				DBHelper.close();
 			}
@@ -156,19 +161,21 @@ public class TaskController {
 		String[] includes = null;
 		boolean skipPkConstraint = Constants.getSkipPkConstraint();
 		if (quickModel.getIncludeTables() != null) {
-			includes = new String[] { "(?i)".concat(quickModel.getIncludeTables()) };
+			includes = new String[] { quickModel.getIncludeTables().startsWith("(?i)") ? quickModel.getIncludeTables()
+					: "(?i)".concat(quickModel.getIncludeTables()) };
 		}
 		int dbType = DBHelper.getDBType();
 		String dialect = DBHelper.getDBDialect();
 		// (?i)忽略大小写
 		List tables = DBHelper.getTableAndView(includes, quickModel.getExcludeTables() == null ? null
-				: new String[] { "(?i)".concat(quickModel.getExcludeTables()) });
+				: new String[] { quickModel.getExcludeTables().startsWith("(?i)") ? quickModel.getExcludeTables()
+						: "(?i)".concat(quickModel.getExcludeTables()) });
 		if (tables == null || tables.isEmpty()) {
 			logger.info("/*--------没有取到匹配的表，错误原因提示,请严重关注!-------------------------------*/\n"
 					+ "/*-1、请检查task配置中的: include=\"" + quickModel.getIncludeTables() + "\"是否正确!这是用来表名匹配的正则表达式!\n"
-					+ "/*-2、请检查datasource配置,关注schema、catalog属性配置是否正确、或者大小写,其核心原理:conn.getMetaData().getTables(catalog, schema,*, TABLE);\n"
-					+ "/* -------友情提示:datasoure中是可以包含: schema=''和 catalog='' 属性的，请灵活应用! ----------- \n"
-					+ "/*---------------------------------------------------*/");
+					+ "/*-2、请检查datasource配置,关注schema、catalog属性配置是否正确,如大小写;其核心原理:conn.getMetaData().getTables(catalog, schema,tableNamePattern, TABLE);\n"
+					+ "/*-3、严重注意:灵活配置schema、catalog的理解:1)不配置schema、catalog属性;2)只配置schema或只配置catalog;3)同时配置schema、catalog属性;\n"
+					+ "/*--------------------------------------------------------------------------------*/");
 			return;
 		}
 		logger.info("当前任务共取出:" + tables.size() + " 张表或视图!");
@@ -233,18 +240,15 @@ public class TaskController {
 			quickVO.setDateTime(CommonUtils.formatDate(CommonUtils.getNowTime(), "yyyy-MM-dd HH:mm:ss"));
 			quickVO.setTableName(tableName);
 			quickVO.setType(tableMeta.getTableType());
-
-			if (quickVO.getIndexModels() != null && !quickVO.getIndexModels().isEmpty()) {
-				logger.info("表:" + tableName + " 存在索引!");
-			}
+			// 包含schema
 			if (includeSchema) {
 				quickVO.setSchema(tableMeta.getSchema());
 			}
 			// 针对sqlserver
 			if (StringUtil.isBlank(tableMeta.getTableRemark())) {
-				quickVO.setTableRemark(DBHelper.getTableRemark(tableName));
+				quickVO.setTableRemark(StringUtil.escapeComment(DBHelper.getTableRemark(tableName)));
 			} else {
-				quickVO.setTableRemark(tableMeta.getTableRemark());
+				quickVO.setTableRemark(StringUtil.escapeComment(tableMeta.getTableRemark()));
 			}
 			quickVO.setEntityPackage(quickModel.getEntityPackage());
 			// 截取VO前面的模块标识名称(一般数据库表名前缀为特定的模块名称)
@@ -287,6 +291,8 @@ public class TaskController {
 			// 表
 			if (isTable) {
 				pks = DBHelper.getTablePrimaryKeys(tableName);
+				setPk(colList, pks);
+
 				// 主键字段长度等于表字段长度，设置所有字段为主键标志为1
 				if (pks.size() == colList.size()) {
 					quickVO.setPkIsAllColumn("1");
@@ -294,8 +300,11 @@ public class TaskController {
 				if (pks != null && notNullCnt == pks.size()) {
 					quickVO.setPkSizeEqualNotNullSize("1");
 				}
+				int realPKCnt = processPartitionAndPk(colList);
+				// 表示存在分区字段也是主键的场景
+				boolean filterAssistPK = pks.size() > realPKCnt;
 				// 单主键
-				if (pks.size() == 1) {
+				if (realPKCnt == 1 || pks.size() == 1) {
 					quickVO.setSinglePk("1");
 				}
 				// 无主键
@@ -307,7 +316,6 @@ public class TaskController {
 					if (!skipPkConstraint) {
 						quickVO.setPkConstraint(DBHelper.getTablePKConstraint(tableName));
 					}
-					String pkCol;
 					QuickColMeta quickColMeta;
 					List pkList = new ArrayList();
 					for (int m = 0; m < colList.size(); m++) {
@@ -322,137 +330,139 @@ public class TaskController {
 							}
 						}
 					}
-					for (int y = 0; y < pks.size(); y++) {
-						pkCol = (String) pks.get(y);
-						for (int m = 0; m < colList.size(); m++) {
-							quickColMeta = (QuickColMeta) colList.get(m);
-							// 是主键
-							if (pkCol.equalsIgnoreCase(quickColMeta.getColName())) {
-								quickColMeta.setPkFlag("1");
-								int pksSize = pks.size();
-								boolean isIdentity = (pksSize == 1
-										&& quickColMeta.getAutoIncrement().equalsIgnoreCase("true")) ? true : false;
-								String strategy;
-								String sequence;
-								String generator;
-								if (pksSize == 1 && primaryKeyStrategy != null) {
-									strategy = primaryKeyStrategy.getStrategy();
-									if (!primaryKeyStrategy.isForce() && isIdentity) {
-										quickColMeta.setStrategy("identity");
-									} else {
-										sequence = primaryKeyStrategy.getSequence();
-										generator = primaryKeyStrategy.getGenerator();
-										if (strategy.equalsIgnoreCase("assign")
-												|| strategy.equalsIgnoreCase("generator")
-												|| strategy.equalsIgnoreCase("identity")
-												|| strategy.equalsIgnoreCase("sequence")) {
-											quickColMeta.setStrategy(strategy);
-											if (strategy.equalsIgnoreCase("sequence")) {
-												if (StringUtil.isBlank(sequence)) {
-													throw new Exception("please give a sequence for" + tableName
-															+ " where primary key strategy is sequence!");
-												}
-												// 支持sequence命名以seq_${tableName} 跟表名有规则相关模式
-												quickColMeta.setSequence(sequence
-														.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
-											}
-											if (strategy.equalsIgnoreCase("generator")) {
-												if (StringUtil.isNotBlank(generator)) {
-													quickColMeta.setGenerator(generator);
-												}
-												// 设置default generator
-												if (StringUtil.isBlank(generator)
-														|| generator.equalsIgnoreCase("default")) {
-													quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
-												}
-												// uuid
-												else if (generator.equalsIgnoreCase("UUID")) {
-													quickColMeta.setGenerator(Constants.PK_UUID_GENERATOR);
-												}
-												// 雪花算法
-												else if (generator.equalsIgnoreCase("snowflake")) {
-													quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
-												}
-												// 纳秒
-												else if (generator.equalsIgnoreCase("nanotime")) {
-													quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
-												}
-												// 基于redis的主键策略
-												else if (generator.equalsIgnoreCase("redis")) {
-													quickColMeta.setGenerator(Constants.PK_REDIS_ID_GENERATOR);
-												}
-											}
-										} else {
-											throw new Exception("please check primaryKey Strategy for table of "
-													+ tableName + ",must like:sequence、assign、generator、identity");
-										}
-									}
-								} else if (isIdentity) {
+					// 主键策略匹配
+					boolean isRealPK;
+					for (int m = 0; m < colList.size(); m++) {
+						quickColMeta = (QuickColMeta) colList.get(m);
+						isRealPK = false;
+						if (!filterAssistPK) {
+							isRealPK = quickColMeta.isPrimaryKey();
+						} else {
+							isRealPK = quickColMeta.isPrimaryKey() && !quickColMeta.isAssistPartition();
+						}
+						// 是主键
+						if (isRealPK) {
+							int pksSize = pks.size();
+							boolean isIdentity = (pksSize == 1
+									&& quickColMeta.getAutoIncrement().equalsIgnoreCase("true")) ? true : false;
+							String strategy;
+							String sequence;
+							String generator;
+							if (pksSize == 1 && primaryKeyStrategy != null) {
+								strategy = primaryKeyStrategy.getStrategy();
+								if (!primaryKeyStrategy.isForce() && isIdentity) {
 									quickColMeta.setStrategy("identity");
-								} else if (pksSize == 1) {
-									if ("varchar".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "char".equalsIgnoreCase(quickColMeta.getDataType())) {
-										// 16位默认为雪花算法
-										if (quickColMeta.getPrecision() >= 16) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
+								} else {
+									sequence = primaryKeyStrategy.getSequence();
+									generator = primaryKeyStrategy.getGenerator();
+									if (strategy.equalsIgnoreCase("assign") || strategy.equalsIgnoreCase("generator")
+											|| strategy.equalsIgnoreCase("identity")
+											|| strategy.equalsIgnoreCase("sequence")) {
+										quickColMeta.setStrategy(strategy);
+										if (strategy.equalsIgnoreCase("sequence")) {
+											if (StringUtil.isBlank(sequence)) {
+												throw new Exception("please give a sequence for" + tableName
+														+ " where primary key strategy is sequence!");
+											}
+											// 支持sequence命名以seq_${tableName} 跟表名有规则相关模式
+											quickColMeta.setSequence(sequence
+													.replaceFirst("(?i)\\$?\\{\\s*tableName\\s*\\}", tableName));
 										}
-										// 22位纳秒算法
-										if (quickColMeta.getPrecision() >= 22) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
+										if (strategy.equalsIgnoreCase("generator")) {
+											if (StringUtil.isNotBlank(generator)) {
+												quickColMeta.setGenerator(generator);
+											}
+											// 设置default generator
+											if (StringUtil.isBlank(generator)
+													|| generator.equalsIgnoreCase("default")) {
+												quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
+											}
+											// uuid
+											else if (generator.equalsIgnoreCase("UUID")) {
+												quickColMeta.setGenerator(Constants.PK_UUID_GENERATOR);
+											}
+											// 雪花算法
+											else if (generator.equalsIgnoreCase("snowflake")) {
+												quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
+											}
+											// 纳秒
+											else if (generator.equalsIgnoreCase("nanotime")) {
+												quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
+											}
+											// 基于redis的主键策略
+											else if (generator.equalsIgnoreCase("redis")) {
+												quickColMeta.setGenerator(Constants.PK_REDIS_ID_GENERATOR);
+											}
 										}
-										// 26位纳秒算法
-										if (quickColMeta.getPrecision() >= 26) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
-										}
-									} else if ("long".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "integer".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "decimal".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "number".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "NUMERIC".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "BIGINT".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "BIGINTEGER".equalsIgnoreCase(quickColMeta.getDataType())
-											|| "BIGDECIMAL".equalsIgnoreCase(quickColMeta.getDataType())) {
-										if (quickColMeta.getPrecision() >= 16) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
-										}
-										if (quickColMeta.getPrecision() >= 22) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
-										}
-										if (quickColMeta.getPrecision() >= 26) {
-											quickColMeta.setStrategy("generator");
-											quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
-										}
+									} else {
+										throw new Exception("please check primaryKey Strategy for table of " + tableName
+												+ ",must like:sequence、assign、generator、identity");
 									}
 								}
-								// 当主键是雪花算法、默认的22位、26位数字类型，将java类型改成BigInteger类型
-								String generate = (quickColMeta.getGenerator() == null) ? ""
-										: quickColMeta.getGenerator();
-								String resultType = (quickColMeta.getResultType() == null) ? ""
-										: quickColMeta.getResultType().toLowerCase();
-								// 雪花算法非法类型统一转BigInteger
-								if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR) && (resultType.equals("int")
-										|| resultType.equals("integer") || resultType.equals("short"))) {
-									quickColMeta.setResultType("BigInteger");
-									if (!impList.contains("java.math.BigInteger")) {
-										impList.add("java.math.BigInteger");
+							} else if (isIdentity) {
+								quickColMeta.setStrategy("identity");
+							} else if (pksSize == 1) {
+								if ("varchar".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "char".equalsIgnoreCase(quickColMeta.getDataType())) {
+									// 16位默认为雪花算法
+									if (quickColMeta.getPrecision() >= 16) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
 									}
-								} else if ((generate.equals(Constants.PK_DEFAULT_GENERATOR)
-										|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR))
-										&& (resultType.equals("int") || resultType.equals("integer")
-												|| resultType.equals("short") || resultType.equals("long"))) {
-									quickColMeta.setResultType("BigInteger");
-									if (!impList.contains("java.math.BigInteger")) {
-										impList.add("java.math.BigInteger");
+									// 22位纳秒算法
+									if (quickColMeta.getPrecision() >= 22) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
+									}
+									// 26位纳秒算法
+									if (quickColMeta.getPrecision() >= 26) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
+									}
+								} else if ("long".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "integer".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "decimal".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "number".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "NUMERIC".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "BIGINT".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "BIGINTEGER".equalsIgnoreCase(quickColMeta.getDataType())
+										|| "BIGDECIMAL".equalsIgnoreCase(quickColMeta.getDataType())) {
+									if (quickColMeta.getPrecision() >= 16) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_SNOWFLAKE_GENERATOR);
+									}
+									if (quickColMeta.getPrecision() >= 22) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_DEFAULT_GENERATOR);
+									}
+									if (quickColMeta.getPrecision() >= 26) {
+										quickColMeta.setStrategy("generator");
+										quickColMeta.setGenerator(Constants.PK_NANOTIME_ID_GENERATOR);
 									}
 								}
-								pkList.add(quickColMeta);
-								break;
 							}
+							// 当主键是雪花算法、默认的22位、26位数字类型，将java类型改成BigInteger类型
+							String generate = (quickColMeta.getGenerator() == null) ? "" : quickColMeta.getGenerator();
+							String resultType = (quickColMeta.getResultType() == null) ? ""
+									: quickColMeta.getResultType().toLowerCase();
+							// 雪花算法非法类型统一转BigInteger
+							if (generate.equals(Constants.PK_SNOWFLAKE_GENERATOR) && (resultType.equals("int")
+									|| resultType.equals("integer") || resultType.equals("short"))) {
+								quickColMeta.setResultType("BigInteger");
+								if (!impList.contains("java.math.BigInteger")) {
+									impList.add("java.math.BigInteger");
+								}
+							} else if ((generate.equals(Constants.PK_DEFAULT_GENERATOR)
+									|| generate.equals(Constants.PK_NANOTIME_ID_GENERATOR))
+									&& (resultType.equals("int") || resultType.equals("integer")
+											|| resultType.equals("short") || resultType.equals("long"))) {
+								quickColMeta.setResultType("BigInteger");
+								if (!impList.contains("java.math.BigInteger")) {
+									impList.add("java.math.BigInteger");
+								}
+							}
+							pkList.add(quickColMeta);
+							break;
 						}
 					}
 					if (pkList.size() > 1) {
@@ -586,6 +596,48 @@ public class TaskController {
 		}
 	}
 
+	private static void setPk(List<QuickColMeta> colList, List<String> pkList) {
+		if (pkList == null || pkList.isEmpty()) {
+			return;
+		}
+		for (QuickColMeta colMeta : colList) {
+			for (String pkCol : pkList) {
+				if (colMeta.getColName().equalsIgnoreCase(pkCol)) {
+					colMeta.setPrimaryKey(true);
+					colMeta.setPkFlag("1");
+				}
+			}
+		}
+	}
+
+	/**
+	 * 处理主键和分区字段,当存在主键且非分区字段时，将主键且是分区的字段设置为辅助主键 (因为大多数数据库要求分区字段必须是主键)
+	 * 
+	 * @param cols
+	 */
+	private static int processPartitionAndPk(List cols) {
+		QuickColMeta colMeta;
+		// 判断存在非分区字段的主键
+		int pkCnt = 0;
+		for (int i = 0; i < cols.size(); i++) {
+			colMeta = (QuickColMeta) cols.get(i);
+			// 主键且非分区字段，表明是真正的主键
+			if (colMeta.isPrimaryKey() && !colMeta.getPartitionKey()) {
+				pkCnt++;
+			}
+		}
+		if (pkCnt > 0) {
+			for (int i = 0; i < cols.size(); i++) {
+				colMeta = (QuickColMeta) cols.get(i);
+				// 是主键且是分区字段，表示是辅助主键
+				if (colMeta.isPrimaryKey() && colMeta.getPartitionKey()) {
+					colMeta.setAssistPartition(true);
+				}
+			}
+		}
+		return pkCnt;
+	}
+
 	/**
 	 * @todo 处理表的列信息
 	 * @param configModel
@@ -613,7 +665,6 @@ public class TaskController {
 		int scale;
 		int maxScale = Constants.getMaxScale();
 		int typeMappSize = 0;
-
 		if (configModel.getTypeMapping() != null && !configModel.getTypeMapping().isEmpty()) {
 			typeMappSize = configModel.getTypeMapping().size();
 		}
@@ -621,12 +672,18 @@ public class TaskController {
 		String tableField;
 		boolean hasPartitionKey = false;
 		String apiDoc;
-
 		for (int i = 0; i < cols.size(); i++) {
 			colMeta = (TableColumnMeta) cols.get(i);
 			tableField = tableName.concat(".").concat(colMeta.getColName()).toLowerCase();
 			QuickColMeta quickColMeta = new QuickColMeta();
 			quickColMeta.setColRemark(colMeta.getColRemark());
+			quickColMeta.setAssistPartition(colMeta.isAssistPartition());
+			if (colMeta.getGeneratedType() > 0) {
+				quickColMeta.setGeneratedType(colMeta.getGeneratedType());
+				if (!impList.contains("org.sagacity.sqltoy.config.model.GeneratedType")) {
+					impList.add("org.sagacity.sqltoy.config.model.GeneratedType");
+				}
+			}
 			// 判断是否存在重复字段
 			if (colsSet.contains(colMeta.getColName().toLowerCase())) {
 				Constants.hasRepeatField = true;
@@ -1151,9 +1208,9 @@ public class TaskController {
 		String start = isFields ? Constants.fieldsBegin : Constants.constructorBegin;
 		String end = isFields ? Constants.fieldsEnd : Constants.constructorEnd;
 		int oldBegin = oldContent.indexOf(start);
-		int oldEnd = oldContent.indexOf(end);
+		int oldEnd = oldContent.indexOf(end, oldBegin > 0 ? oldBegin : 0);
 		int newBegin = newContent.indexOf(start);
-		int newEnd = newContent.indexOf(end);
+		int newEnd = newContent.indexOf(end, newBegin > 0 ? newBegin : 0);
 		if (oldBegin == -1 || oldEnd == -1 || newBegin == -1 || newEnd == -1) {
 			throw new Exception("文件内容中不存在规定的开始和截止区域标记:\n" + start + "\n" + end);
 		}
@@ -1187,4 +1244,5 @@ public class TaskController {
 		}
 		return result;
 	}
+
 }

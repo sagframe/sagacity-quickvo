@@ -21,10 +21,21 @@ public class PostgresConstants {
 			{ "DOUBLE", "Double", "" }, { "NUMBER", "BigDecimal", "java.math.BigDecimal" },
 			{ "MONEY", "BigDecimal", "java.math.BigDecimal" }, { "SMALLMONEY", "BigDecimal", "java.math.BigDecimal" },
 			{ "NUMERIC", "BigDecimal", "java.math.BigDecimal" }, { "_NUMERIC", "BigDecimal[]", "java.math.BigDecimal" },
-			{ "DECIMAL", "BigDecimal", "java.math.BigDecimal" }, { "TIMESTAMP", "Timestamp", "java.sql.Timestamp" },
-			{ "TIMESTAMP(6)", "Timestamp", "java.sql.Timestamp" },
+			{ "DECIMAL", "BigDecimal", "java.math.BigDecimal" },
+
+			{ "TIMESTAMP", "Timestamp", "java.sql.Timestamp" }, { "TIMESTAMP(6)", "Timestamp", "java.sql.Timestamp" },
+			{ "TIMESTAMPTZ", "OffsetDateTime", "java.time.OffsetDateTime" },
+			{ "TIMESTAMP WITH TIMEZONE", "OffsetDateTime", "java.time.OffsetDateTime" },
+			{ "TIMESTAMP_WITH_TIMEZONE", "OffsetDateTime", "java.time.OffsetDateTime" },
+
 			{ "BIGDECIMAL", "BigDecimal", "java.math.BigDecimal" }, { "DATE", "LocalDate", "java.time.LocalDate" },
-			{ "DATETIME", "LocalDateTime", "java.time.LocalDateTime" }, { "TIME", "LocalTime", "java.time.LocalTime" },
+			{ "DATETIME", "LocalDateTime", "java.time.LocalDateTime" },
+
+			{ "TIME", "LocalTime", "java.time.LocalTime" },
+			{ "TIME WITH TIMEZONE", "OffsetTime", "java.time.OffsetTime" },
+			{ "TIME_WITH_TIMEZONE", "OffsetTime", "java.time.OffsetTime" },
+			{ "TIMETZ", "OffsetTime", "java.time.OffsetTime" },
+
 			{ "YEAR", "LocalDate", "java.time.LocalDate" }, { "VARCHAR", "String", "" }, { "_VARCHAR", "String[]", "" },
 			{ "MEDIUMTEXT", "String", "" }, { "VARCHAR2", "String", "" }, { "LONG VARCHAR", "String", "" },
 			{ "LONGVARCHAR", "String", "" }, { "NVARCHAR", "String", "" }, { "LONGNVARCHAR", "String", "" },
@@ -41,14 +52,24 @@ public class PostgresConstants {
 			{ "_Int4", "ARRAY" }, { "Int8", "BIGINT" }, { "_Int8", "ARRAY" }, { "SMALLINT", "SMALLINT" },
 			{ "SERIAL8", "BIGINT" }, { "SERIAL", "INTEGER", "" }, { "BIGSERIAL", "BIGINT" }, { "FLOAT4", "FLOAT" },
 			{ "_FLOAT4", "ARRAY" }, { "FLOAT8", "DOUBLE" }, { "_FLOAT8", "ARRAY" }, { "STRING", "VARCHAR" },
-			{ "LONG VARCHAR", "VARCHAR" }, { "DATE", "DATE" }, { "DATETIME", "DATE" }, { "TIMESTAMP", "TIMESTAMP" },
-			{ "TIMESTAMP(6)", "TIMESTAMP" }, { "TIME", "TIME" }, { "CHAR", "CHAR" }, { "JSONB", "VARCHAR" },
-			{ "BINARY", "BINARY" }, { "BYTEA", "BINARY" }, { "BOOLEAN", "BOOLEAN" }, { "BOOL", "BOOLEAN" },
-			{ "LONGTEXT", "VARCHAR" }, { "MEDIUMTEXT", "VARCHAR" }, { "TEXT", "VARCHAR" }, { "_TEXT", "ARRAY" },
-			{ "JSON", "VARCHAR" }, { "TINYTEXT", "VARCHAR" }, { "VARCHAR", "VARCHAR" }, { "_VARCHAR", "ARRAY" },
-			{ "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" }, { "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" },
-			{ "INT", "INTEGER" }, { "INTEGER", "INTEGER" }, { "BIGINT", "BIGINT" }, { "BIT", "BIT" },
-			{ "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" }, { "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" },
-			{ "NUMERIC", "DECIMAL" }, { "_NUMERIC", "ARRAY" }, { "GEOMETRY", "VARCHAR" }, { "SDO_GEOMETRY", "VARCHAR" },
-			{ "UUID", "VARCHAR" }, { "TSVECTOR", "VARCHAR" } };
+			{ "LONG VARCHAR", "VARCHAR" },
+
+			{ "DATE", "DATE" }, { "DATETIME", "DATE" },
+
+			{ "TIMESTAMP", "TIMESTAMP" }, { "TIMESTAMP(6)", "TIMESTAMP" }, { "TIMESTAMPTZ", "TIMESTAMP_WITH_TIMEZONE" },
+			{ "TIMESTAMP WITH TIMEZONE", "TIMESTAMP_WITH_TIMEZONE" },
+			{ "TIMESTAMP_WITH_TIMEZONE", "TIMESTAMP_WITH_TIMEZONE" },
+
+			{ "TIME", "TIME" }, { "TIME WITH TIMEZONE", "TIME_WITH_TIMEZONE" },
+			{ "TIME_WITH_TIMEZONE", "TIME_WITH_TIMEZONE" }, { "TIMETZ", "TIME_WITH_TIMEZONE" },
+
+			{ "CHAR", "CHAR" }, { "JSONB", "VARCHAR" }, { "BINARY", "BINARY" }, { "BYTEA", "BINARY" },
+			{ "BOOLEAN", "BOOLEAN" }, { "BOOL", "BOOLEAN" }, { "LONGTEXT", "VARCHAR" }, { "MEDIUMTEXT", "VARCHAR" },
+			{ "TEXT", "VARCHAR" }, { "_TEXT", "ARRAY" }, { "JSON", "VARCHAR" }, { "TINYTEXT", "VARCHAR" },
+			{ "VARCHAR", "VARCHAR" }, { "_VARCHAR", "ARRAY" }, { "NVARCHAR", "VARCHAR" }, { "BPCHAR", "VARCHAR" },
+			{ "VARCHAR2", "VARCHAR" }, { "TINYINT", "TINYINT" }, { "INT", "INTEGER" }, { "INTEGER", "INTEGER" },
+			{ "BIGINT", "BIGINT" }, { "BIT", "BIT" }, { "NUMBER", "DECIMAL" }, { "DECIMAL", "DECIMAL" },
+			{ "MONEY", "DECIMAL" }, { "SMALLMONEY", "DECIMAL" }, { "NUMERIC", "DECIMAL" }, { "_NUMERIC", "ARRAY" },
+			{ "GEOMETRY", "VARCHAR" }, { "SDO_GEOMETRY", "VARCHAR" }, { "UUID", "VARCHAR" },
+			{ "TSVECTOR", "VARCHAR" } };
 }

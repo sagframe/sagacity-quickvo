@@ -252,7 +252,6 @@ public class FileUtil {
 			return "";
 		}
 		String separator = File.separator;
-
 		if (!firstPath.equals("")) {
 			if (firstPath.substring(firstPath.length() - 1).equals("/")
 					|| firstPath.substring(firstPath.length() - 1).equals("\\")) {
@@ -319,7 +318,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String skipPath(String basePath, String skipFile) {
-		String realFile = FileUtil.formatPath(skipFile).trim();
+		String realFile = formatPath(skipFile).trim();
 		if (realFile.indexOf("." + File.separator) == 0) {
 			realFile = realFile.substring(2);
 		}

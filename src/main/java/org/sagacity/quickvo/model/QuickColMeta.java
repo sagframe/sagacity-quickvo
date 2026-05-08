@@ -23,7 +23,7 @@ public class QuickColMeta implements Serializable {
 	private boolean skipEntity = false;
 
 	private boolean skipVO = false;
-	
+
 	/**
 	 * 字段名称
 	 */
@@ -78,7 +78,7 @@ public class QuickColMeta implements Serializable {
 	 * 是否为数字类型标识
 	 */
 	private String colTypeFlag = "0";
-	
+
 	/**
 	 * 外键名称
 	 */
@@ -120,12 +120,15 @@ public class QuickColMeta implements Serializable {
 
 	private String autoIncrement = "false";
 
+	private int generatedType = 0;
+
 	private List<TableConstractModel> pkRefConstract = new ArrayList<TableConstractModel>();
 
 	private BusinessIdConfig businessIdConfig;
 
 	private String apiDocContent;
 
+	private boolean primaryKey=false;
 	/**
 	 * 分区字段
 	 */
@@ -135,10 +138,15 @@ public class QuickColMeta implements Serializable {
 	 * default值
 	 */
 	private String defaultValue;
-	
+
 	private int deleteRestict;
-	
+
 	private int updateRestict;
+
+	/**
+	 * 是否是辅助分区字段
+	 */
+	private boolean assistPartition = false;
 
 	public String getPkFlag() {
 		return pkFlag;
@@ -316,7 +324,7 @@ public class QuickColMeta implements Serializable {
 		if (colRemark != null) {
 			// 双引号替换成单引号
 			this.colRemark = colRemark.replaceAll("\"", "'");
-			this.colRemark=Matcher.quoteReplacement(this.colRemark);
+			this.colRemark = Matcher.quoteReplacement(this.colRemark);
 		}
 	}
 
@@ -518,6 +526,30 @@ public class QuickColMeta implements Serializable {
 
 	public void setUpdateRestict(int updateRestict) {
 		this.updateRestict = updateRestict;
+	}
+
+	public int getGeneratedType() {
+		return generatedType;
+	}
+
+	public void setGeneratedType(int generatedType) {
+		this.generatedType = generatedType;
+	}
+
+	public boolean isAssistPartition() {
+		return assistPartition;
+	}
+
+	public void setAssistPartition(boolean assistPartition) {
+		this.assistPartition = assistPartition;
+	}
+
+	public boolean isPrimaryKey() {
+		return primaryKey;
+	}
+
+	public void setPrimaryKey(boolean primaryKey) {
+		this.primaryKey = primaryKey;
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.sagacity.quickvo.model;
 
+import org.sagacity.quickvo.utils.StringUtil;
+
 /**
  * @project sagacity-quickvo
  * @description 数据库表字段属性
@@ -90,6 +92,13 @@ public class TableColumnMeta implements java.io.Serializable {
 	private String colDefault;
 
 	/**
+	 * 计算列类型
+	 */
+	private int generatedType = 0;
+
+	private boolean isAssistPartition = false;
+
+	/**
 	 * @return the length
 	 */
 	public int getLength() {
@@ -142,7 +151,7 @@ public class TableColumnMeta implements java.io.Serializable {
 	}
 
 	public String getColRemark() {
-		return colRemark;
+		return StringUtil.escapeComment(colRemark);
 	}
 
 	public void setColRemark(String colRemark) {
@@ -263,6 +272,22 @@ public class TableColumnMeta implements java.io.Serializable {
 	 */
 	public void setPartitionKey(boolean partitionKey) {
 		this.partitionKey = partitionKey;
+	}
+
+	public int getGeneratedType() {
+		return generatedType;
+	}
+
+	public void setGeneratedType(int generatedType) {
+		this.generatedType = generatedType;
+	}
+
+	public boolean isAssistPartition() {
+		return isAssistPartition;
+	}
+
+	public void setAssistPartition(boolean isAssistPartition) {
+		this.isAssistPartition = isAssistPartition;
 	}
 
 }

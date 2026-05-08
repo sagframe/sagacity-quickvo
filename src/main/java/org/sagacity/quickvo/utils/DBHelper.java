@@ -102,12 +102,15 @@ public class DBHelper {
 				return true;
 			} catch (ClassNotFoundException cnfe) {
 				cnfe.printStackTrace();
-				logger.info("数据库驱动未能加载，请在/libs 目录下放入正确的数据库驱动jar包!");
+				logger.info("数据库驱动未能加载，请在/libs 目录下放入正确的数据库驱动jar包,或请再参照文档了解quickvo-maven插件的配置!");
 				throw cnfe;
 			} catch (SQLException se) {
 				logger.info("获取数据库连接失败!");
 				throw se;
 			}
+		} else {
+			logger.info("数据库名称:" + dbName + "不在dataSource定义的名单中,请检查<task datasource=\"" + dbName
+					+ "\" 跟<datasource name=\"定义值\"> 的一致性");
 		}
 		return false;
 	}
@@ -153,6 +156,7 @@ public class DBHelper {
 				commentName = "COMMENTS";
 				skipGetTables = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.info("表:user_tab_comments 不存在,如当前非oracle数据库(如:polardb等),此错误请忽略!");
 			}
 		} // mysql数据库
@@ -180,60 +184,84 @@ public class DBHelper {
 				commentName = "TABLE_COMMENT";
 				skipGetTables = true;
 			} catch (Exception e) {
+				e.printStackTrace();
 				logger.info("表:INFORMATION_SCHEMA.TABLES 不存在,如当前非mysql数据库(如:polardb、dorisdb等),此错误请忽略!");
+			}
+		}
+		if (dbType == DBType.POSTGRESQL || dbType == DBType.POSTGRESQL15 || dbType == DBType.GAUSSDB
+				|| dbType == DBType.STARDB || dbType == DBType.VASTBASE || dbType == DBType.OPENGAUSS
+				|| dbType == DBType.OSCAR) {
+			try {
+				String sql = "SELECT   c.relname AS TABLE_NAME,CASE c.relkind  "
+						+ "        WHEN 'r' THEN 'TABLE'  WHEN 'p' THEN 'TABLE' "
+						+ "        WHEN 'v' THEN 'VIEW'   END AS TABLE_TYPE, d.description AS COMMENTS "
+						+ "    FROM pg_class c "
+						+ "		    LEFT JOIN pg_description d ON d.objoid = c.oid AND d.objsubid = 0 "
+						+ "         JOIN pg_namespace n ON n.oid = c.relnamespace "
+						+ "    WHERE c.relkind IN ('r', 'v', 'p') "
+						+ "        AND c.oid NOT IN (SELECT inhrelid FROM pg_inherits) AND c.relname NOT LIKE 'pg_%' "
+						+ "        AND n.nspname NOT LIKE 'pg_%' "
+						+ "        AND n.nspname = ANY (current_schemas(false)) ";
+				pst = conn.prepareStatement(sql);
+				rs = pst.executeQuery();
+				commentName = "COMMENTS";
+				skipGetTables = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				logger.info("表:pg_class 不存在,如当前非postgresql以及延申数据库,此错误请忽略!");
 			}
 		}
 		if (!skipGetTables) {
 			// 获取当前数据库的全部表名信息
 			rs = conn.getMetaData().getTables(catalog, schema, null, types);
 		}
-		return (List) DBUtil.preparedStatementProcess(commentName, pst, rs, new PreparedStatementResultHandler() {
-			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws Exception {
-				List tables = new ArrayList();
-				String tableName;
-				// 是否包含标识，通过正则表达是判断是否是需要获取的表
-				boolean is_include = false;
-				String type;
-				while (rs.next()) {
-					is_include = false;
-					tableName = rs.getString("TABLE_NAME");
-					if (includes != null && includes.length > 0) {
-						for (int i = 0; i < includes.length; i++) {
-							if (StringUtil.matches(tableName, includes[i])) {
+		List tableList = (List) DBUtil.preparedStatementProcess(commentName, pst, rs,
+				new PreparedStatementResultHandler() {
+					public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws Exception {
+						List tables = new ArrayList();
+						String tableName;
+						// 是否包含标识，通过正则表达是判断是否是需要获取的表
+						boolean is_include = false;
+						String type;
+						while (rs.next()) {
+							is_include = false;
+							tableName = rs.getString("TABLE_NAME");
+							if (includes != null && includes.length > 0) {
+								for (int i = 0; i < includes.length; i++) {
+									if (StringUtil.matches(tableName, includes[i])) {
+										is_include = true;
+										break;
+									}
+								}
+							} else {
 								is_include = true;
-								break;
+							}
+							if (excludes != null && excludes.length > 0) {
+								for (int j = 0; j < excludes.length; j++) {
+									if (StringUtil.matches(tableName, excludes[j])) {
+										is_include = false;
+										break;
+									}
+								}
+							}
+							if (is_include) {
+								TableMeta tableMeta = new TableMeta();
+								tableMeta.setTableName(tableName);
+								tableMeta.setSchema(dbConfig.getSchema());
+								type = rs.getString("TABLE_TYPE").toLowerCase();
+								if (type.contains("view")) {
+									tableMeta.setTableType("VIEW");
+								} else {
+									tableMeta.setTableType("TABLE");
+								}
+								tableMeta.setTableRemark(StringUtil.clearMistyChars(rs.getString(obj.toString()), " "));
+								tables.add(tableMeta);
 							}
 						}
-					} else {
-						is_include = true;
+						this.setResult(tables);
 					}
-					if (excludes != null && excludes.length > 0) {
-						for (int j = 0; j < excludes.length; j++) {
-							if (StringUtil.matches(tableName, excludes[j])) {
-								is_include = false;
-								break;
-							}
-						}
-					}
-					if (is_include) {
-						TableMeta tableMeta = new TableMeta();
-						tableMeta.setTableName(tableName);
-						tableMeta.setSchema(dbConfig.getSchema());
-						// tableMeta.setSchema(rs.getString("TABLE_SCHEM"));
-						// tableMeta.setSchema(rs.getString("TABLE_CAT"));
-						type = rs.getString("TABLE_TYPE").toLowerCase();
-						if (type.contains("view")) {
-							tableMeta.setTableType("VIEW");
-						} else {
-							tableMeta.setTableType("TABLE");
-						}
-						tableMeta.setTableRemark(StringUtil.clearMistyChars(rs.getString(obj.toString()), " "));
-						tables.add(tableMeta);
-					}
-				}
-				this.setResult(tables);
-			}
-		});
+				});
+		return tableList;
 	}
 
 	/**
@@ -286,19 +314,34 @@ public class DBHelper {
 		// sybase or sqlserver
 		if (dbType == DBType.SQLSERVER && !isPolardb) {
 			if (dbType == DBType.SQLSERVER) {
-				StringBuilder queryStr = new StringBuilder();
-				queryStr.append("SELECT a.name COLUMN_NAME,");
-				queryStr.append(" cast(isnull(g.[value],'') as varchar(1000)) as COMMENTS");
-				queryStr.append(" FROM syscolumns a");
-				queryStr.append(" inner join sysobjects d on a.id=d.id ");
-				queryStr.append(" and d.xtype='U' and d.name<>'dtproperties'");
-				queryStr.append(" left join syscomments e");
-				queryStr.append(" on a.cdefault=e.id");
-				queryStr.append(" left join sys.extended_properties g");
-				queryStr.append(" on a.id=g.major_id AND a.colid = g.minor_id");
-				queryStr.append(" where d.name=?");
-				queryStr.append(" order by a.id,a.colorder");
-				pst = conn.prepareStatement(queryStr.toString());
+				StringBuilder sql = new StringBuilder();
+				sql.append("SELECT ");
+				sql.append("   c.name AS COLUMN_NAME, ");
+				sql.append("	  ISNULL(ep.value, '') AS COMMENTS, ");
+				sql.append("	  CASE ");
+				sql.append("	    WHEN c.is_computed = 0 THEN 0 ");
+				sql.append("	    WHEN cc.is_persisted = 1 THEN 2 ");
+				sql.append("		   ELSE 1 ");
+				sql.append("	  END AS GENERATED_TYPE, ");
+				sql.append("  CASE WHEN EXISTS ( ");
+				sql.append("     SELECT 1 FROM sys.index_columns ic ");
+				sql.append("     WHERE ic.object_id = c.object_id ");
+				sql.append("       AND ic.column_id = c.column_id ");
+				sql.append("       AND ic.partition_ordinal > 0 ");
+				sql.append("   ) THEN 1 ELSE 0 END AS IS_PARTITION_KEY ");
+				sql.append(" FROM sys.columns c ");
+				sql.append("	    LEFT JOIN sys.extended_properties ep ");
+				sql.append("	         ON ep.major_id = c.object_id ");
+				sql.append("	         AND ep.minor_id = c.column_id ");
+				sql.append("         AND ep.name = 'MS_Description' ");
+				sql.append("	    LEFT JOIN sys.computed_columns cc ");
+				sql.append("         ON c.object_id = cc.object_id ");
+				sql.append("         AND c.column_id = cc.column_id ");
+				sql.append("	    LEFT JOIN sys.default_constraints dc ");
+				sql.append("			  ON c.default_object_id = dc.object_id ");
+				sql.append(" WHERE OBJECT_NAME(c.object_id) =? ");
+				sql.append("	 ORDER BY c.column_id ");
+				pst = conn.prepareStatement(sql.toString());
 				pst.setString(1, tableName);
 				rs = pst.executeQuery();
 				filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
@@ -309,6 +352,10 @@ public class DBHelper {
 									TableColumnMeta colMeta = new TableColumnMeta();
 									colMeta.setColName(rs.getString("COLUMN_NAME"));
 									colMeta.setColRemark(rs.getString("COMMENTS"));
+									if (rs.getInt("IS_PARTITION_KEY") == 1) {
+										colMeta.setPartitionKey(true);
+									}
+									colMeta.setGeneratedType(rs.getInt("GENERATED_TYPE"));
 									filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
 								}
 								this.setResult(filedHash);
@@ -389,17 +436,26 @@ public class DBHelper {
 		try {
 			// oracle 数据库
 			if ((dbType == DBType.ORACLE || dbType == DBType.ORACLE11) && !isPolardb) {
-				StringBuilder queryStr = new StringBuilder();
-				queryStr.append("SELECT t1.*,t2.DATA_DEFAULT FROM (SELECT COLUMN_NAME,COMMENTS");
-				queryStr.append("  FROM user_col_comments");
-				queryStr.append("  WHERE table_name =?) t1");
-				queryStr.append("  LEFT JOIN(SELECT COLUMN_NAME,DATA_DEFAULT");
-				queryStr.append("            FROM user_tab_cols");
-				queryStr.append("            WHERE table_name =?) t2");
-				queryStr.append("  on t1.COLUMN_NAME=t2.COLUMN_NAME");
-				pst = conn.prepareStatement(queryStr.toString());
+				StringBuilder sql = new StringBuilder();
+				sql.append("		SELECT ");
+				sql.append("		    t.COLUMN_NAME,");
+				sql.append("		    t.COMMENTS,");
+				sql.append("		    CASE WHEN c.VIRTUAL_COLUMN = 'YES' THEN 2 ELSE 0 END AS GENERATED_TYPE,");
+				sql.append("		    CASE WHEN p.COLUMN_NAME IS NOT NULL THEN 1 ELSE 0 END AS IS_PARTITION_KEY,");
+				sql.append("		    c.DATA_DEFAULT ");
+				sql.append("		FROM ALL_COL_COMMENTS t ");
+				sql.append("		JOIN ALL_TAB_COLS c ");
+				sql.append("		    ON t.OWNER = c.OWNER ");
+				sql.append("		    AND t.TABLE_NAME = c.TABLE_NAME ");
+				sql.append("		    AND t.COLUMN_NAME = c.COLUMN_NAME ");
+				sql.append("		LEFT JOIN ALL_PART_KEY_COLUMNS p ");
+				sql.append("		    ON t.OWNER = p.OWNER ");
+				sql.append("		    AND t.TABLE_NAME = p.NAME ");
+				sql.append("		    AND t.COLUMN_NAME = p.COLUMN_NAME ");
+				sql.append("		WHERE t.TABLE_NAME =? ");
+				sql.append("		ORDER BY c.COLUMN_ID ");
+				pst = conn.prepareStatement(sql.toString());
 				pst.setString(1, tableName);
-				pst.setString(2, tableName);
 				rs = pst.executeQuery();
 				filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
 						new PreparedStatementResultHandler() {
@@ -410,6 +466,10 @@ public class DBHelper {
 									colMeta.setColName(rs.getString("COLUMN_NAME"));
 									colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS"), " "));
 									colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
+									if (rs.getInt("IS_PARTITION_KEY") == 1) {
+										colMeta.setPartitionKey(true);
+									}
+									colMeta.setGeneratedType(rs.getInt("GENERATED_TYPE"));
 									filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
 								}
 								this.setResult(filedHash);
@@ -418,6 +478,108 @@ public class DBHelper {
 			}
 		} catch (Exception e) {
 			logger.info("如果当前数据库非oracle(如polardb)，请忽视错误信息:" + e.getMessage());
+		}
+
+		try {
+			// postgresql
+			if (dbType == DBType.POSTGRESQL || dbType == DBType.POSTGRESQL15 || dbType == DBType.GAUSSDB
+					|| dbType == DBType.STARDB || dbType == DBType.VASTBASE || dbType == DBType.OPENGAUSS
+					|| dbType == DBType.OSCAR) {
+				StringBuilder sql = new StringBuilder();
+				sql.append("	 SELECT ");
+				sql.append("	   a.attname AS COLUMN_NAME,");
+				sql.append("	   d.description AS COMMENTS,");
+				sql.append("	   CASE WHEN a.attgenerated = 's' THEN 2 ELSE 0 END AS GENERATED_TYPE,");
+				sql.append("	   CASE WHEN p.partattrs IS NOT NULL AND a.attnum = ANY(p.partattrs) ");
+				sql.append("        THEN 1 ELSE 0 END AS IS_PARTITION_KEY,");
+				sql.append("	   pg_get_expr(ad.adbin, ad.adrelid) AS DATA_DEFAULT ");
+				sql.append("	 FROM  pg_class c ");
+				sql.append("		JOIN pg_namespace n ON c.relnamespace = n.oid ");
+				sql.append("		JOIN pg_attribute a ON c.oid = a.attrelid ");
+				sql.append("		LEFT JOIN pg_description d ON c.oid = d.objoid AND a.attnum = d.objsubid ");
+				sql.append("		LEFT JOIN pg_attrdef ad ON c.oid = ad.adrelid AND a.attnum = ad.adnum ");
+				sql.append("		LEFT JOIN pg_partitioned_table p ON c.oid = p.partrelid ");
+				sql.append("	 WHERE c.relname = ? ");
+				sql.append("		AND a.attnum > 0 ");
+				sql.append("	    AND NOT a.attisdropped ");
+				sql.append("	 ORDER BY a.attnum ");
+				pst = conn.prepareStatement(sql.toString());
+				pst.setString(1, tableName);
+				rs = pst.executeQuery();
+				filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
+						new PreparedStatementResultHandler() {
+							public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+								HashMap filedHash = new HashMap();
+								while (rs.next()) {
+									TableColumnMeta colMeta = new TableColumnMeta();
+									colMeta.setColName(rs.getString("COLUMN_NAME"));
+									colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS"), " "));
+									colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
+									if (rs.getInt("IS_PARTITION_KEY") == 1) {
+										colMeta.setPartitionKey(true);
+									}
+									colMeta.setGeneratedType(rs.getInt("GENERATED_TYPE"));
+									filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
+								}
+								this.setResult(filedHash);
+							}
+						});
+			}
+		} catch (Exception e) {
+			logger.info("如果当前数据库非postgresql，请忽视错误信息:" + e.getMessage());
+		}
+
+		try {
+			// mysql
+			if (dbType == DBType.MYSQL || dbType == DBType.MYSQL57) {
+				StringBuilder sql = new StringBuilder();
+				sql.append("SELECT ");
+				sql.append("   COLUMN_NAME,");
+				sql.append("   COLUMN_DEFAULT AS DATA_DEFAULT,");
+				sql.append("   COLUMN_COMMENT AS COMMENTS,");
+				sql.append(
+						"   CASE WHEN PARTITION_EXPRESSION IS NOT NULL AND INSTR(PARTITION_EXPRESSION, COLUMN_NAME) > 0 ");
+				sql.append("      THEN 1 ");
+				sql.append("      ELSE 0 ");
+				sql.append("   END AS IS_PARTITION_KEY,");
+				sql.append("   CASE WHEN EXTRA LIKE '%GENERATED%' THEN ");
+				sql.append("     CASE WHEN EXTRA LIKE '%VIRTUAL%' THEN 1 ");
+				sql.append("        WHEN EXTRA LIKE '%STORED%' THEN 2 ");
+				sql.append("        ELSE 0 ");
+				sql.append("     END ");
+				sql.append("   ELSE 0 ");
+				sql.append("   END AS GENERATED_TYPE ");
+				sql.append(" FROM information_schema.COLUMNS c ");
+				sql.append(" LEFT JOIN information_schema.PARTITIONS p ");
+				sql.append("   ON c.TABLE_SCHEMA = p.TABLE_SCHEMA ");
+				sql.append("   AND c.TABLE_NAME = p.TABLE_NAME ");
+				sql.append(" WHERE c.TABLE_NAME =? ");
+				sql.append(" GROUP BY c.TABLE_SCHEMA, c.TABLE_NAME, c.COLUMN_NAME, c.ORDINAL_POSITION ");
+				sql.append(" ORDER BY c.ORDINAL_POSITION ");
+				pst = conn.prepareStatement(sql.toString());
+				pst.setString(1, tableName);
+				rs = pst.executeQuery();
+				filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
+						new PreparedStatementResultHandler() {
+							public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
+								HashMap filedHash = new HashMap();
+								while (rs.next()) {
+									TableColumnMeta colMeta = new TableColumnMeta();
+									colMeta.setColName(rs.getString("COLUMN_NAME"));
+									colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("COMMENTS"), " "));
+									colMeta.setColDefault(StringUtil.trim(rs.getString("DATA_DEFAULT")));
+									if (rs.getInt("IS_PARTITION_KEY") == 1) {
+										colMeta.setPartitionKey(true);
+									}
+									colMeta.setGeneratedType(rs.getInt("GENERATED_TYPE"));
+									filedHash.put(rs.getString("COLUMN_NAME"), colMeta);
+								}
+								this.setResult(filedHash);
+							}
+						});
+			}
+		} catch (Exception e) {
+			logger.info("如果当前数据库非postgresql，请忽视错误信息:" + e.getMessage());
 		}
 		// clickhouse 数据库
 		if (dbType == DBType.CLICKHOUSE && !isPolardb) {
@@ -555,9 +717,13 @@ public class DBHelper {
 			return defaultValue;
 		}
 		String result = defaultValue;
+		if (result.startsWith("NULL::")) {
+			return null;
+		}
+		int brecketIndex = result.indexOf("(");
 		// 针对postgresql
-		if (result.indexOf("(") != -1 && result.indexOf(")") != -1 && result.indexOf("::") != -1) {
-			result = result.substring(result.indexOf("(") + 1, result.indexOf("::"));
+		if (brecketIndex != -1 && result.indexOf(")") != -1 && result.indexOf("::", brecketIndex) != -1) {
+			result = result.substring(result.indexOf("(") + 1, result.indexOf("::", brecketIndex));
 		}
 		// postgresql
 		if (result.indexOf("'") != -1 && result.indexOf("::") != -1) {
