@@ -5,7 +5,7 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>5.2.6</version>
+    <version>5.2.7</version>
 </dependency>
 
 ```
@@ -22,7 +22,7 @@ mvn quickvo:quickvo
     <plugin>
         <groupId>com.sagframe</groupId>
         <artifactId>quickvo-maven-plugin</artifactId>
-        <version>1.0.16</version>
+        <version>1.0.17</version>
         <configuration>
             <configFile>/src/main/resources/quickvo.xml</configFile>
             <baseDir>${project.basedir}</baseDir>
