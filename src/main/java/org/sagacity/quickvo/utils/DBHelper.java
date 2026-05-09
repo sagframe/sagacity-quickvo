@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.sagacity.quickvo.Constants;
 import org.sagacity.quickvo.model.DataSourceModel;
@@ -48,6 +49,8 @@ public class DBHelper {
 	private static Connection conn;
 
 	private static DataSourceModel dbConfig = null;
+	private static final Pattern PG_CAST_PATTERN = Pattern
+			.compile("::[a-zA-Z_][a-zA-Z0-9_]*(?:\\s+[a-zA-Z0-9_]+)?(?:\\(\\d+(?:,\\d+)?\\))?$");
 
 	private static HashMap<String, DataSourceModel> dbMaps = new HashMap<String, DataSourceModel>();
 
@@ -477,6 +480,7 @@ public class DBHelper {
 						});
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.info("如果当前数据库非oracle(如polardb)，请忽视错误信息:" + e.getMessage());
 		}
 
@@ -526,6 +530,7 @@ public class DBHelper {
 						});
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.info("如果当前数据库非postgresql，请忽视错误信息:" + e.getMessage());
 		}
 
@@ -579,6 +584,7 @@ public class DBHelper {
 						});
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.info("如果当前数据库非postgresql，请忽视错误信息:" + e.getMessage());
 		}
 		// clickhouse 数据库
@@ -591,7 +597,6 @@ public class DBHelper {
 			rs = pst.executeQuery();
 			filedsComments = (HashMap) DBUtil.preparedStatementProcess(null, pst, rs,
 					new PreparedStatementResultHandler() {
-
 						public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 							HashMap filedHash = new HashMap();
 							while (rs.next()) {
@@ -635,7 +640,6 @@ public class DBHelper {
 				rs = conn.getMetaData().getColumns(catalog, schema, tableName, null);
 			}
 		}
-
 		return (List) DBUtil.preparedStatementProcess(metaMap, null, rs, new PreparedStatementResultHandler() {
 			public void execute(Object obj, PreparedStatement pst, ResultSet rs) throws SQLException {
 				List result = new ArrayList();
@@ -651,9 +655,14 @@ public class DBHelper {
 						colMeta.setColRemark(StringUtil.clearMistyChars(rs.getString("REMARKS"), " "));
 					} else {
 						colMeta = (TableColumnMeta) metaMap.get(colName);
-						if (dbType != DBType.CLICKHOUSE) {
-							if (colMeta != null && colMeta.getColDefault() == null) {
-								colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
+						if (colMeta != null) {
+							if (colMeta.getColDefault() == null) {
+								// clickhouse 默认值已经提取
+								if (dbType != DBType.CLICKHOUSE) {
+									colMeta.setColDefault(clearDefaultValue(rs.getString("COLUMN_DEF")));
+								}
+							} else {
+								colMeta.setColDefault(clearDefaultValue(colMeta.getColDefault()));
 							}
 						}
 					}
@@ -709,39 +718,35 @@ public class DBHelper {
 	 * @param defaultValue
 	 * @return
 	 */
+	/**
+	 * @todo 处理sqlserver default值为((value))问题
+	 * @param defaultValue
+	 * @return
+	 */
 	private static String clearDefaultValue(String defaultValue) {
 		if (defaultValue == null) {
 			return null;
 		}
 		if (defaultValue.trim().equals("")) {
-			return defaultValue;
+			return "";
 		}
-		String result = defaultValue;
-		if (result.startsWith("NULL::")) {
+		String result = defaultValue.trim();
+		if (result.toUpperCase().startsWith("NULL::") && StringUtil.matches(result, PG_CAST_PATTERN)) {
 			return null;
 		}
-		int brecketIndex = result.indexOf("(");
-		// 针对postgresql
-		if (brecketIndex != -1 && result.indexOf(")") != -1 && result.indexOf("::", brecketIndex) != -1) {
-			result = result.substring(result.indexOf("(") + 1, result.indexOf("::", brecketIndex));
+		result = PG_CAST_PATTERN.matcher(result).replaceAll("").trim();
+		String[][] wrappers = { { "((", "))" }, { "(", ")" }, { "'", "'" }, { "\"", "\"" } };
+		for (String[] wrap : wrappers) {
+			String pre = wrap[0];
+			String suf = wrap[1];
+			if (result.startsWith(pre) && result.endsWith(suf)) {
+				result = result.substring(pre.length(), result.length() - suf.length()).trim();
+				break;
+			}
 		}
-		// postgresql
-		if (result.indexOf("'") != -1 && result.indexOf("::") != -1) {
-			result = result.substring(0, result.indexOf("::"));
-		}
-		if (result.startsWith("((") && result.endsWith("))")) {
-			result = result.substring(2, result.length() - 2);
-		}
-		if (result.startsWith("(") && result.endsWith(")")) {
-			result = result.substring(1, result.length() - 1);
-		}
-		if (result.startsWith("'") && result.endsWith("'")) {
-			result = result.substring(1, result.length() - 1);
-		}
-		if (result.startsWith("\"") && result.endsWith("\"")) {
-			result = result.substring(1, result.length() - 1);
-		}
-		return result.trim();
+		// postgresql 去除::text、::double precision、::char(10)、::numeric(10,2)结尾内容
+		result = PG_CAST_PATTERN.matcher(result).replaceAll("").trim();
+		return result;
 	}
 
 	/**

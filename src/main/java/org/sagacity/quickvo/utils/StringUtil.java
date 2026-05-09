@@ -8,6 +8,7 @@ import java.nio.ByteOrder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -317,5 +318,42 @@ public class StringUtil {
 		h ^= h >>> r;
 		buf.order(byteOrder);
 		return Math.abs(h);
+	}
+
+	/**
+	 * @todo 获取匹配成功的个数
+	 * @param source
+	 * @param regex
+	 * @return
+	 */
+	public static int matchCnt(String source, String regex) {
+		return matchCnt(source, Pattern.compile(regex));
+	}
+
+	/**
+	 * @todo 获取匹配成功的个数
+	 * @param Pattern
+	 * @param source
+	 * @return
+	 */
+	public static int matchCnt(String source, Pattern p) {
+		Matcher m = p.matcher(source);
+		int count = 0;
+		while (m.find()) {
+			count++;
+		}
+		return count;
+	}
+
+	/**
+	 * @todo 获取匹配成功的个数
+	 * @param source
+	 * @param regex
+	 * @param beginIndex
+	 * @param endIndex
+	 * @return
+	 */
+	public static int matchCnt(String source, String regex, int beginIndex, int endIndex) {
+		return matchCnt(source.substring(beginIndex, endIndex), Pattern.compile(regex));
 	}
 }

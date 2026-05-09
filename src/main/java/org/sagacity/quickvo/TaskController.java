@@ -291,24 +291,32 @@ public class TaskController {
 			// 表
 			if (isTable) {
 				pks = DBHelper.getTablePrimaryKeys(tableName);
+				int pkSize = pks == null ? 0 : pks.size();
+				// 给字段打上主键标记
 				setPk(colList, pks);
-
 				// 主键字段长度等于表字段长度，设置所有字段为主键标志为1
-				if (pks.size() == colList.size()) {
+				if (pkSize == colList.size()) {
 					quickVO.setPkIsAllColumn("1");
 				}
-				if (pks != null && notNullCnt == pks.size()) {
+				if (notNullCnt == pkSize) {
 					quickVO.setPkSizeEqualNotNullSize("1");
 				}
+				/**
+				 * 存在有主键、分区字段时(大多数数据库分区字段必须纳入主键)， 如果主键不是分区字段，则将分区字段标记成辅助主键
+				 */
 				int realPKCnt = processPartitionAndPk(colList);
-				// 表示存在分区字段也是主键的场景
-				boolean filterAssistPK = pks.size() > realPKCnt;
+				// 存在独立主键，能从主键中区分出实际的分区字段，在设置主键策略时排除掉分区字段
+				boolean filterAssistPK = pkSize > realPKCnt;
+				boolean onePk = false;
 				// 单主键
-				if (realPKCnt == 1 || pks.size() == 1) {
+				if (realPKCnt == 1 || pkSize == 1) {
 					quickVO.setSinglePk("1");
+					onePk = true;
+				} else {
+					quickVO.setSinglePk("0");
 				}
 				// 无主键
-				if (pks == null || pks.size() == 0) {
+				if (pkSize == 0) {
 					quickVO.setSinglePk("-1");
 					logger.info("======表" + tableName + "无主键!请检查数据库配置是否正确!");
 				} else {
@@ -317,7 +325,6 @@ public class TaskController {
 						quickVO.setPkConstraint(DBHelper.getTablePKConstraint(tableName));
 					}
 					QuickColMeta quickColMeta;
-					List pkList = new ArrayList();
 					for (int m = 0; m < colList.size(); m++) {
 						quickColMeta = (QuickColMeta) colList.get(m);
 						// 判断是否是业务主键字段
@@ -331,24 +338,24 @@ public class TaskController {
 						}
 					}
 					// 主键策略匹配
-					boolean isRealPK;
+					boolean hasRealPK;
 					for (int m = 0; m < colList.size(); m++) {
 						quickColMeta = (QuickColMeta) colList.get(m);
-						isRealPK = false;
+						hasRealPK = false;
 						if (!filterAssistPK) {
-							isRealPK = quickColMeta.isPrimaryKey();
+							hasRealPK = quickColMeta.isPrimaryKey();
 						} else {
-							isRealPK = quickColMeta.isPrimaryKey() && !quickColMeta.isAssistPartition();
+							hasRealPK = quickColMeta.isPrimaryKey() && !quickColMeta.isAssistPartition();
 						}
 						// 是主键
-						if (isRealPK) {
-							int pksSize = pks.size();
-							boolean isIdentity = (pksSize == 1
-									&& quickColMeta.getAutoIncrement().equalsIgnoreCase("true")) ? true : false;
+						if (hasRealPK) {
+							boolean isIdentity = (onePk && quickColMeta.getAutoIncrement().equalsIgnoreCase("true"))
+									? true
+									: false;
 							String strategy;
 							String sequence;
 							String generator;
-							if (pksSize == 1 && primaryKeyStrategy != null) {
+							if (onePk && primaryKeyStrategy != null) {
 								strategy = primaryKeyStrategy.getStrategy();
 								if (!primaryKeyStrategy.isForce() && isIdentity) {
 									quickColMeta.setStrategy("identity");
@@ -401,7 +408,7 @@ public class TaskController {
 								}
 							} else if (isIdentity) {
 								quickColMeta.setStrategy("identity");
-							} else if (pksSize == 1) {
+							} else if (onePk) {
 								if ("varchar".equalsIgnoreCase(quickColMeta.getDataType())
 										|| "char".equalsIgnoreCase(quickColMeta.getDataType())) {
 									// 16位默认为雪花算法
@@ -461,13 +468,8 @@ public class TaskController {
 									impList.add("java.math.BigInteger");
 								}
 							}
-							pkList.add(quickColMeta);
 							break;
 						}
-					}
-					if (pkList.size() > 1) {
-						quickVO.setPkList(pkList);
-						quickVO.setSinglePk("0");
 					}
 				}
 			}
@@ -596,6 +598,11 @@ public class TaskController {
 		}
 	}
 
+	/**
+	 * @TODO 给字段打上主键标记
+	 * @param colList
+	 * @param pkList
+	 */
 	private static void setPk(List<QuickColMeta> colList, List<String> pkList) {
 		if (pkList == null || pkList.isEmpty()) {
 			return;
