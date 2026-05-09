@@ -5,9 +5,6 @@ package org.sagacity.quickvo.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,49 +21,33 @@ public class StringUtil {
 	private StringUtil() {
 	}
 
-	// 数据库注释转义映射表（核心规则：仅转义必要字符，避免重复转义）
-	private static final Map<Character, String> DEFAULT_ESCAPE_MAP;
-
-	static {
-		Map<Character, String> tempMap = new HashMap<>();
-		// 核心规则：仅添加1个反斜杠（避免框架二次转义导致冗余）
-		tempMap.put('\\', "\\"); // 反斜杠：保留1个，防止重复转义
-		tempMap.put('$', "\\$"); // 美元符：$ → \$（避免EL表达式解析）
-		tempMap.put('{', "\\{"); // 左花括号：{ → \{
-		tempMap.put('}', "\\}"); // 右花括号：} → \}
-		tempMap.put('"', "\\\""); // 双引号：" → \"（适配数据库字符串解析）
-		tempMap.put('\'', "\\'"); // 单引号：' → \'（适配数据库字符串解析）
-		tempMap.put('%', "\\%"); // 百分号：% → \%（避免MySQL通配符解析）
-		tempMap.put('_', "\\_"); // 下划线：_ → \_（避免MySQL通配符解析）
-		// 包装为不可变Map，防止规则被篡改
-		DEFAULT_ESCAPE_MAP = Collections.unmodifiableMap(tempMap);
-	}
-
 	/**
-	 * 转义注释中的特殊字符（修复：逐字符检测，避免重复转义+部分转义遗漏）
-	 *
-	 * @param commentStr 原始注释字符串（可为null/空）
-	 * @return 转义后的字符串，null/空输入返回原值
+	 * 数据库备注 → 转成可直接放入 Java 双引号的字符串 只转义 3 种关键字符，其他全部保留原样
 	 */
 	public static String escapeComment(String commentStr) {
 		// 1. 空值安全处理：null/空字符串直接返回
 		if (commentStr == null || commentStr.isEmpty()) {
 			return commentStr;
 		}
-
-		// 2. 逐字符处理：检测当前字符是否已被转义，仅处理未转义的特殊字符
-		StringBuilder sb = new StringBuilder((int) (commentStr.length() * 1.2));
+		StringBuilder sb = new StringBuilder(commentStr.length() + 20);
 		char[] chars = commentStr.toCharArray();
 		for (int i = 0; i < chars.length; i++) {
 			char c = chars[i];
-			// 关键：检测当前字符的前一个字符是否是反斜杠（即当前字符已被转义）
-			boolean isEscaped = (i > 0 && chars[i - 1] == '\\');
-
-			// 仅对「未被转义」且「在转义映射表中」的字符进行转义
-			if (!isEscaped && DEFAULT_ESCAPE_MAP.containsKey(c)) {
-				sb.append(DEFAULT_ESCAPE_MAP.get(c));
-			} else {
-				// 已转义的字符/普通字符：直接保留
+			// 核心：如果是 \，并且下一个也是 \ → 已经转义，直接跳过
+			if (c == '\\' && i < chars.length - 1 && chars[i + 1] == '\\') {
+				sb.append("\\\\"); // 保留原样 \\
+				i++; // 跳过下一个字符（因为已经一起处理）
+			}
+			// 普通 \ 未转义，需要转义
+			else if (c == '\\') {
+				sb.append("\\\\");
+			}
+			// 双引号必须转义
+			else if (c == '"') {
+				sb.append("\\\"");
+			}
+			// 其他字符原样保留
+			else {
 				sb.append(c);
 			}
 		}
