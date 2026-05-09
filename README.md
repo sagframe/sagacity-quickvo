@@ -5,12 +5,12 @@
 <dependency>
     <groupId>com.sagframe</groupId>
     <artifactId>sqltoy-quickvo</artifactId>
-    <version>5.2.8</version>
+    <version>5.2.9</version>
 </dependency>
 
 ```
 # maven插件使用方式(内嵌了quickvo)
-sqltoy quickvo maven插件，最新版本：1.0.18
+sqltoy quickvo maven插件，最新版本：1.0.19
 * 在pom.xml 中加入quickvo的插件
 * 在项目根路径下编写mvn-quickvo.bat,便于快速执行
 ```properties
@@ -22,7 +22,7 @@ mvn quickvo:quickvo
     <plugin>
         <groupId>com.sagframe</groupId>
         <artifactId>quickvo-maven-plugin</artifactId>
-        <version>1.0.18</version>
+        <version>1.0.19</version>
         <configuration>
             <configFile>/src/main/resources/quickvo.xml</configFile>
             <baseDir>${project.basedir}</baseDir>
